@@ -36,6 +36,7 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Utility;
 using Direction = Robust.Shared.Maths.Direction;
+using Content.Client._Mono.Company;
 
 namespace Content.Client.Lobby.UI
 {
@@ -54,6 +55,7 @@ namespace Content.Client.Lobby.UI
         private readonly IRobustRandom _random;
         private readonly LobbyUIController _controller;
         private readonly EntityWhitelistSystem _whitelist; // Frontier
+        private readonly CompanyManager _companyManager; // Mono
 
         private FlavorText.FlavorText? _flavorText;
         private TextEdit? _flavorTextEdit;
@@ -118,7 +120,8 @@ namespace Content.Client.Lobby.UI
             IPrototypeManager prototypeManager,
             IResourceManager resManager,
             JobRequirementsManager requirements,
-            MarkingManager markings)
+            MarkingManager markings,
+            CompanyManager manager) // Mono
         {
             RobustXamlLoader.Load(this);
             _sawmill = logManager.GetSawmill("profile.editor");
@@ -129,6 +132,7 @@ namespace Content.Client.Lobby.UI
             _prototypeManager = prototypeManager;
             _markingManager = markings;
             _preferencesManager = preferencesManager;
+            _companyManager = manager; // Mono
             _resManager = resManager;
             _requirements = requirements;
             _random = IoCManager.Resolve<IRobustRandom>();
@@ -425,12 +429,9 @@ namespace Content.Client.Lobby.UI
             // Clear any existing items
             CompanyButton.Clear();
 
-            var username = _playerManager.LocalPlayer?.Session?.Name; //Lua modified - company login support
-
             // Add all companies from prototypes - use consistent sorting with UpdateCompanyControls
             var companies = _prototypeManager.EnumeratePrototypes<CompanyPrototype>()
-                //.Where(c => !c.Disabled) // Filter out disabled companies
-                .Where(c => !c.Disabled || (username != null && c.Logins.Contains(username))) //Lua modified - company login support
+                .Where(c => !c.Disabled && _companyManager.IsAllowed(c.ID))
                 .ToList();
             companies.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
 
@@ -2165,11 +2166,8 @@ namespace Content.Client.Lobby.UI
             if (Profile is null)
                 return;
 
-            var username = _playerManager.LocalPlayer?.Session?.Name; //Lua modified - company login support
-
             var companies = _prototypeManager.EnumeratePrototypes<CompanyPrototype>()
-                //.Where(c => !c.Disabled) // Filter out disabled companies
-                .Where(c => !c.Disabled || (username != null && c.Logins.Contains(username))) //Lua modified - company login support
+                .Where(c => !c.Disabled && _companyManager.IsAllowed(c.ID))
                 .ToList();
             companies.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
 

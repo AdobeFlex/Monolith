@@ -23,8 +23,6 @@ public sealed class NavInterfaceState
 
     public Dictionary<NetEntity, List<DockingPortState>> Docks;
 
-    public bool RotateWithEntity = true;
-
     /// <summary>
     /// Custom display names for network port buttons.
     /// Key is the port ID, value is the display name.
@@ -52,9 +50,6 @@ public sealed class NavInterfaceState
     public NetEntity? TargetEntity;
     // End Frontier fields
 
-    public bool Pannable = true; // Mono
-    public bool RelativePanning = false; // Mono
-
     public List<GrapplingLinkState> GrapLinks; //Exodus - ShuttleHooks
 
     public NavInterfaceState(
@@ -69,10 +64,7 @@ public sealed class NavInterfaceState
         NetEntity? targetEntity, // Frontier
         float? maxIffRange, // Frontier
         bool hideCoords, // Frontier
-        Dictionary<string, string>? networkPortNames = null,
-        bool pannable = true, // Mono
-        bool relativePan = false // Mono
-        )
+        Dictionary<string, string>? networkPortNames = null)
     {
         MaxRange = maxRange;
         Coordinates = coordinates;
@@ -85,8 +77,6 @@ public sealed class NavInterfaceState
         MaxIffRange = maxIffRange; // Frontier
         HideCoords = hideCoords; // Frontier
         NetworkPortNames = networkPortNames ?? new Dictionary<string, string>();
-        Pannable = pannable; // Mono
-        RelativePanning = relativePan; // Mono
         GrapLinks = grapLinks;
     }
 }

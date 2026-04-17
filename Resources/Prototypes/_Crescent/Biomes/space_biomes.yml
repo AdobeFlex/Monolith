@@ -18,6 +18,11 @@
 #far reaches
 
 - type: ambientSpaceBiome
+  id: BiomeFarReachesIV
+  name: Far Reaches IV
+  description: "Is it really worth it?"
+
+- type: ambientSpaceBiome
   id: BiomeFarReachesIII
   name: Дальние Рубежи III
   description: "Не там чудовища, где мы их ищем. Они - в закоулках геометрии, куда не заглядывал свет ни одной звезды"

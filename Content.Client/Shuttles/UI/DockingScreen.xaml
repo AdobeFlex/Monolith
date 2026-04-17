@@ -50,7 +50,7 @@
 
         <!-- Docks Section -->
         <controls1:StripeBack MinSize="48 48">
-            <controls:Label Text="{controls:Loc 'shuttle-console-docks-label'}" HorizontalAlignment="Center"/> <!-- Ru-Localization -->
+            <controls:Label Text="{controls:Loc 'shuttle-console-docks-label'}" HorizontalAlignment="Center"/>
         </controls1:StripeBack>
         <controls:PanelContainer VerticalExpand="True" HorizontalExpand="True" Margin="2 2 2 2">
             <controls:PanelContainer.PanelOverride>

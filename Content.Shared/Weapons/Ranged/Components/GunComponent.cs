@@ -301,6 +301,12 @@ public sealed partial class GunComponent : Component
     public Angle MuzzleFlashRotationOffset;
 
     /// <summary>
+    ///     This multiplier will apply per projectile fired by the weapon.
+    /// </summary>
+    [DataField]
+    public float DamageModifier = 1f;
+
+    /// <summary>
     /// Mono
     /// Recoil to incur per ammo shot, kg*m/s.
     /// </summary>
@@ -334,6 +340,15 @@ public sealed partial class GunComponent : Component
     /// </summary>
     [DataField]
     public float ExecutionModifier = 9.0f;
+    
+    // Exodus-begin
+    /// <summary>
+    /// Exodus
+    /// Use gun position for artillery
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public bool UseUserPosition = true;
+    // Exodus-end
 }
 
 [Flags]

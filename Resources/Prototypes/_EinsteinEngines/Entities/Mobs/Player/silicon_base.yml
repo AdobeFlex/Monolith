@@ -1,6 +1,7 @@
 - type: entity
   save: false
   id: PlayerSiliconHumanoidBase
+  # Mono TODO: reparent this to BaseMobSpecies
   parent: [BaseMob, MobDamageable, MobCombat, MobAtmosExposed, MobFlammable]
   abstract: true
   components:
@@ -329,3 +330,6 @@
       - 0, 0, 4, 4
       - 0, 3, 6, 5
   - type: OfferItem # CorvaxGoob-Offer
+  # Mono
+  - type: ShipNpcTarget
+    needGrid: NoGrid

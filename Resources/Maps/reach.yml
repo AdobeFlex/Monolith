@@ -1916,15 +1916,7 @@ entities:
     - type: Transform
       pos: -9.5,6.5
       parent: 2
-- proto: BaseGasCondenser
-  entities:
-  - uid: 2562
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: -6.5,13.5
-      parent: 2
-- proto: BaseResearchAndDevelopmentPointSource
+- proto: DatafarmResearchFaction
   entities:
   - uid: 82
     components:

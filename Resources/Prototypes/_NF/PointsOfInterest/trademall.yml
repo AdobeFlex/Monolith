@@ -44,6 +44,8 @@
     TradeMall:
       stationProto: MarketFrontierOutpost
       components:
+        - type: StationCargoOrderDatabase
+          capacity: 60
         - type: StationNameSetup
           mapNameTemplate: "Торговый Центр" # Ru-Localization
         - type: StationDeadDrop

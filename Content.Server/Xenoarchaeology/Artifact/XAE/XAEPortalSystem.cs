@@ -24,13 +24,20 @@ public sealed class XAEPortalSystem : BaseXAESystem<XAEPortalComponent>
     /// <inheritdoc />
     protected override void OnActivated(Entity<XAEPortalComponent> ent, ref XenoArtifactNodeActivatedEvent args)
     {
-        var map = Transform(ent).MapID;
+        // Exodus - XenoArch - Start
+        var artifactXform = Transform(ent);
+        var map = artifactXform.MapID;
+        var artifactCoordinates = artifactXform.Coordinates;
+        // Exodus - XenoArch - End
         var validMinds = new ValueList<EntityUid>();
         var mindQuery = EntityQueryEnumerator<MindContainerComponent, MobStateComponent, TransformComponent, MetaDataComponent>();
         while (mindQuery.MoveNext(out var uid, out var mc, out _, out var xform, out var meta))
         {
             // check if the MindContainer has a Mind and if the entity is not in a container (this also auto excludes AI) and if they are on the same map
-            if (mc.HasMind && !_container.IsEntityOrParentInContainer(uid, meta: meta, xform: xform) && xform.MapID == map)
+            if (mc.HasMind
+                && !_container.IsEntityOrParentInContainer(uid, meta: meta, xform: xform)
+                && xform.MapID == map
+                && _transform.InRange(artifactCoordinates, xform.Coordinates, ent.Comp.MaxSwapDistance)) // Exodus - XenoArch
             {
                 validMinds.Add(uid);
             }

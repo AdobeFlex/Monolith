@@ -12,7 +12,10 @@
     children:
     - id: UnknownShuttleZenithE
     - id: UnknownShuttleRazorN
-    # - id: UnknownShuttleWyvern # Exodus-Asakim-Disable
+    - id: UnknownShuttleWyvern
+    - id: UnknownShuttleZenith
+    - id: UnknownShuttleWyrm
+    - id: UnknownShuttleNebula
 
 - type: entity
   parent: BaseRandomShuttleRule
@@ -122,7 +125,7 @@
     startAnnouncement: station-event-ai-capital-detected
     startAudio:
       path: /Audio/Misc/delta_alt.ogg
-    weight: 3
+    weight: 1.5
     maxOccurrences: 1
   - type: GameRule
     minPlayers: 60

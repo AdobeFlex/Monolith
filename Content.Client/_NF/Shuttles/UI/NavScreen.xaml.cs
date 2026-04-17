@@ -6,6 +6,8 @@ using Content.Shared._NF.Shuttles.Events;
 using Content.Shared.Shuttles.BUIStates;
 using Content.Shared.Shuttles.Components;
 using Robust.Client.UserInterface.Controls;
+using System.Text.RegularExpressions;
+using System;
 
 namespace Content.Client.Shuttles.UI
 {
@@ -13,7 +15,7 @@ namespace Content.Client.Shuttles.UI
     {
         private readonly ButtonGroup _buttonGroup = new();
         public event Action<NetEntity?, InertiaDampeningMode>? OnInertiaDampeningModeChanged;
-        public event Action<NetEntity?, float>? OnMaxShuttleSpeedChanged;
+        public event Action<float?>? OnMaxShuttleSpeedChanged;
         public event Action<string, string>? OnNetworkPortButtonPressed;
         public event Action<NetEntity?, Vector2>? OnSetTargetCoordinates; // Frontier
         public event Action<NetEntity?, bool>? OnSetHideTarget; // Frontier
@@ -30,8 +32,7 @@ namespace Content.Client.Shuttles.UI
             MaximumIFFDistanceValue.OnValueChanged += args => OnRangeFilterChanged(args);
 
             // Frontier - Maximum Shuttle Speed
-            MaximumShuttleSpeedValue.GetChild(0).GetChild(1).Margin = new Thickness(8, 0, 0, 0);
-            MaximumShuttleSpeedValue.OnValueChanged += args => OnMaxSpeedChanged(args);
+            MaximumShuttleSpeedValue.OnTextChanged += args => OnMaxSpeedChanged(args);
 
             DampenerOff.OnPressed += _ => SetDampenerMode(InertiaDampeningMode.Off);
             DampenerOn.OnPressed += _ => SetDampenerMode(InertiaDampeningMode.Dampen);
@@ -129,10 +130,11 @@ namespace Content.Client.Shuttles.UI
         }
 
         // Frontier - Maximum Shuttle Speed
-        private void OnMaxSpeedChanged(int value)
+        private void OnMaxSpeedChanged(LineEdit.LineEditEventArgs value)
         {
-            _entManager.TryGetNetEntity(_shuttleEntity, out var shuttle);
-            OnMaxShuttleSpeedChanged?.Invoke(shuttle, value);
+            MaximumShuttleSpeedValue.Text = Regex.Replace(MaximumShuttleSpeedValue.Text, "[^0-9]", "");
+            float.TryParse(MaximumShuttleSpeedValue.Text, out var speed);
+            OnMaxShuttleSpeedChanged?.Invoke(MaximumShuttleSpeedValue.Text == "" ? null : speed);
         }
 
         private void NfAddShuttleDesignation(EntityUid? shuttle)

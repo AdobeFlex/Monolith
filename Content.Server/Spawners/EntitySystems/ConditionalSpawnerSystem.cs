@@ -15,6 +15,7 @@ namespace Content.Server.Spawners.EntitySystems
         [Dependency] private readonly IRobustRandom _robustRandom = default!;
         [Dependency] private readonly GameTicker _ticker = default!;
         [Dependency] private readonly EntityTableSystem _entityTable = default!;
+        [Dependency] private readonly SharedTransformSystem _transform = default!; // Exodus
 
         public override void Initialize()
         {
@@ -89,14 +90,14 @@ namespace Content.Server.Spawners.EntitySystems
             }
 
             if (!Deleted(uid))
-                EntityManager.SpawnEntity(_robustRandom.Pick(component.Prototypes), Transform(uid).Coordinates);
+                EntityManager.SpawnEntity(_robustRandom.Pick(component.Prototypes), _transform.GetMapCoordinates(uid)); // Exodus
         }
 
         private void Spawn(EntityUid uid, RandomSpawnerComponent component)
         {
             if (component.RarePrototypes.Count > 0 && (component.RareChance == 1.0f || _robustRandom.Prob(component.RareChance)))
             {
-                EntityManager.SpawnEntity(_robustRandom.Pick(component.RarePrototypes), Transform(uid).Coordinates);
+                EntityManager.SpawnEntity(_robustRandom.Pick(component.RarePrototypes), _transform.GetMapCoordinates(uid)); // Exodus
                 return;
             }
 
@@ -126,7 +127,7 @@ namespace Content.Server.Spawners.EntitySystems
             if (TerminatingOrDeleted(ent) || !Exists(ent))
                 return;
 
-            var coords = Transform(ent).Coordinates;
+            var coords = _transform.GetMapCoordinates(ent); // Exodus
 
             var spawns = _entityTable.GetSpawns(ent.Comp.Table);
             foreach (var proto in spawns)

@@ -1,0 +1,19 @@
+- type: entity
+  id: WeaponTurretShardAnchorable
+  name: Light mass driver "Shard"
+  parent: WeaponTurretShard
+  description: Ultralight mass driver weapon of unknown origin, designated "Shard" during initial reverse engineering attempts. Light damage, but long range and little upkeep to mount on ships.
+  suffix: ANCHORABLE
+  components:
+  - type: Anchorable
+    delay: 10
+
+- type: entity
+  id: WeaponTurretPinholeAnchorable
+  name: Pinhole-class railgun
+  parent: WeaponTurretPinhole
+  description: Mass driver weapon of unknown origin. Reverse engineering attempts have indicated extremely high projectile velocity and high-mass projectiles with unresolved ship-pushing payload.
+  suffix: ANCHORABLE
+  components:
+  - type: Anchorable
+    delay: 10

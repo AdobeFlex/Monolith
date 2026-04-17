@@ -1,15 +1,10 @@
 using System.Numerics;
-using Content.Server.UserInterface;
 using Content.Shared.Shuttles.BUIStates;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Shuttles.Systems;
-using Content.Shared.PowerCell;
-using Content.Shared.Movement.Components;
 using Robust.Server.GameObjects;
 using Robust.Shared.Map;
 using Content.Server.Shuttles.Components;
-using Content.Shared.PowerCell;
-using Content.Shared.Movement.Components;
 
 namespace Content.Server.Shuttles.Systems;
 
@@ -41,13 +36,19 @@ public sealed partial class RadarConsoleSystem : SharedRadarConsoleSystem // Fro
     protected override void UpdateState(EntityUid uid, RadarConsoleComponent component)
     {
         var xform = Transform(uid);
-        var onGrid = xform.ParentUid == xform.GridUid;
-        EntityCoordinates? coordinates = onGrid ? xform.Coordinates : null;
-        Angle? angle = onGrid ? xform.LocalRotation : null;
+        // Mono
+        var parentUid = xform.GridUid;
+        EntityCoordinates? coordinates = null;
+        Angle? angle = null;
         if (component.FollowEntity)
         {
             coordinates = new EntityCoordinates(uid, Vector2.Zero);
             angle = Angle.Zero; // Frontier: Angle.Zero<Angle.FromDegrees(180) // Mono - frontier strikes again
+        }
+        else if (parentUid is { } parent)
+        {
+            coordinates = _transform.WithEntityId(xform.Coordinates, parent);
+            angle = _transform.GetWorldRotation(xform) - _transform.GetWorldRotation(parent);
         }
 
         if (_uiSystem.HasUi(uid, RadarConsoleUiKey.Key))
@@ -63,8 +64,6 @@ public sealed partial class RadarConsoleSystem : SharedRadarConsoleSystem // Fro
             {
                 state = _console.GetNavState(uid, docks, _console.GetAllGrapLinks()); // Exodus - ShuttleHooks
             }
-
-            state.RotateWithEntity = !component.FollowEntity;
 
             // Frontier: ghost radar restrictions
             if (component.MaxIffRange != null)

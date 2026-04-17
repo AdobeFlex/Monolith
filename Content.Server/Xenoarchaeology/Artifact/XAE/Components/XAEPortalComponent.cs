@@ -13,4 +13,9 @@ public sealed partial class XAEPortalComponent : Component
     /// </summary>
     [DataField, AutoNetworkedField]
     public EntProtoId PortalProto = "PortalArtifact";
+
+    // Exodus - XenoArch - Start
+    [DataField, AutoNetworkedField]
+    public float MaxSwapDistance = 200f;
+    // Exodus - XenoArch - End
 }

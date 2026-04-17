@@ -38,6 +38,8 @@
 
 - type: startingGear
   id: SecurityGuardGear
+  equipment:
+    pocket1: WeaponEnergyGunLawbringer
   storage:
     back:
     - EncryptionKeyService

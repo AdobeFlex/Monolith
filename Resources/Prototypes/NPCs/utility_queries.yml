@@ -200,7 +200,7 @@
         preset: TargetHealth
     - !type:TargetAccessibleCon
       curve: !type:BoolCurve
-    - !type:TargetInLOSOrCurrentCon
+    - !type:GunTargetGoodCon
       curve: !type:BoolCurve
     - !type:TargetVisibleCon # Exodus
       curve: !type:BoolCurve

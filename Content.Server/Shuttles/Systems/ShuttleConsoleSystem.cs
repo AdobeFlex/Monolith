@@ -220,7 +220,6 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
     {
         DockingInterfaceState? dockState = null;
         UpdateState(uid, ref dockState);
-        _shuttle.NfSetPowered(uid, component, args.Powered); // Frontier
 
         // Handle job slots when power changes
         HandleJobSlotsOnPowerChange(uid, component, args.Powered);
@@ -583,9 +582,7 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
             GetNetEntity(entity.Comp1.TargetEntity), // Frontier
             entity.Comp1.MaxIffRange,
             entity.Comp1.HideCoords,
-            portNames,
-            entity.Comp1.Pannable, // Mono
-            entity.Comp1.RelativePanning); // Mono
+            portNames);
     }
 
     /// <summary>

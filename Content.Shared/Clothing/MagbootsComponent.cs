@@ -23,11 +23,9 @@ public sealed partial class MagbootsComponent : Component
     [DataField]
     public string Slot = "shoes";
 
-    // Exodus-Start
     /// <summary>
-    /// Prefix added to sprite and icon when magboots is active
+    /// Goobstation - EquippedPrefix for enabled state
     /// </summary>
     [DataField]
-    public string ActivePrefix = "on";
-    // Exodus-End
+    public string? EnabledPrefix = "on";
 }
