@@ -135,7 +135,7 @@
 # Exodus
 - type: entity
   parent: BaseRandomShuttleRule
-  id: UnknownShuttleMantaray
+  id: UnknownShuttleMantarayApoc
   components:
   - type: StationEvent
     startAnnouncement: station-event-ai-destroyer-detected
