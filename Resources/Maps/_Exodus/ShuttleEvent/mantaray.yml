@@ -106,15 +106,17 @@ entities:
     - type: Broadphase
     - type: Physics
       bodyStatus: InAir
-      angularDamping: 0.05
-      linearDamping: 0.05
       fixedRotation: False
       bodyType: Dynamic
     - type: Fixtures
       fixtures: {}
-    - type: BecomesStation
-      id: Zenith
     - type: OccluderTree
+    - type: SpreaderGrid
+      spreadQueues:
+        Puddle: []
+        MetalFoam: []
+        Smoke: []
+        Kudzu: []
     - type: Shuttle
       dampingModifier: 0.25
     - type: GridPathfinding
@@ -319,12 +321,6 @@ entities:
             283: -5,-2
             284: -5,-7
             285: 3,-7
-    - type: SpreaderGrid
-      spreadQueues:
-        Puddle: []
-        MetalFoam: []
-        Smoke: []
-        Kudzu: []
     - type: GridAtmosphere
       version: 2
       data:
