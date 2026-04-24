@@ -150,7 +150,7 @@
     weight: 3
     maxOccurrences: 1
   - type: GameRule
-    minPlayers: 38
+    minPlayers: 40
   - type: LoadMapRule
     gridPath: /Maps/_Exodus/ShuttleEvent/mantaray.yml # Exodus
   - type: GameRuleRequirements # Exodus
