@@ -23,7 +23,7 @@
     requirements:
     - !type:JobGameRuleRequirement
       department: Security
-      minDepartmentPlayers: 6
+      minDepartmentPlayers: 4
 
 - type: entity
   parent: BaseRandomShuttleRule
