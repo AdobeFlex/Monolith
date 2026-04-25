@@ -34,8 +34,8 @@
   - type: GameRuleRequirements # Exodus
     requirements:
     - !type:JobGameRuleRequirement
-      department: Security
-      minDepartmentPlayers: 6
+      department: Combatant
+      minDepartmentPlayers: 7
 
 - type: entity
   parent: BaseRandomShuttleRule
@@ -54,8 +54,8 @@
   - type: GameRuleRequirements # Exodus
     requirements:
     - !type:JobGameRuleRequirement
-      department: Security
-      minDepartmentPlayers: 6
+      department: Combatant
+      minDepartmentPlayers: 7
 
 - type: entity
   parent: BaseRandomShuttleRule
@@ -74,8 +74,8 @@
   - type: GameRuleRequirements # Exodus
     requirements:
     - !type:JobGameRuleRequirement
-      department: Security
-      minDepartmentPlayers: 6
+      department: Combatant
+      minDepartmentPlayers: 7
 
 - type: entity
   parent: BaseRandomShuttleRule
@@ -94,8 +94,8 @@
   - type: GameRuleRequirements # Exodus
     requirements:
     - !type:JobGameRuleRequirement
-      department: Security
-      minDepartmentPlayers: 2
+      department: Combatant
+      minDepartmentPlayers: 3
 
 - type: entity
   parent: BaseRandomShuttleRule
@@ -114,8 +114,8 @@
   - type: GameRuleRequirements # Exodus
     requirements:
     - !type:JobGameRuleRequirement
-      department: Security
-      minDepartmentPlayers: 6
+      department: Combatant
+      minDepartmentPlayers: 7
 
 - type: entity
   parent: BaseRandomShuttleRule
@@ -134,5 +134,5 @@
   - type: GameRuleRequirements # Exodus
     requirements:
     - !type:JobGameRuleRequirement
-      department: Security
-      minDepartmentPlayers: 8
+      department: Combatant
+      minDepartmentPlayers: 9
