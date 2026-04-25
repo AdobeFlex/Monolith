@@ -24,7 +24,7 @@
   - type: GameRule
     minPlayers: 32
   - type: LoadMapRule
-    gridPath: /Maps/_Mono/ShuttleEvent/zenith.yml
+    gridPath: /Maps/_Exodus/ShuttleEvent/zenith.yml # Exodus-Tweak
   - type: GameRuleRequirements # Exodus
     requirements:
     - !type:JobGameRuleRequirement
