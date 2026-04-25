@@ -10,6 +10,7 @@
     - id: UnknownShuttleNebulaApoc
     - id: UnknownShuttleWyvernApoc
     - id: UnknownShuttleRazorNApoc
+    - id: UnknownShuttleOmenApoc # Exodus
 
 - type: entity
   parent: BaseRandomShuttleRule
@@ -130,3 +131,24 @@
     - !type:JobGameRuleRequirement
       department: Security
       minDepartmentPlayers: 6
+
+# Exodus
+- type: entity
+  parent: BaseRandomShuttleRule
+  id: UnknownShuttleOmenApoc
+  components:
+  - type: StationEvent
+    startAnnouncement: station-event-ai-shuttle-detected
+    startAudio:
+      path: /Audio/Misc/notice1.ogg
+    weight: 3
+    maxOccurrences: 2
+  - type: GameRule
+    minPlayers: 10
+  - type: LoadMapRule
+    gridPath: /Maps/_Exodus/ShuttleEvent/omen.yml
+  - type: GameRuleRequirements # Exodus
+    requirements:
+    - !type:JobGameRuleRequirement
+      department: Security
+      minDepartmentPlayers: 2
