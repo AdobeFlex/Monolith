@@ -150,11 +150,11 @@
     weight: 5
     maxOccurrences: 3
   - type: GameRule
-    minPlayers: 32
+    minPlayers: 28
   - type: LoadMapRule
     gridPath: /Maps/_Exodus/ShuttleEvent/crow.yml # Exodus
   - type: GameRuleRequirements # Exodus
     requirements:
     - !type:JobGameRuleRequirement
       department: Combatant
-      minDepartmentPlayers: 7
+      minDepartmentPlayers: 6
