@@ -5,6 +5,7 @@
       - id: UnknownShuttleZenith
       - id: UnknownShuttleWyrm
       - id: UnknownShuttleNebula
+      - id: UnknownShuttleCrow # Exodus
 
 - type: entityTable
   id: DamagedAIShipsTableT2
@@ -16,7 +17,6 @@
     - id: UnknownShuttleZenith
     - id: UnknownShuttleWyrm
     - id: UnknownShuttleNebula
-    - id: UnknownShuttleCrow # Exodus
 
 - type: entity
   parent: BaseRandomShuttleRule
