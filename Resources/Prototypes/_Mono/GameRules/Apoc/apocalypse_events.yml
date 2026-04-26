@@ -10,7 +10,7 @@
     - id: UnknownShuttleNebulaApoc
     - id: UnknownShuttleWyvernApoc
     - id: UnknownShuttleRazorNApoc
-    - id: UnknownShuttleCrowApoc
+    - id: UnknownShuttleCrowApoc # Exodus
 
 - type: entity
   parent: BaseRandomShuttleRule
@@ -135,7 +135,7 @@
 # Exodus
 - type: entity
   parent: BaseRandomShuttleRule
-  id: UnknownShuttleRazorNApoc
+  id: UnknownShuttleCrowApoc
   components:
   - type: StationEvent
     startAnnouncement: station-event-ai-shuttle-detected
