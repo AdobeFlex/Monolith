@@ -50,7 +50,7 @@ entities:
   - uid: 1
     components:
     - type: MetaData
-      name: ADS Mantaray
+      name: АСЗ Мантарэй
     - type: Transform
       pos: 0.5,0.5
       parent: invalid
