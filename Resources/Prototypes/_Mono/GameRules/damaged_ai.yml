@@ -35,7 +35,7 @@
     requirements:
     - !type:JobGameRuleRequirement
       department: Combatant
-      minDepartmentPlayers: 7
+      minDepartmentPlayers: 6
 
 - type: entity
   parent: BaseRandomShuttleRule
@@ -68,14 +68,14 @@
     weight: 2
     maxOccurrences: 4
   - type: GameRule
-    minPlayers: 32
+    minPlayers: 26
   - type: LoadMapRule
     gridPath: /Maps/_Exodus/ShuttleEvent/nebula.yml # Exodus-Tweak
   - type: GameRuleRequirements # Exodus
     requirements:
     - !type:JobGameRuleRequirement
       department: Combatant
-      minDepartmentPlayers: 7
+      minDepartmentPlayers: 5
 
 - type: entity
   parent: BaseRandomShuttleRule
