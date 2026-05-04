@@ -175,3 +175,8 @@
     minPlayers: 16
   - type: LoadMapRule
     gridPath: /Maps/_Exodus/ShuttleEvent/omen.yml
+  - type: GameRuleRequirements # Exodus
+    requirements:
+    - !type:JobGameRuleRequirement
+      department: Combatant
+      minDepartmentPlayers: 3
