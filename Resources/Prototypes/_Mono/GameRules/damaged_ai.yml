@@ -5,6 +5,7 @@
       - id: UnknownShuttleZenith
       - id: UnknownShuttleWyrm
       - id: UnknownShuttleNebula
+      - id: UnknownShuttleOmen # Exodus
 
 - type: entityTable
   id: DamagedAIShipsTableT2
@@ -158,3 +159,19 @@
     - !type:JobGameRuleRequirement
       department: Combatant
       minDepartmentPlayers: 7
+
+# Exodus
+- type: entity
+  parent: BaseRandomShuttleRule
+  id: UnknownShuttleOmen
+  components:
+  - type: StationEvent
+    startAnnouncement: station-event-ai-shuttle-detected
+    startAudio:
+      path: /Audio/Misc/notice1.ogg
+    weight: 3
+    maxOccurrences: 2
+  - type: GameRule
+    minPlayers: 16
+  - type: LoadMapRule
+    gridPath: /Maps/_Exodus/ShuttleEvent/omen.yml
