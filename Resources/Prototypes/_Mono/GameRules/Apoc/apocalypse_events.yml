@@ -10,7 +10,7 @@
     - id: UnknownShuttleNebulaApoc
     - id: UnknownShuttleWyvernApoc
     - id: UnknownShuttleRazorNApoc
-    - id: UnknownShuttleOmenApoc # Exodus
+    - id: UnknownShuttleMantarayApoc # Exodus
 
 - type: entity
   parent: BaseRandomShuttleRule
@@ -135,20 +135,20 @@
 # Exodus
 - type: entity
   parent: BaseRandomShuttleRule
-  id: UnknownShuttleOmenApoc
+  id: UnknownShuttleMantarayApoc
   components:
   - type: StationEvent
-    startAnnouncement: station-event-ai-shuttle-detected
+    startAnnouncement: station-event-ai-destroyer-detected
     startAudio:
       path: /Audio/Misc/notice1.ogg
     weight: 3
-    maxOccurrences: 2
+    maxOccurrences: 1
   - type: GameRule
-    minPlayers: 10
+    minPlayers: 26
   - type: LoadMapRule
-    gridPath: /Maps/_Exodus/ShuttleEvent/omen.yml
+    gridPath: /Maps/_Exodus/ShuttleEvent/mantaray.yml # Exodus
   - type: GameRuleRequirements # Exodus
     requirements:
     - !type:JobGameRuleRequirement
       department: Combatant
-      minDepartmentPlayers: 3
+      minDepartmentPlayers: 6
