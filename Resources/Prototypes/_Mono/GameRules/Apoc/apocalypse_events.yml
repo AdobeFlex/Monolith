@@ -11,11 +11,8 @@
     - id: UnknownShuttleWyvernApoc
     - id: UnknownShuttleRazorNApoc
     - id: UnknownShuttleMantarayApoc # Exodus
-<<<<<<< Crow
     - id: UnknownShuttleCrowApoc # Exodus
-=======
     - id: UnknownShuttleOmenApoc # Exodus
->>>>>>> master
 
 - type: entity
   parent: BaseRandomShuttleRule
@@ -161,28 +158,12 @@
 # Exodus
 - type: entity
   parent: BaseRandomShuttleRule
-<<<<<<< Crow
-  id: UnknownShuttleCrowApoc
-=======
   id: UnknownShuttleOmenApoc
->>>>>>> master
   components:
   - type: StationEvent
     startAnnouncement: station-event-ai-shuttle-detected
     startAudio:
       path: /Audio/Misc/notice1.ogg
-<<<<<<< Crow
-    weight: 5
-    maxOccurrences: 3
-  - type: GameRule
-    minPlayers: 32
-  - type: LoadMapRule
-    gridPath: /Maps/_Exodus/ShuttleEvent/crow.yml # Exodus
-    requirements:
-    - !type:JobGameRuleRequirement
-      department: Combatant
-      minDepartmentPlayers: 6
-=======
     weight: 3
     maxOccurrences: 2
   - type: GameRule
@@ -194,4 +175,24 @@
     - !type:JobGameRuleRequirement
       department: Combatant
       minDepartmentPlayers: 2
->>>>>>> master
+
+# Exodus
+- type: entity
+  parent: BaseRandomShuttleRule
+  id: UnknownShuttleCrowApoc
+  components:
+  - type: StationEvent
+    startAnnouncement: station-event-ai-shuttle-detected
+    startAudio:
+      path: /Audio/Misc/notice1.ogg
+    weight: 5
+    maxOccurrences: 3
+  - type: GameRule
+    minPlayers: 28
+  - type: LoadMapRule
+    gridPath: /Maps/_Exodus/ShuttleEvent/crow.yml # Exodus
+  - type: GameRuleRequirements # Exodus
+    requirements:
+    - !type:JobGameRuleRequirement
+      department: Combatant
+      minDepartmentPlayers: 6
