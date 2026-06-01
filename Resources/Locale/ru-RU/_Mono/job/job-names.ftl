@@ -16,5 +16,5 @@ JobTsfEngineer = Инженер КВП ТСФ
 job-name-tsf-borg = Борг КВП ТСФ
 JobTsfBorg = Борг КВП ТСФ
 # MARK: PDV
-job-name-pdv-borg = Борг ДФ
-JobPdvBorg = Борг ДФ
+job-name-pdv-borg = ДФ | Борг
+JobPdvBorg = ДФ | Борг
