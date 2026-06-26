@@ -74,7 +74,6 @@
         acts: [Destruction]
   - type: SoundOnTrigger
     sound: /Audio/_Mono/Weapons/Grenades/smoke_bomb.ogg
-  - type: DeleteOnTrigger
 
 - type: entity
   parent: FoamTrapArmedBase
