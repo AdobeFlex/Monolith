@@ -24,56 +24,22 @@
   - type: Sprite
     drawdepth: Items
     sprite: _Exodus/Structures/Traps/foam_trap.rsi
-    state: armed_aluminium
   - type: Damageable
     damageContainer: StructuralInorganic
     damageModifierSet: StructuralMetallic
-  - type: Destructible
-    thresholds:
-    - trigger:
-        !type:DamageTrigger
-        damage: 150
-      behaviors:
-      - !type:TriggerBehavior
-      - !type:DoActsBehavior
-        acts: [Destruction]
-  - type: SoundOnTrigger
-    sound: /Audio/_Mono/Weapons/Grenades/smoke_bomb.ogg
-  - type: DeleteOnTrigger
   - type: Transform
     anchored: true
   placement:
     mode: SnapgridCenter
 
 - type: entity
+  parent: FoamTrapBase
   id: FoamTrapAssembly
   name: foam trap assembly
   description: An incomplete foam trap frame. Insert a foam grenade to arm it.
   components:
-  - type: Clickable
-  - type: InteractionOutline
-  - type: Anchorable
-  - type: Physics
-    bodyType: Static
-    fixedRotation: true
-  - type: Fixtures
-    fixtures:
-      fix1:
-        shape:
-          !type:PhysShapeAabb
-          bounds: "-0.3,-0.3,0.3,0.3"
-        density: 60
-        mask:
-        - MachineMask
-        layer:
-        - MachineLayer
   - type: Sprite
-    drawdepth: Items
-    sprite: _Exodus/Structures/Traps/foam_trap.rsi
     state: assembly
-  - type: Damageable
-    damageContainer: StructuralInorganic
-    damageModifierSet: StructuralMetallic
   - type: Destructible
     thresholds:
     - trigger:
@@ -90,13 +56,28 @@
   - type: Construction
     graph: FoamTrap
     node: assembly
-  - type: Transform
-    anchored: true
-  placement:
-    mode: SnapgridCenter
 
 - type: entity
+  abstract: true
   parent: FoamTrapBase
+  id: FoamTrapArmedBase
+  name: foam trap
+  components:
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 150
+      behaviors:
+      - !type:TriggerBehavior
+      - !type:DoActsBehavior
+        acts: [Destruction]
+  - type: SoundOnTrigger
+    sound: /Audio/_Mono/Weapons/Grenades/smoke_bomb.ogg
+  - type: DeleteOnTrigger
+
+- type: entity
+  parent: FoamTrapArmedBase
   id: FoamTrapAluminium
   name: aluminium foam trap
   description: An armed trap loaded with an aluminium foam grenade. Releases foam when destroyed.
@@ -112,7 +93,7 @@
     node: trapAluminium
 
 - type: entity
-  parent: FoamTrapBase
+  parent: FoamTrapArmedBase
   id: FoamTrapNanolaminate
   name: nanolaminate foam trap
   description: An armed trap loaded with a nanolaminate foam grenade. Releases reinforced foam when destroyed.
@@ -128,7 +109,7 @@
     node: trapNanolaminate
 
 - type: entity
-  parent: FoamTrapBase
+  parent: FoamTrapArmedBase
   id: FoamTrapIron
   name: iron foam trap
   description: An armed trap loaded with an iron foam grenade. Releases iron foam when destroyed.
