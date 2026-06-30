@@ -1,0 +1,39 @@
+# TYPHON 255mm — single-barrel salvo autocannon based on Bofors
+
+- type: entity
+  id: WeaponTurretTyphon
+  name: TYPHON 255mm autocannon
+  parent: WeaponTurretBofors
+  suffix: Large, T4
+  description: A single-barrel 255mm autocannon that rips off four-round salvos before cycling for the next burst. Can be remotely activated or linked up to a GCS.
+  components:
+  - type: Sprite
+    sprite: _Exodus/Objects/ShuttleWeapons/typhon.rsi
+    layers:
+    - state: space_artillery
+    scale: 1, 1
+  - type: Gun
+    projectileSpeed: 350
+    minAngle: 0
+    maxAngle: 1
+    fireRate: 0.1
+    recoil: 75
+    burstCooldown: 10
+    burstFireRate: 2
+    shotsPerBurst: 4
+    selectedMode: Burst
+    availableModes: Burst
+    shootThermalSignature: 80000000
+    soundGunshot:
+      path: /Audio/_Mono/Weapons/Guns/Gunshots/cannon.ogg
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/lmg_empty.ogg
+  - type: BallisticAmmoProvider
+    infiniteUnspawned: true
+    whitelist:
+      tags:
+      - 255mmCartridge
+    capacity: 16
+    proto: 255mmCartridgeAPHE
+    soundInsert:
+      path: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
