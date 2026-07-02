@@ -39,8 +39,12 @@ public partial class ShipShieldsSystem
         UnshieldEntity(parent.Value, null);
     }
 
-    private void OnShieldDeflected(EntityUid uid, ShipShieldEmitterComponent component, ShieldDeflectedEvent args)
+    private void OnShieldDeflected(EntityUid uid, ShipShieldEmitterComponent component, ref ShieldDeflectedEvent args)
     {
+        // Exodus-specialized-shields
+        if (args.Handled)
+            return;
+
         if (TryComp<EmpOnTriggerComponent>(args.Deflected, out var emp))
         {
             component.Damage += Math.Clamp(emp.EnergyConsumption, 0f, MAX_EMP_DAMAGE);

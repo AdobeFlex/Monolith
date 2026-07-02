@@ -79,3 +79,171 @@
     toolWhitelist:
       tags:
       - ADSRepairTool
+
+- type: entity
+  id: ShieldGeneratorMS1000
+  parent: ShieldGeneratorBase
+  name: MS-1000 "Echo" Shield Generator
+  description: An experimental harmonic deflector that throws most kinetic fire back at the attacker. EMP and explosive payloads are still absorbed whole.
+  suffix: ADS ONLY
+  components:
+  - type: ShipShieldEmitter
+    damageLimit: 85000
+    healPerSecond: 450
+    damageExp: 1.05
+    powerModifier: 0.5
+    baseDraw: 45000
+    maxDraw: 110000
+    unpoweredBonus: 5
+    damageOverloadTimePunishment: 35
+    shieldColor: "#33FFCC"
+    collisionResistanceMultiplier: 0.35
+  - type: ReflectiveShieldEmitter
+    reflectChance: 0.75
+    reflectDamageMultiplier: 0.35
+    spreadDegrees: 12
+  - type: Sprite
+    sprite: _Mono/Structures/ShuttleComponents/shield.rsi
+    snapCardinals: true
+    layers:
+    - state: control
+    - state: control_on
+      shader: unshaded
+      map: ["enum.PowerDeviceVisualLayers.Powered"]
+      visible: false
+      color: "#33FFCC"
+  - type: PointLight
+    enabled: false
+    castShadows: true
+    radius: 2
+    energy: 1.5
+    color: "#33FFCC"
+  - type: ApcPowerReceiver
+    powerLoad: 45000
+  - type: Machine
+    board: MachineShieldMS1000Circuitboard
+  - type: Construction
+    graph: Machine
+    node: machine
+    containers:
+    - machine_board
+    - machine_parts
+  - type: ShipRepairable
+    repairTime: 30
+    repairCost: 350
+  - type: ShipRepairableRestrict
+    toolWhitelist:
+      tags:
+      - ADSRepairTool
+
+- type: entity
+  id: ShieldGeneratorMS550
+  parent: ShieldGeneratorBase
+  name: MS-550 "Forward" Shield Generator
+  description: A directional deflector that only blocks incoming fire from the ship's forward arc. The rear hemisphere stays completely exposed.
+  suffix: ADS ONLY
+  components:
+  - type: ShipShieldEmitter
+    damageLimit: 95000
+    healPerSecond: 650
+    damageExp: 1.03
+    powerModifier: 0.5
+    baseDraw: 35000
+    maxDraw: 90000
+    unpoweredBonus: 5
+    damageOverloadTimePunishment: 50
+    shieldColor: "#FFAA00"
+    collisionResistanceMultiplier: 0.45
+  - type: DirectionalShieldEmitter
+    coverageArc: 180
+  - type: Sprite
+    sprite: _Mono/Structures/ShuttleComponents/shield.rsi
+    snapCardinals: true
+    layers:
+    - state: control
+    - state: control_on
+      shader: unshaded
+      map: ["enum.PowerDeviceVisualLayers.Powered"]
+      visible: false
+      color: "#FFAA00"
+  - type: PointLight
+    enabled: false
+    castShadows: true
+    radius: 2
+    energy: 1.5
+    color: "#FFAA00"
+  - type: ApcPowerReceiver
+    powerLoad: 35000
+  - type: Machine
+    board: MachineShieldMS550Circuitboard
+  - type: Construction
+    graph: Machine
+    node: machine
+    containers:
+    - machine_board
+    - machine_parts
+  - type: ShipRepairable
+    repairTime: 28
+    repairCost: 275
+  - type: ShipRepairableRestrict
+    toolWhitelist:
+      tags:
+      - ADSRepairTool
+
+- type: entity
+  id: ShieldGeneratorRS180
+  parent: ShieldGeneratorBase
+  name: RS-180 "Mirage" Shield Generator
+  description: A capacitor-driven screen that excels at absorbing bursts, then drops and recovers in seconds instead of sitting through a long overload lockout.
+  suffix: ADS ONLY
+  components:
+  - type: ShipShieldEmitter
+    damageLimit: 9999999
+    healPerSecond: 0
+    damageExp: 1
+    powerModifier: 0.00055
+    baseDraw: 22000
+    maxDraw: 500000
+    unpoweredBonus: 8
+    damageOverloadTimePunishment: 3
+    shieldColor: "#BB66FF"
+    collisionResistanceMultiplier: 0.55
+  - type: CapacitorShieldEmitter
+    maxCharge: 75000
+    rechargePerSecond: 7500
+    activeRechargePerSecond: 400
+    raiseThreshold: 0.2
+    maxDropPenalty: 3
+  - type: Sprite
+    sprite: _Mono/Structures/ShuttleComponents/shield.rsi
+    snapCardinals: true
+    layers:
+    - state: control
+    - state: control_on
+      shader: unshaded
+      map: ["enum.PowerDeviceVisualLayers.Powered"]
+      visible: false
+      color: "#BB66FF"
+  - type: PointLight
+    enabled: false
+    castShadows: true
+    radius: 2
+    energy: 1.5
+    color: "#BB66FF"
+  - type: ApcPowerReceiver
+    powerLoad: 22000
+  - type: Machine
+    board: MachineShieldRS180Circuitboard
+  - type: Construction
+    graph: Machine
+    node: machine
+    containers:
+    - machine_board
+    - machine_parts
+  - type: ShipRepairable
+    repairTime: 25
+    repairCost: 250
+  - type: ShipRepairableRestrict
+    toolWhitelist:
+      tags:
+      - ADSRepairTool

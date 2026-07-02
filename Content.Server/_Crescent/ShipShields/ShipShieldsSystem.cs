@@ -1,5 +1,6 @@
 using Content.Server.Power.Components;
 using Content.Shared._Crescent.ShipShields;
+using Content.Shared._Exodus.ShipShields; // Exodus-specialized-shields
 using Content.Shared._Mono.SpaceArtillery;
 using Content.Shared.Physics;
 using Content.Shared.Projectiles;
@@ -32,6 +33,7 @@ public sealed partial class ShipShieldsSystem : EntitySystem
     private EntityQuery<ProjectileComponent> _projectileQuery;
     private EntityQuery<ShipWeaponProjectileComponent> _shipWeaponProjectileQuery;
     private EntityQuery<ShipShieldedComponent> _shieldedQuery; // Exodus
+    private EntityQuery<CapacitorShieldEmitterComponent> _capacitorShieldQuery; // Exodus-specialized-shields
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
@@ -44,7 +46,10 @@ public sealed partial class ShipShieldsSystem : EntitySystem
             if (emitter.Accumulator < EmitterUpdateRate)
                 continue;
 
-            if (CalculateLoadDamage(emitter) >= emitter.MaxDraw)
+            // Exodus-specialized-shields: capacitor emitters manage their own stress model.
+            var isCapacitorShield = _capacitorShieldQuery.HasComp(uid);
+
+            if (!isCapacitorShield && CalculateLoadDamage(emitter) >= emitter.MaxDraw)
                 emitter.Recharging = true;
             if (!power.Powered)
                 emitter.Recharging = true;
@@ -55,18 +60,21 @@ public sealed partial class ShipShieldsSystem : EntitySystem
                 emitter.OverloadAccumulator -= EmitterUpdateRate;
             }
 
-            float healed = emitter.HealPerSecond * EmitterUpdateRate;
-
-            if (emitter.Recharging)
-                healed *= emitter.UnpoweredBonus;
-
-            emitter.Damage -= healed;
-
-            if (emitter.Damage < 0)
+            if (!isCapacitorShield)
             {
-                emitter.Damage = 0;
-                if (power.Powered)
-                    emitter.Recharging = false;
+                float healed = emitter.HealPerSecond * EmitterUpdateRate;
+
+                if (emitter.Recharging)
+                    healed *= emitter.UnpoweredBonus;
+
+                emitter.Damage -= healed;
+
+                if (emitter.Damage < 0)
+                {
+                    emitter.Damage = 0;
+                    if (power.Powered)
+                        emitter.Recharging = false;
+                }
             }
 
             AdjustEmitterLoad(uid, emitter, power);
@@ -78,7 +86,7 @@ public sealed partial class ShipShieldsSystem : EntitySystem
 
             var filter = _station.GetInOwningStation(uid);
 
-            if (emitter.Damage > emitter.DamageLimit)
+            if (!isCapacitorShield && emitter.Damage > emitter.DamageLimit)
                 emitter.OverloadAccumulator = emitter.DamageOverloadTimePunishment;
 
             // Exodus-shield-swap-fix-start: a ship's shield downtime is grid-wide. Don't raise a shield
@@ -140,6 +148,7 @@ public sealed partial class ShipShieldsSystem : EntitySystem
         _projectileQuery = GetEntityQuery<ProjectileComponent>();
         _shipWeaponProjectileQuery = GetEntityQuery<ShipWeaponProjectileComponent>();
         _shieldedQuery = GetEntityQuery<ShipShieldedComponent>(); // Exodus
+        _capacitorShieldQuery = GetEntityQuery<CapacitorShieldEmitterComponent>(); // Exodus-specialized-shields
 
         SubscribeLocalEvent<ShipShieldComponent, PreventCollideEvent>(OnPreventCollide);
         SubscribeLocalEvent<ShipShieldEmitterComponent, ComponentShutdown>(OnEmitterShutdown); // Mono
@@ -150,6 +159,10 @@ public sealed partial class ShipShieldsSystem : EntitySystem
 
     private void OnPreventCollide(EntityUid uid, ShipShieldComponent component, ref PreventCollideEvent args)
     {
+        // Exodus-directional-shield: another handler may already allow this projectile through.
+        if (args.Cancelled)
+            return;
+
         // only handle ship weapons for now. engine update introduced physics regressions. Let's polish everything else and circle back yeah?
         // Ensuring projectiles coming froms same grid don't hit shield is handled by ProjectileGridPhaseComponent
         if (!_shipWeaponProjectileQuery.HasComponent(args.OtherEntity) ||
@@ -321,6 +334,9 @@ public sealed partial class ShipShieldsSystem : EntitySystem
     [ByRefEvent]
     public record struct ShieldDeflectedEvent(EntityUid Deflected, ProjectileComponent Projectile)
     {
-
+        /// <summary>
+        /// Set by specialized emitters that fully handle the projectile themselves.
+        /// </summary>
+        public bool Handled;
     }
 }

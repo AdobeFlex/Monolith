@@ -1,0 +1,1 @@
+shield-emitter-capacitor-examine = Capacitor charge is at [color=cyan]{$percent}%[/color].

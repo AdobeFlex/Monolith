@@ -1,0 +1,1 @@
+shield-emitter-capacitor-examine = Заряд конденсатора: [color=cyan]{$percent}%[/color].
