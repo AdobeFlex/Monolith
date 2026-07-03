@@ -167,6 +167,7 @@
   components:
   - type: HumanoidAppearance
     species: Chitinid
+  # Exodus-begin: chitinid lower limb visual layers
   - type: Sprite
     layers:
     - map: [ "enum.HumanoidVisualLayers.Chest" ]
@@ -212,3 +213,4 @@
     - map: [ "helmetattachment" ]
     - map: [ "pocket1" ]
     - map: [ "pocket2" ]
+  # Exodus-end

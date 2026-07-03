@@ -34,6 +34,7 @@
   - type: BodyPart
     baseLayerId: MobChitinidLHand2
     visualLayerOverride: LHandExtension
+    inhandVisualOffset: 0, -0.125
     canSever: false
 
 - type: entity
@@ -46,4 +47,5 @@
   - type: BodyPart
     baseLayerId: MobChitinidRHand2
     visualLayerOverride: RHandExtension
+    inhandVisualOffset: 0, -0.125
     canSever: false

@@ -10,7 +10,7 @@
   maleFirstNames: NamesFelinidFirstMale # Exodus-felinid-names
   femaleFirstNames: NamesFelinidFirstFemale # Exodus-felinid-names
   lastNames: NamesFelinidLast # Exodus-felinid-names
-  naming: FirstLast
+  naming: FirstLast # Exodus-felinid-names
 
 - type: markingPoints
   id: MobFelinidMarkingLimits

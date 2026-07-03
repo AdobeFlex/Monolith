@@ -2,24 +2,28 @@
 
 - type: humanoidBaseSprite
   id: MobChitinidLArm2
+  offset: 0, -0.125
   baseSprite:
     sprite: _DV/Mobs/Species/Chitinid/parts.rsi
     state: l_arm
 
 - type: humanoidBaseSprite
   id: MobChitinidRArm2
+  offset: 0, -0.125
   baseSprite:
     sprite: _DV/Mobs/Species/Chitinid/parts.rsi
     state: r_arm
 
 - type: humanoidBaseSprite
   id: MobChitinidLHand2
+  offset: 0, -0.125
   baseSprite:
     sprite: _DV/Mobs/Species/Chitinid/parts.rsi
     state: l_hand
 
 - type: humanoidBaseSprite
   id: MobChitinidRHand2
+  offset: 0, -0.125
   baseSprite:
     sprite: _DV/Mobs/Species/Chitinid/parts.rsi
     state: r_hand
