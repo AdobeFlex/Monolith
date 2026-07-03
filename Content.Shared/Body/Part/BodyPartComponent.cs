@@ -1,5 +1,6 @@
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Systems;
+using Content.Shared.Humanoid; // Exodus: VisualLayerOverride
 using Robust.Shared.Containers;
 using Robust.Shared.GameStates;
 using Robust.Shared.Serialization;
@@ -159,6 +160,11 @@ public sealed partial class BodyPartComponent : Component, ISurgeryToolComponent
 
     [DataField, AutoNetworkedField, AlwaysPushInheritance]
     public BodyPartSymmetry Symmetry = BodyPartSymmetry.None;
+
+    // Exodus-begin: chitinid four arms — override default arm/hand visual layer mapping
+    [DataField, AutoNetworkedField]
+    public HumanoidVisualLayers? VisualLayerOverride;
+    // Exodus-end
 
     /// <summary>
     ///     When attached, the part will ensure these components on the entity, and delete them on removal.
