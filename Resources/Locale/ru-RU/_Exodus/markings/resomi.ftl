@@ -112,9 +112,9 @@ marking-ResomiLShoulderFade = Затенение левого плеча
 marking-ResomiRShoulderFade-r_shoulder_fade = Затенение правого плеча
 marking-ResomiRShoulderFade = Затенение правого плеча
 marking-ResomiLArmCoat = Оперение левой руки
-marking-ResomiLArmCoat-l_leg_coat = Оперение левой руки
+marking-ResomiLArmCoat-l_arm_coat = Оперение левой руки
 marking-ResomiRArmCoat = Оперение правой руки
-marking-ResomiRArmCoat-r_leg_coat = Оперение правой руки
+marking-ResomiRArmCoat-r_arm_coat = Оперение правой руки
 
 marking-ResomiTail = Хвост резоми
 marking-ResomiTail-tail = Хвост резоми
