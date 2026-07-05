@@ -371,15 +371,15 @@ namespace Content.Client.Hands.Systems
 
                 if (!revealedLayers.Add(handKey))
                 {
-                    Log.Warning($"Duplicate key for in-hand visuals: {handKey}. Are multiple components attempting to modify the same layer? Entity: {ToPrettyString(held)}");
+                    Log.Warning($"Duplicate key for in-hand visuals: {handKey}. Are multiple components attempting to modify the same layer? Entity: {ToPrettyString(held)}"); // Exodus key to handKey
                     continue;
                 }
 
-                var index = _sprite.LayerMapReserve((uid, sprite), handKey);
+                var index = _sprite.LayerMapReserve((uid, sprite), handKey); // Exodus key to handKey
 
                 // In case no RSI is given, use the item's base RSI as a default. This cuts down on a lot of unnecessary yaml entries.
-                if (handLayerData.RsiPath == null
-                    && handLayerData.TexturePath == null
+                if (handLayerData.RsiPath == null // Exodus layerData to handLayerData
+                    && handLayerData.TexturePath == null // Exodus layerData to handLayerData
                     && sprite[index].Rsi == null)
                 {
                     if (TryComp<ItemComponent>(held, out var itemComponent) && itemComponent.RsiPath != null)
@@ -388,16 +388,16 @@ namespace Content.Client.Hands.Systems
                         _sprite.LayerSetRsi((uid, sprite), index, clothingSprite.BaseRSI);
                 }
 
-                _sprite.LayerSetData((uid, sprite), index, handLayerData);
+                _sprite.LayerSetData((uid, sprite), index, handLayerData); // Exodus layerData to handLayerData
 
                 //Add displacement maps
                 if (hand.Location == HandLocation.Left && handComp.LeftHandDisplacement is not null)
-                    _displacement.TryAddDisplacement(handComp.LeftHandDisplacement, sprite, index, handKey, revealedLayers);
+                    _displacement.TryAddDisplacement(handComp.LeftHandDisplacement, sprite, index, handKey, revealedLayers); // Exodus key to handKey
                 else if (hand.Location == HandLocation.Right && handComp.RightHandDisplacement is not null)
-                    _displacement.TryAddDisplacement(handComp.RightHandDisplacement, sprite, index, handKey, revealedLayers);
+                    _displacement.TryAddDisplacement(handComp.RightHandDisplacement, sprite, index, handKey, revealedLayers); // Exodus key to handKey
                 //Fallback to default displacement map
                 else if (handComp.HandDisplacement is not null)
-                    _displacement.TryAddDisplacement(handComp.HandDisplacement, sprite, index, handKey, revealedLayers);
+                    _displacement.TryAddDisplacement(handComp.HandDisplacement, sprite, index, handKey, revealedLayers); // Exodus key to handKey
             }
 
             RaiseLocalEvent(held, new HeldVisualsUpdatedEvent(uid, revealedLayers), true);
