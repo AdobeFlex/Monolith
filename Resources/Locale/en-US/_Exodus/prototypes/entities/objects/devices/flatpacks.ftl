@@ -6,4 +6,4 @@ ent-GeneratorASRGDamagedFlatpack = ASRG generator flatpack
 ent-WeaponTurretFlareFlatpack = GS-002 flare system flatpack
     .desc = A flatpack used for constructing a GS-002 Sunny flare system.
 ent-WeaponTurretTyphonFlatpack = TYPHON autocannon flatpack
-    .desc = A flatpack used for constructing a TYPHON 255mm autocannon.
+    .desc = A flatpack used for constructing a TYPHON 220mm autocannon.

@@ -1,11 +1,11 @@
-# TYPHON 255mm — single-barrel salvo autocannon based on Bofors
+# TYPHON 220mm — single-barrel salvo autocannon, fires Cyrexa shells
 
 - type: entity
   id: WeaponTurretTyphon
-  name: TYPHON 255mm autocannon
+  name: TYPHON 220mm autocannon
   parent: WeaponTurretBofors
   suffix: Large, T4
-  description: A single-barrel 255mm autocannon that rips off three-round salvos before cycling for the next burst. Can be remotely activated or linked up to a GCS.
+  description: A single-barrel 220mm autocannon that rips off three-round salvos before cycling for the next burst. Fires 220mm auto shells with slightly reduced brute strength. Can be remotely activated or linked up to a GCS.
   components:
   - type: Anchorable
     delay: 10
@@ -41,9 +41,9 @@
     infiniteUnspawned: true
     whitelist:
       tags:
-      - 255mmCartridge
+      - 220mmCartridge
     capacity: 16
-    proto: 255mmCartridgeAPHE
+    proto: 220mmCartridgeAPHE
     soundInsert:
       path: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
   - type: ShipGunClass

@@ -4,7 +4,7 @@ uplink-pdv-flare-flatpack-name = упакованная ГС-ОО2 Вспышк�
 uplink-pdv-flare-flatpack-desc = Упаковка, при помощи которой можно создать ГС-ОО2 Вспышку.
 
 uplink-pdv-typhon-flatpack-name = упакованный Тифон
-uplink-pdv-typhon-flatpack-desc = Упаковка, при помощи которой можно создать 255-мм автопушку «Тифон».
+uplink-pdv-typhon-flatpack-desc = Упаковка, при помощи которой можно создать 220-мм автопушку «Тифон».
 
 # MARK: Vouchers
 
