@@ -1,11 +1,11 @@
-# TYPHON 220mm — single-barrel salvo autocannon, fires SAPHE shells
+# TYPHON 220mm — single-barrel autocannon, fires SAPHE shells
 
 - type: entity
   id: WeaponTurretTyphon
   name: TYPHON 220mm autocannon
   parent: WeaponTurretCyrexa
   suffix: Large, T4
-  description: A single-barrel 220mm autocannon that rips off three-round salvos before cycling for the next burst. Fires 220mm auto shells with slightly reduced brute strength. Can be remotely activated or linked up to a GCS.
+  description: A single-barrel 220mm autocannon for sustained automatic fire. Fires 220mm auto shells with slightly reduced brute strength. Can be remotely activated or linked up to a GCS.
   components:
   - type: Anchorable
     delay: 10
@@ -25,13 +25,11 @@
     projectileSpeed: 320
     minAngle: 0
     maxAngle: 4
-    fireRate: 0.15
+    fireRate: 0.25
     recoil: 60
-    burstCooldown: 13
-    burstFireRate: 2
-    shotsPerBurst: 3
-    selectedMode: Burst
-    availableModes: Burst
+    selectedMode: FullAuto
+    availableModes:
+    - FullAuto
     shootThermalSignature: 65000000
     soundGunshot:
       path: /Audio/_Mono/Weapons/Guns/Gunshots/cannon.ogg
