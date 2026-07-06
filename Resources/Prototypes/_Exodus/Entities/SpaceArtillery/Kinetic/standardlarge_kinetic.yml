@@ -5,8 +5,17 @@
   name: TYPHON 255mm autocannon
   parent: WeaponTurretBofors
   suffix: Large, T4
-  description: A single-barrel 255mm autocannon that rips off four-round salvos before cycling for the next burst. Can be remotely activated or linked up to a GCS.
+  description: A single-barrel 255mm autocannon that rips off three-round salvos before cycling for the next burst. Can be remotely activated or linked up to a GCS.
   components:
+  - type: Anchorable
+    delay: 10
+  - type: Rotatable
+    rotateWhilePulling: false
+    rotateWhileAnchored: false
+    increment: 90
+  - type: Pullable
+  - type: PirateBountyItem
+    id: ShipWeapon
   - type: Sprite
     sprite: _Exodus/Objects/ShuttleWeapons/typhon.rsi
     layers:
@@ -20,7 +29,7 @@
     recoil: 75
     burstCooldown: 10
     burstFireRate: 2
-    shotsPerBurst: 4
+    shotsPerBurst: 3
     selectedMode: Burst
     availableModes: Burst
     shootThermalSignature: 80000000
@@ -37,3 +46,5 @@
     proto: 255mmCartridgeAPHE
     soundInsert:
       path: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+  - type: ShipGunClass
+    shipClass: Heavy
