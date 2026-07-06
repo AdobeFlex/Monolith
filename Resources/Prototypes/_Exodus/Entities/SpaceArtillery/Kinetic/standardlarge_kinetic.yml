@@ -1,9 +1,9 @@
-# TYPHON 220mm — single-barrel salvo autocannon, fires Cyrexa shells
+# TYPHON 220mm — single-barrel salvo autocannon, fires SAPHE shells
 
 - type: entity
   id: WeaponTurretTyphon
   name: TYPHON 220mm autocannon
-  parent: WeaponTurretBofors
+  parent: WeaponTurretCyrexa
   suffix: Large, T4
   description: A single-barrel 220mm autocannon that rips off three-round salvos before cycling for the next burst. Fires 220mm auto shells with slightly reduced brute strength. Can be remotely activated or linked up to a GCS.
   components:
@@ -22,28 +22,32 @@
     - state: space_artillery
     scale: 1, 1
   - type: Gun
-    projectileSpeed: 350
+    projectileSpeed: 320
     minAngle: 0
-    maxAngle: 1
-    fireRate: 0.1
-    recoil: 75
-    burstCooldown: 10
+    maxAngle: 4
+    fireRate: 0.15
+    recoil: 60
+    burstCooldown: 13
     burstFireRate: 2
     shotsPerBurst: 3
     selectedMode: Burst
     availableModes: Burst
-    shootThermalSignature: 80000000
+    shootThermalSignature: 65000000
     soundGunshot:
       path: /Audio/_Mono/Weapons/Guns/Gunshots/cannon.ogg
     soundEmpty:
       path: /Audio/Weapons/Guns/Empty/lmg_empty.ogg
+  - type: SpaceArtillery
+    powerChargeRate: 12000
+    powerUsePassive: 1800
+    powerUseActive: 0
   - type: BallisticAmmoProvider
     infiniteUnspawned: true
     whitelist:
       tags:
       - 220mmCartridge
-    capacity: 16
-    proto: 220mmCartridgeAPHE
+    capacity: 14
+    proto: 220mmCartridgeSAPHE
     soundInsert:
       path: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
   - type: ShipGunClass
