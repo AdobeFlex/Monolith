@@ -117,7 +117,14 @@ public sealed partial class EscapeInventorySystem : EntitySystem
 
         if (TryComp<BeingCarriedComponent>(uid, out var carried)) // Start of carrying system of nyanotrasen.
         {
-            _carryingSystem.DropCarried(carried.Carrier, uid);
+            // Exodus-begin: multi-carry
+            if (carried.Carrier.IsValid() && !TerminatingOrDeleted(carried.Carrier))
+                _carryingSystem.DropCarried(carried.Carrier, uid);
+            else
+                _carryingSystem.CleanupCarriedVictim(uid);
+
+            args.Handled = true;
+            // Exodus-end
             return;
         } // End of carrying system of nyanotrasen.
 
