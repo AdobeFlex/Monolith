@@ -131,12 +131,13 @@ namespace Content.Server.Carrying
         /// <summary>
         /// Since the carried entity is stored as virtual items per <see cref="CarriableComponent.FreeHandsRequired"/>, when deleted we want to drop them.
         /// </summary>
-        private void OnVirtualItemDeleted(EntityUid uid, CarryingComponent component, VirtualItemDeletedEvent args)
+        private void OnVirtualItemDeleted(Entity<CarryingComponent> ent, ref VirtualItemDeletedEvent args)
         {
-            if (!HasComp<CarriableComponent>(args.BlockingEntity))
+            if (!HasComp<CarriableComponent>(args.BlockingEntity)
+                || !ent.Comp.Carried.Contains(args.BlockingEntity))
                 return;
 
-            DropCarried(uid, args.BlockingEntity);
+            DropCarried(ent, args.BlockingEntity);
         }
 
         /// <summary>
@@ -345,17 +346,18 @@ namespace Content.Server.Carrying
             if (!carrier.IsValid() || TerminatingOrDeleted(carrier))
                 return;
 
-            _virtualItemSystem.DeleteInHandsMatching(carrier, carried);
-
             if (!TryComp<CarryingComponent>(carrier, out var carrying))
             {
                 _movementSpeed.RefreshMovementSpeedModifiers(carrier);
-                return;
+            }
+            else
+            {
+                carrying.Carried.Remove(carried);
+                PruneCarried((carrier, carrying));
+                FinalizeCarryingState((carrier, carrying));
             }
 
-            carrying.Carried.Remove(carried);
-            PruneCarried((carrier, carrying));
-            FinalizeCarryingState((carrier, carrying));
+            _virtualItemSystem.DeleteInHandsMatching(carrier, carried);
         }
 
         /// <summary>
