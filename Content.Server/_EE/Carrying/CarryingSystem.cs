@@ -368,11 +368,14 @@ namespace Content.Server.Carrying
             if (!carried.IsValid() || TerminatingOrDeleted(carried))
                 return;
 
-            RemCompDeferred<BeingCarriedComponent>(carried);
-            RemCompDeferred<KnockedDownComponent>(carried);
+            // Exodus: remove immediately so that StandAttempt / UpdateCanMove see the blockers gone.
+            // Deferred removal left BeingCarried/KnockedDown active during re-enable, causing permanent no-move after drop.
+            RemComp<BeingCarriedComponent>(carried);
+            RemComp<KnockedDownComponent>(carried);
+
             _actionBlockerSystem.UpdateCanMove(carried);
             _transform.AttachToGridOrMap(carried);
-            _standingState.Stand(carried);
+            _standingState.Stand(carried, force: true);
 
             if (TryComp<CanEscapeInventoryComponent>(carried, out var escape) && escape.DoAfter != null)
                 _doAfterSystem.Cancel(escape.DoAfter);
