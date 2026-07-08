@@ -110,10 +110,12 @@ public sealed partial class EscapeInventorySystem : EntitySystem
     {
         component.DoAfter = null;
 
+        // Exodus-begin: always clear the cancel action when the escape do-after ends, even on cancellation.
+        RemoveCancelAction(uid, component); // Frontier
+        // Exodus-end
+
         if (args.Handled || args.Cancelled)
             return;
-
-        RemoveCancelAction(uid, component); // Frontier
 
         if (TryComp<BeingCarriedComponent>(uid, out var carried)) // Start of carrying system of nyanotrasen.
         {
