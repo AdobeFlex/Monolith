@@ -103,7 +103,7 @@
     thresholds:
       0: Alive
       90: Critical
-      180: Dead
+      170: Dead
   - type: PseudoItem # Baggable; certified smol ops
     storedOffset: -10,0
     shape:
