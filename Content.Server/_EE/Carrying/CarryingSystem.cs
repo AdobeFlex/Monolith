@@ -472,7 +472,7 @@ namespace Content.Server.Carrying
 
         private void PruneCarried(Entity<CarryingComponent> carrying)
         {
-            carrying.Comp.Carried.RemoveWhere(TerminatingOrDeleted);
+            carrying.Comp.Carried.RemoveWhere(uid => TerminatingOrDeleted(uid));
 
             if (carrying.Comp.Carried.Count != 0)
                 return;
