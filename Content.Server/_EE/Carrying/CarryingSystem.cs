@@ -54,7 +54,6 @@ namespace Content.Server.Carrying
         [Dependency] private TransformSystem _transform = default!;
 
         private readonly List<(EntityUid Carrier, EntityUid Carried)> _pendingDrops = new(); // Exodus multi-carry
-        private readonly List<EntityUid> _pruneBuffer = new(); // Exodus multi-carry
 
         public const float BaseDistanceCoeff = 0.5f; // Frontier: default throwing speed reduction
         public const float MaxDistanceCoeff = 1.0f; // Frontier: default throwing speed reduction
@@ -181,14 +180,9 @@ namespace Content.Server.Carrying
 
         private void OnCarrierTerminating(Entity<CarryingComponent> ent, ref Robust.Shared.GameObjects.EntityTerminatingEvent args)
         {
-            _pruneBuffer.Clear();
+            var carriedList = new List<EntityUid>(ent.Comp.Carried);
 
-            foreach (var carried in ent.Comp.Carried)
-            {
-                _pruneBuffer.Add(carried);
-            }
-
-            foreach (var carried in _pruneBuffer)
+            foreach (var carried in carriedList)
             {
                 CleanupCarriedVictim(carried);
             }
@@ -267,14 +261,14 @@ namespace Content.Server.Carrying
         }
         // Exodus-end
 
-        private void OnDoAfter(EntityUid uid, CarriableComponent component, CarryDoAfterEvent args)
+        private void OnDoAfter(Entity<CarriableComponent> ent, ref CarryDoAfterEvent args) // Exodus: modern event signature
         {
-            component.CancelToken = null;
+            ent.Comp.CancelToken = null;
             if (args.Handled || args.Cancelled
-                || !CanCarry(args.Args.User, uid, component))
+                || !CanCarry(args.Args.User, ent.Owner, ent.Comp))
                 return;
 
-            if (Carry(args.Args.User, (uid, component))) // Exodus multi-carry
+            if (Carry(args.Args.User, ent)) // Exodus multi-carry
                 args.Handled = true;
         }
 
@@ -376,7 +370,7 @@ namespace Content.Server.Carrying
         /// </summary>
         public void CleanupCarriedVictim(EntityUid carried)
         {
-            if (!carried.IsValid() || TerminatingOrDeleted(carried))
+            if (TerminatingOrDeleted(carried))
                 return;
 
             // Exodus: remove immediately so that StandAttempt / UpdateCanMove see the blockers gone.
@@ -394,7 +388,7 @@ namespace Content.Server.Carrying
 
         private void RemoveCarriedFromCarrier(EntityUid carrier, EntityUid carried)
         {
-            if (!carrier.IsValid() || TerminatingOrDeleted(carrier))
+            if (TerminatingOrDeleted(carrier))
                 return;
 
             if (!TryComp<CarryingComponent>(carrier, out var carrying))
@@ -478,16 +472,14 @@ namespace Content.Server.Carrying
 
         private void PruneCarried(Entity<CarryingComponent> carrying)
         {
-            _pruneBuffer.Clear();
+            carrying.Comp.Carried.RemoveWhere(TerminatingOrDeleted);
 
-            foreach (var uid in carrying.Comp.Carried)
-            {
-                if (!uid.IsValid() || TerminatingOrDeleted(uid))
-                    _pruneBuffer.Add(uid);
-            }
+            if (carrying.Comp.Carried.Count != 0)
+                return;
 
-            foreach (var uid in _pruneBuffer)
-                carrying.Comp.Carried.Remove(uid);
+            RemCompDeferred<CarryingComponent>(carrying);
+            RemComp<CarryingSlowdownComponent>(carrying);
+            _movementSpeed.RefreshMovementSpeedModifiers(carrying.Owner);
         }
 
         private void FinalizeCarryingState(Entity<CarryingComponent> carrying)
@@ -555,7 +547,7 @@ namespace Content.Server.Carrying
                     continue;
 
                 // Exodus-begin: multi-carry
-                if (carrier is not { Valid: true } || TerminatingOrDeleted(carrier))
+                if (TerminatingOrDeleted(carrier))
                 {
                     _pendingDrops.Add((EntityUid.Invalid, carried));
                     continue;
