@@ -69,6 +69,7 @@ namespace Content.Server.Carrying
             SubscribeLocalEvent<CarryingComponent, BeforeThrowEvent>(OnThrow);
             SubscribeLocalEvent<CarryingComponent, EntParentChangedMessage>(OnParentChanged); // Exodus multi-carry
             SubscribeLocalEvent<CarryingComponent, MobStateChangedEvent>(OnMobStateChanged); // Exodus multi-carry
+            SubscribeLocalEvent<CarryingComponent, Robust.Shared.GameObjects.EntityTerminatingEvent>(OnCarrierTerminating); // Exodus multi-carry cleanup
             SubscribeLocalEvent<BeingCarriedComponent, InteractionAttemptEvent>(OnInteractionAttempt);
             SubscribeLocalEvent<BeingCarriedComponent, MoveInputEvent>(OnMoveInput);
             SubscribeLocalEvent<BeingCarriedComponent, UpdateCanMoveEvent>(OnMoveAttempt);
@@ -80,6 +81,7 @@ namespace Content.Server.Carrying
             SubscribeLocalEvent<BeingCarriedComponent, UnbuckledEvent>(OnBuckleChange);
             SubscribeLocalEvent<BeingCarriedComponent, StrappedEvent>(OnBuckleChange);
             SubscribeLocalEvent<BeingCarriedComponent, UnstrappedEvent>(OnBuckleChange);
+            SubscribeLocalEvent<BeingCarriedComponent, Robust.Shared.GameObjects.EntityTerminatingEvent>(OnCarriedTerminating); // Exodus multi-carry cleanup
             SubscribeLocalEvent<CarriableComponent, CarryDoAfterEvent>(OnDoAfter);
         }
 
@@ -176,6 +178,23 @@ namespace Content.Server.Carrying
         {
             DropAllCarried(ent);
         }
+
+        private void OnCarrierTerminating(Entity<CarryingComponent> ent, ref Robust.Shared.GameObjects.EntityTerminatingEvent args)
+        {
+            _pruneBuffer.Clear();
+
+            foreach (var carried in ent.Comp.Carried)
+            {
+                _pruneBuffer.Add(carried);
+            }
+
+            foreach (var carried in _pruneBuffer)
+            {
+                CleanupCarriedVictim(carried);
+            }
+
+            ent.Comp.Carried.Clear();
+        }
         // Exodus-end
 
         /// <summary>
@@ -240,6 +259,13 @@ namespace Content.Server.Carrying
         {
             DropCarried(component.Carrier, uid);
         }
+
+        // Exodus-begin: multi-carry cleanup
+        private void OnCarriedTerminating(Entity<BeingCarriedComponent> ent, ref Robust.Shared.GameObjects.EntityTerminatingEvent args)
+        {
+            RemoveCarriedFromCarrier(ent.Comp.Carrier, ent.Owner);
+        }
+        // Exodus-end
 
         private void OnDoAfter(EntityUid uid, CarriableComponent component, CarryDoAfterEvent args)
         {
@@ -342,22 +368,7 @@ namespace Content.Server.Carrying
         public void DropCarried(EntityUid carrier, EntityUid carried)
         {
             CleanupCarriedVictim(carried);
-
-            if (!carrier.IsValid() || TerminatingOrDeleted(carrier))
-                return;
-
-            if (!TryComp<CarryingComponent>(carrier, out var carrying))
-            {
-                _movementSpeed.RefreshMovementSpeedModifiers(carrier);
-            }
-            else
-            {
-                carrying.Carried.Remove(carried);
-                PruneCarried((carrier, carrying));
-                FinalizeCarryingState((carrier, carrying));
-            }
-
-            _virtualItemSystem.DeleteInHandsMatching(carrier, carried);
+            RemoveCarriedFromCarrier(carrier, carried);
         }
 
         /// <summary>
@@ -375,10 +386,29 @@ namespace Content.Server.Carrying
 
             _actionBlockerSystem.UpdateCanMove(carried);
             _transform.AttachToGridOrMap(carried);
-            _standingState.Stand(carried, force: true);
+            _standingState.Stand(carried);
 
             if (TryComp<CanEscapeInventoryComponent>(carried, out var escape) && escape.DoAfter != null)
                 _doAfterSystem.Cancel(escape.DoAfter);
+        }
+
+        private void RemoveCarriedFromCarrier(EntityUid carrier, EntityUid carried)
+        {
+            if (!carrier.IsValid() || TerminatingOrDeleted(carrier))
+                return;
+
+            if (!TryComp<CarryingComponent>(carrier, out var carrying))
+            {
+                RemComp<CarryingSlowdownComponent>(carrier);
+                _movementSpeed.RefreshMovementSpeedModifiers(carrier);
+                _virtualItemSystem.DeleteInHandsMatching(carrier, carried);
+                return;
+            }
+
+            carrying.Carried.Remove(carried);
+            PruneCarried((carrier, carrying));
+            FinalizeCarryingState((carrier, carrying));
+            _virtualItemSystem.DeleteInHandsMatching(carrier, carried);
         }
 
         private void DropAllCarried(Entity<CarryingComponent> carrier)
