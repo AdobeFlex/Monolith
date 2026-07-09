@@ -110,7 +110,9 @@ namespace Content.Server.Carrying
             // If the person is carrying someone, and the carried person is a pseudo-item, and the target entity is a storage,
             // then add an action to insert the carried entity into the target
             var toInsert = args.Using;
+            // Exodus multi-carry: Using can be any free-hand item; only act on entities actually being carried.
             if (toInsert is not { Valid: true } || !args.CanAccess
+                || !component.Carried.Contains(toInsert.Value)
                 || !TryComp<PseudoItemComponent>(toInsert, out var pseudoItem)
                 || !TryComp<StorageComponent>(args.Target, out var storageComp)
                 || !_pseudoItem.CheckItemFits((toInsert.Value, pseudoItem), (args.Target, storageComp)))
@@ -147,8 +149,10 @@ namespace Content.Server.Carrying
         /// </summary>
         private void OnThrow(EntityUid uid, CarryingComponent component, ref BeforeThrowEvent args)
         {
+            // Exodus multi-carry: pull also creates virtual items for carriable entities; only remap throws for carried ones.
             if (!TryComp<VirtualItemComponent>(args.ItemUid, out var virtItem)
-                || !HasComp<CarriableComponent>(virtItem.BlockingEntity))
+                || !HasComp<CarriableComponent>(virtItem.BlockingEntity)
+                || !component.Carried.Contains(virtItem.BlockingEntity))
                 return;
 
             args.ItemUid = virtItem.BlockingEntity;
