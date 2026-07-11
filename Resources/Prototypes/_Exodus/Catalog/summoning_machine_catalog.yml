@@ -269,6 +269,16 @@
   - SummoningMachineTechnicalContour
 
 - type: listing
+  id: SummoningMachineRcdRecharging
+  name: summoning-machine-rcd-recharging-name
+  description: summoning-machine-rcd-recharging-desc
+  productEntity: RCDRecharging
+  cost:
+    Telecrystal: 1200
+  categories:
+  - SummoningMachineTechnicalContour
+
+- type: listing
   id: SummoningMachineAsakimAiCore
   name: summoning-machine-asakim-ai-core-name
   description: summoning-machine-asakim-ai-core-desc
