@@ -312,6 +312,17 @@
   categories:
   - SummoningMachineFieldReserve
 
+# 120 cost units = 2 minutes at 1 second per unit
+- type: listing
+  id: SummoningMachineBannerKhsira
+  name: summoning-machine-banner-khsira-name
+  description: summoning-machine-banner-khsira-desc
+  productEntity: BannerKhsira
+  cost:
+    Telecrystal: 120
+  categories:
+  - SummoningMachineFieldReserve
+
 - type: listing
   id: SummoningMachineBeaconWyrm
   name: summoning-machine-beacon-wyrm-name

@@ -99,4 +99,6 @@ summoning-machine-beacon-stratostar-name = Emergency beacon: Asakim Stratostar
 summoning-machine-beacon-stratostar-desc = A single-use beacon keyed to call the Stratostar. A heavy Asakim cruiser built for sustained sector operations.
 summoning-machine-beacon-kit-surplus-name = Sealed beacon allocation crate
 summoning-machine-beacon-kit-surplus-desc = A sealed pre-fracture allocation crate. Contains one random beacon pack. No inventory list, no refunds, no second chances.
+summoning-machine-banner-khsira-name = Khsira Empire banner
+summoning-machine-banner-khsira-desc = A banner bearing the emblem of the Khsira Empire. Anchor it on a station to claim territorial control.
 

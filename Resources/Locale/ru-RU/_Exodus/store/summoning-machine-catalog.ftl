@@ -99,4 +99,6 @@ summoning-machine-asakim-ai-core-name = Боевое ядро Кхси'Ра
 summoning-machine-asakim-ai-core-desc = Скручиваемое боевое ядро, настроенное под параметры наведения Автоматической Системы Защиты, уничтожает все враждебные цели.
 summoning-machine-beacon-kit-surplus-name = Ящик распределения маячков
 summoning-machine-beacon-kit-surplus-desc = Запечатанный ящик дораскольного распределения. Внутри — один случайный набор маячков. Состава нет, возврата нет, второй попытки нет.
+summoning-machine-banner-khsira-name = знамя Империи Кхси'Ра
+summoning-machine-banner-khsira-desc = Знамя с эмблемой Империи Кхси'Ра. Закрепите на станции, чтобы заявить контроль над территорией.
 

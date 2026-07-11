@@ -6,6 +6,11 @@ uplink-pdv-flare-flatpack-desc = Упаковка, при помощи кото�
 uplink-pdv-typhon-flatpack-name = упакованный Тифон
 uplink-pdv-typhon-flatpack-desc = Упаковка, при помощи которой можно создать 220-мм автопушку «Тифон».
 
+# MARK: Utility
+
+uplink-pdv-banner-name = знамя Династии Фаэтон
+uplink-pdv-banner-desc = Знамя с гербом Династии Фаэтон. Закрепите на станции, чтобы заявить контроль над территорией.
+
 # MARK: Vouchers
 
 uplink-pdv-t1-scorpion-voucher-name = ваучер Династии Фаэтон «Скорпион/Скарабей» [T1]
