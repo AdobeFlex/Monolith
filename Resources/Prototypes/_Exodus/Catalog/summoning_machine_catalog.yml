@@ -455,7 +455,7 @@
   description: summoning-machine-beacon-razor-n-desc
   productEntity: ADSShuttleEmergencyBeaconRazorN
   cost:
-    Telecrystal: 9000 # Exodus: 2h 30m summon duration (1 TC = 1s)
+    Telecrystal: 9000
   categories:
   - SummoningMachineEmergencyBeacons
   conditions:
@@ -533,14 +533,13 @@
     stock: 1
     shared: true
 
-# Gamble crate: one random fixed beacon pack (2h 30m)
 - type: listing
   id: SummoningMachineBeaconKitSurplus
   name: summoning-machine-beacon-kit-surplus-name
   description: summoning-machine-beacon-kit-surplus-desc
   productEntity: CrateAsakimBeaconKitSurplus
   cost:
-    Telecrystal: 9000 # Exodus: 2h 30m summon duration (1 TC = 1s)
+    Telecrystal: 9000
   categories:
   - SummoningMachineEmergencyBeacons
   conditions:
