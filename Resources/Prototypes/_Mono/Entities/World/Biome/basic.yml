@@ -250,5 +250,5 @@
       prob: 1
       orGroup: wreck
     - id: SpaceLeviathanSpawner # Exodus-SpaceWhale
-      prob: 1.5 # Exodus-nebula-update
+      prob: 0.3 # Exodus-nebula-update: lowered spawn weight (was 1.5)
       orGroup: wreck
