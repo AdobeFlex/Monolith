@@ -29,6 +29,10 @@ summoning-machine-jaws-of-life-name = Jaws of life
 summoning-machine-jaws-of-life-desc = A scientific-magical rebuttal to doors, plating, and anyone overly confident in hull integrity.
 summoning-machine-power-drill-name = Power drill
 summoning-machine-power-drill-desc = A simple powered hand drill. Fast, loud, and perfect for the moment a screwdriver stops being persuasive.
+summoning-machine-emag-name = Cryptographic sequencer
+summoning-machine-emag-desc = A limited EMAG. The classic all-in-one hacking tool with a finite charge count.
+summoning-machine-access-breaker-name = Modified access configurator
+summoning-machine-access-breaker-desc = A limited hacked access configurator. Forces airlocks open and erases access requirements from equipment.
 summoning-machine-combat-medkit-name = Combat medkit
 summoning-machine-combat-medkit-desc = For situations where "we'll get you to medbay later" has already stopped sounding credible.
 summoning-machine-compact-defibrillator-name = Compact defibrillator
@@ -93,3 +97,6 @@ summoning-machine-beacon-azimuth-name = Emergency beacon: Asakim Azimuth
 summoning-machine-beacon-azimuth-desc = A single-use beacon keyed to call the Azimuth. Cruiser-grade privilege at cruiser-grade cost.
 summoning-machine-beacon-stratostar-name = Emergency beacon: Asakim Stratostar
 summoning-machine-beacon-stratostar-desc = A single-use beacon keyed to call the Stratostar. A heavy Asakim cruiser built for sustained sector operations.
+summoning-machine-beacon-kit-surplus-name = Sealed beacon allocation crate
+summoning-machine-beacon-kit-surplus-desc = A sealed pre-fracture allocation crate. Contains one random beacon pack. No inventory list, no refunds, no second chances.
+

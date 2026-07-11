@@ -29,6 +29,10 @@ summoning-machine-jaws-of-life-name = Челюсти жизни
 summoning-machine-jaws-of-life-desc = Ответ на двери, обшивку и чужую уверенность в герметичности.
 summoning-machine-power-drill-name = Электродрель
 summoning-machine-power-drill-desc = Простая электродрель. Крутит быстро.
+summoning-machine-emag-name = Криптографический секвенсор
+summoning-machine-emag-desc = Ограниченный ЕМАГ. Универсальный хакерский инструмент с конечным числом зарядов.
+summoning-machine-access-breaker-name = Модифицированный конфигуратор доступа
+summoning-machine-access-breaker-desc = Ограниченный взломанный конфигуратор доступа. Открывает шлюзы и снимает требования доступа с оборудования.
 summoning-machine-combat-medkit-name = Боевая аптечка
 summoning-machine-combat-medkit-desc = Боевая аптечка. А что вы ещё хотели?
 summoning-machine-compact-defibrillator-name = Компактный дефибриллятор
@@ -93,3 +97,6 @@ summoning-machine-beacon-stratostar-name = Маячок: ВЭФ Стратост
 summoning-machine-beacon-stratostar-desc = Одноразовый маячок вызова Стратостар. Тяжёлый крейсер азакимов для длительных операций в секторе.
 summoning-machine-asakim-ai-core-name = Боевое ядро Кхси'Ра
 summoning-machine-asakim-ai-core-desc = Скручиваемое боевое ядро, настроенное под параметры наведения Автоматической Системы Защиты, уничтожает все враждебные цели.
+summoning-machine-beacon-kit-surplus-name = Ящик распределения маячков
+summoning-machine-beacon-kit-surplus-desc = Запечатанный ящик дораскольного распределения. Внутри — один случайный набор маячков. Состава нет, возврата нет, второй попытки нет.
+

@@ -119,6 +119,26 @@
   - SummoningMachineTechnicalContour
 
 - type: listing
+  id: SummoningMachineEmag
+  name: summoning-machine-emag-name
+  description: summoning-machine-emag-desc
+  productEntity: Emag
+  cost:
+    Telecrystal: 540
+  categories:
+  - SummoningMachineTechnicalContour
+
+- type: listing
+  id: SummoningMachineAccessBreaker
+  name: summoning-machine-access-breaker-name
+  description: summoning-machine-access-breaker-desc
+  productEntity: AccessBreaker
+  cost:
+    Telecrystal: 540
+  categories:
+  - SummoningMachineTechnicalContour
+
+- type: listing
   id: SummoningMachineCombatMedkit
   name: summoning-machine-combat-medkit-name
   description: summoning-machine-combat-medkit-desc
@@ -382,7 +402,7 @@
   description: summoning-machine-beacon-concord-x-desc
   productEntity: ADSShuttleEmergencyBeaconConcordX
   cost:
-    Telecrystal: 5400
+    Telecrystal: 6600
   categories:
   - SummoningMachineEmergencyBeacons
   conditions:
@@ -396,7 +416,7 @@
   description: summoning-machine-beacon-zenith-a-desc
   productEntity: ADSShuttleEmergencyBeaconZenithA
   cost:
-    Telecrystal: 6600
+    Telecrystal: 5700
   categories:
   - SummoningMachineEmergencyBeacons
   conditions:
@@ -424,7 +444,7 @@
   description: summoning-machine-beacon-razor-n-desc
   productEntity: ADSShuttleEmergencyBeaconRazorN
   cost:
-    Telecrystal: 10800
+    Telecrystal: 9000 # Exodus: 2h 30m summon duration (1 TC = 1s)
   categories:
   - SummoningMachineEmergencyBeacons
   conditions:
@@ -501,3 +521,19 @@
   - !type:ListingLimitedStockCondition
     stock: 1
     shared: true
+
+# Gamble crate: one random fixed beacon pack (2h 30m)
+- type: listing
+  id: SummoningMachineBeaconKitSurplus
+  name: summoning-machine-beacon-kit-surplus-name
+  description: summoning-machine-beacon-kit-surplus-desc
+  productEntity: CrateAsakimBeaconKitSurplus
+  cost:
+    Telecrystal: 9000 # Exodus: 2h 30m summon duration (1 TC = 1s)
+  categories:
+  - SummoningMachineEmergencyBeacons
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+    shared: true
+
