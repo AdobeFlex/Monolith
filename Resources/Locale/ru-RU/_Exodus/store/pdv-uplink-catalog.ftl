@@ -13,5 +13,5 @@ uplink-pdv-banner-desc = Знамя с гербом Династии Фаэто�
 
 # MARK: Vouchers
 
-uplink-pdv-t1-scorpion-voucher-name = ваучер Династии Фаэтон «Скорпион/Скарабей» [T1]
+uplink-pdv-t1-scorpion-voucher-name = ваучер ДФ «Скорпион/Скарабей» [T1]
 uplink-pdv-t1-scorpion-voucher-desc = Небольшая карта, позволяющая заказать со складов флагмана эскорт класса «Скорпион» или «Скарабей».
