@@ -455,7 +455,7 @@
   description: summoning-machine-beacon-razor-n-desc
   productEntity: ADSShuttleEmergencyBeaconRazorN
   cost:
-    Telecrystal: 9000
+    Telecrystal: 9600
   categories:
   - SummoningMachineEmergencyBeacons
   conditions:
