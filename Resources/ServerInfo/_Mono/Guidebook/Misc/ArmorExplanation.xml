@@ -1,7 +1,7 @@
 <Document>
   # Механики брони
 
-  ## Сопротивление коэффициентом
+  ## Коэффициент сопротивления
 
   <Box>
     <GuideEntityEmbed Entity="ClothingOuterHardsuitM82c"/>
