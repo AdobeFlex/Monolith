@@ -70,8 +70,8 @@
     <GuideEntityEmbed Entity="AirlockGlassShuttle"/>
   </Box>
 
-  ## Управление направлением
-  Когда форма готова, поставьте и установите двигатели по краям.
+  ## Направление полета
+  Когда форма готова, поставьте и установите ракетные двигатели по краям.
 
   <Box>
     <GuideEntityEmbed Entity="Thruster" Caption="" Rotation="0"/>
