@@ -10,3 +10,12 @@ uplink-pdv-typhon-flatpack-desc = A flatpack used for constructing a TYPHON 220m
 
 uplink-pdv-banner-name = Phaeton Dynasty banner
 uplink-pdv-banner-desc = A banner bearing the sigil of the Phaeton Dynasty. Anchor it on a station to claim territorial control.
+
+uplink-pirate-power-cell-high-name = High-Capacity Power Cell
+uplink-pirate-power-cell-high-desc = A rechargeable premium power cell. Stores 50% more energy than a standard medium cell — useful for weapons, tools, and equipment.
+
+uplink-pirate-toolbox-name = Toolbox
+uplink-pirate-toolbox-desc = A full set of tools: crowbar, wrench, screwdriver, wirecutters, welder, and multitool. Also includes combat gloves and a gas mask.
+
+uplink-pirate-gps-name = GPS
+uplink-pirate-gps-desc = A handheld GPS navigator. Displays your coordinates in the sector.
