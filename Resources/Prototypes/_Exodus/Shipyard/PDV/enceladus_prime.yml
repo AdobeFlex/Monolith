@@ -4,7 +4,7 @@
   id: EnceladusPrime
   parent: BaseVesselAntag
   name: Энцелад Прайм # Ru-Localization
-  description: Эсминец из семейства "Энцеладов": 220-мм «Тифон», 30-мм РАК-30, «Бофорс», «Товек» и система вспышек. Тяжёлый ударный эскорт Династии Фаэтон. # Ru-Localization
+  description: 'Эсминец из семейства "Энцеладов": 220-мм «Тифон», 30-мм РАК-30, «Бофорс», «Товек» и система вспышек. Тяжёлый ударный эскорт Династии Фаэтон.' # Ru-Localization
   price: 420000
   purchasable: false # voucher only
   category: Medium
