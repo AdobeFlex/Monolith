@@ -65,3 +65,23 @@
     whitelist:
       tags:
       - PirateUplink
+
+# MARK: Vouchers
+
+- type: listing
+  id: UplinkPdvVoucherEnceladusPrime
+  name: uplink-pdv-enceladus-prime-voucher-name
+  description: uplink-pdv-enceladus-prime-voucher-desc
+  productEntity: ShipVoucherEnceladusPrime
+  cost:
+    Doubloon: 400
+  categories:
+  - UplinkPdvVouchers
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - FactionStaticUplinkPdv
+  - !type:ListingLimitedStockCondition
+    stock: 3
+    shared: true

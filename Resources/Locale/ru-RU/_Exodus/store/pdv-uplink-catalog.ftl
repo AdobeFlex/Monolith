@@ -26,3 +26,6 @@ uplink-pdv-ship-armor-flatpack-desc = Упаковка с пассивным м�
 
 uplink-pdv-t1-scorpion-voucher-name = ваучер ДФ «Скорпион/Скарабей» [T1]
 uplink-pdv-t1-scorpion-voucher-desc = Небольшая карта, позволяющая заказать со складов флагмана эскорт класса «Скорпион» или «Скарабей».
+
+uplink-pdv-enceladus-prime-voucher-name = ваучер ДФ «Энцелад Прайм»
+uplink-pdv-enceladus-prime-voucher-desc = Небольшая карта, позволяющая заказать со складов флагмана тяжёлый эскорт класса «Энцелад Прайм».
