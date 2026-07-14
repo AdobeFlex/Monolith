@@ -19,6 +19,8 @@ uplink-pirate-toolbox-desc = Полный набор: лом, гаечный к�
 
 uplink-pirate-gps-name = GPS
 uplink-pirate-gps-desc = Ручной GPS-навигатор. Показывает ваши координаты в секторе.
+uplink-pdv-ship-armor-flatpack-name = упакованный модуль динамической защиты
+uplink-pdv-ship-armor-flatpack-desc = Упаковка с пассивным модулем динамической защиты, поглощающим урон вокруг себя.
 
 # MARK: Vouchers
 

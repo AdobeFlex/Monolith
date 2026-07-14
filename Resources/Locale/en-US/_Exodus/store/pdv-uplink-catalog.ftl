@@ -19,3 +19,5 @@ uplink-pirate-toolbox-desc = A full set of tools: crowbar, wrench, screwdriver, 
 
 uplink-pirate-gps-name = GPS
 uplink-pirate-gps-desc = A handheld GPS navigator. Displays your coordinates in the sector.
+uplink-pdv-ship-armor-flatpack-name = dynamic armor module flatpack
+uplink-pdv-ship-armor-flatpack-desc = A flatpack containing a passive dynamic armor module that absorbs damage around itself.
