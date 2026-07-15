@@ -193,11 +193,17 @@ public sealed class ShipArmorSystem : SharedShipArmorSystem
         if (!_gridArmorQuery.TryGetComponent(grid, out var gridArmor) || gridArmor.Buckets.Count == 0)
             return;
 
-        if (!_xformQuery.TryGetComponent(grid, out var gridXform))
-            return;
+        var targetLocal = xform.LocalPosition;
+        if (xform.ParentUid != grid)
+        {
+            if (!_xformQuery.TryGetComponent(grid, out var gridXform))
+                return;
 
-        var invGrid = _transform.GetInvWorldMatrix(gridXform);
-        var targetLocal = Vector2.Transform(_transform.GetWorldPosition(xform), invGrid);
+            targetLocal = Vector2.Transform(
+                _transform.GetWorldPosition(xform),
+                _transform.GetInvWorldMatrix(gridXform));
+        }
+
         if (!IsWithinProtectionBounds(gridArmor, targetLocal))
             return;
 
