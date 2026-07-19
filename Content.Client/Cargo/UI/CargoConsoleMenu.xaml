@@ -1,17 +1,14 @@
-﻿<!-- Exodus: redesigned cargo order terminal UI -->
+﻿<!-- Exodus: sector market terminal language -->
 <controls:FancyWindow xmlns="https://spacestation14.io"
-                      xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
                       xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
                       xmlns:customControls="clr-namespace:Content.Client.Administration.UI.CustomControls"
+                      xmlns:market="clr-namespace:Content.Client._Exodus.Economy.UI"
                       SetSize="920 620"
                       MinSize="780 520">
     <BoxContainer Orientation="Vertical" Margin="8 6 8 6" SeparationOverride="6">
 
         <!-- Status header -->
-        <PanelContainer HorizontalExpand="True">
-            <PanelContainer.PanelOverride>
-                <gfx:StyleBoxFlat BackgroundColor="#1A1A1E" BorderThickness="1" BorderColor="#3A3A44" />
-            </PanelContainer.PanelOverride>
+        <market:MarketTerminalPanel Header="True" HorizontalExpand="True">
             <BoxContainer Orientation="Horizontal" Margin="10 8" SeparationOverride="16">
                 <BoxContainer Orientation="Vertical" HorizontalExpand="True">
                     <Label Text="{Loc 'cargo-console-menu-account-name-label'}"
@@ -38,7 +35,7 @@
                            StyleClasses="LabelKeyText" />
                 </BoxContainer>
             </BoxContainer>
-        </PanelContainer>
+        </market:MarketTerminalPanel>
 
         <!-- Main workspace: categories | catalog | queue -->
         <BoxContainer Orientation="Horizontal"
@@ -47,10 +44,7 @@
                       SeparationOverride="8">
 
             <!-- Category sidebar -->
-            <PanelContainer VerticalExpand="True" MinWidth="160" MaxWidth="200">
-                <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BackgroundColor="#141418" BorderThickness="1" BorderColor="#3A3A44" />
-                </PanelContainer.PanelOverride>
+            <market:MarketTerminalPanel Deep="True" VerticalExpand="True" MinWidth="150" MaxWidth="180">
                 <BoxContainer Orientation="Vertical" Margin="6" VerticalExpand="True">
                     <Label Text="{Loc 'cargo-console-menu-categories-heading'}"
                            StyleClasses="LabelKeyText"
@@ -64,13 +58,10 @@
                                       SeparationOverride="2" />
                     </ScrollContainer>
                 </BoxContainer>
-            </PanelContainer>
+            </market:MarketTerminalPanel>
 
             <!-- Product catalog -->
-            <PanelContainer VerticalExpand="True" HorizontalExpand="True" SizeFlagsStretchRatio="2.2">
-                <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BackgroundColor="#141418" BorderThickness="1" BorderColor="#3A3A44" />
-                </PanelContainer.PanelOverride>
+            <market:MarketTerminalPanel VerticalExpand="True" HorizontalExpand="True" SizeFlagsStretchRatio="2.2">
                 <BoxContainer Orientation="Vertical" Margin="8" VerticalExpand="True" SeparationOverride="6">
                     <BoxContainer Orientation="Horizontal" SeparationOverride="6">
                         <Label Name="CatalogTitleLabel"
@@ -103,13 +94,10 @@
                                       Margin="0 2 0 2" />
                     </ScrollContainer>
                 </BoxContainer>
-            </PanelContainer>
+            </market:MarketTerminalPanel>
 
             <!-- Orders / requests -->
-            <PanelContainer VerticalExpand="True" HorizontalExpand="True" SizeFlagsStretchRatio="1.4" MinWidth="260">
-                <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BackgroundColor="#141418" BorderThickness="1" BorderColor="#3A3A44" />
-                </PanelContainer.PanelOverride>
+            <market:MarketTerminalPanel VerticalExpand="True" HorizontalExpand="True" SizeFlagsStretchRatio="1.4" MinWidth="260">
                 <BoxContainer Orientation="Vertical" Margin="8" VerticalExpand="True" SeparationOverride="4">
                     <Label Text="{Loc 'cargo-console-menu-queue-heading'}"
                            StyleClasses="LabelKeyText" />
@@ -140,17 +128,9 @@
                                       SeparationOverride="3" />
                     </ScrollContainer>
                 </BoxContainer>
-            </PanelContainer>
+            </market:MarketTerminalPanel>
         </BoxContainer>
 
-        <!-- Footer -->
-        <controls:StripeBack HasBottomEdge="False" HasMargins="False" HorizontalExpand="True" SetHeight="22">
-            <Label Text="{Loc 'cargo-console-menu-footer'}"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Right"
-                   HorizontalExpand="True"
-                   Margin="8 0"
-                   StyleClasses="PdaContentFooterText" />
-        </controls:StripeBack>
+        <market:MarketTerminalFooter />
     </BoxContainer>
 </controls:FancyWindow>

@@ -1,10 +1,9 @@
-﻿<!-- Exodus: card-style catalog product row -->
+﻿<!-- Exodus: sector market catalog card -->
 <PanelContainer xmlns="https://spacestation14.io"
                 xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
-                HorizontalExpand="True"
-                Margin="0 0 0 0">
+                HorizontalExpand="True">
     <PanelContainer.PanelOverride>
-        <gfx:StyleBoxFlat BackgroundColor="#1E1E24" BorderThickness="1" BorderColor="#33333C" />
+        <gfx:StyleBoxFlat BackgroundColor="#1E1E24" BorderThickness="1" BorderColor="#3A3A44" />
     </PanelContainer.PanelOverride>
     <Button Name="MainButton"
             ToolTip=""
@@ -19,7 +18,7 @@
                   MouseFilter="Ignore">
         <PanelContainer MinSize="40 40" MaxSize="40 40" HorizontalExpand="False">
             <PanelContainer.PanelOverride>
-                <gfx:StyleBoxFlat BackgroundColor="#0F0F12" />
+                <gfx:StyleBoxFlat BackgroundColor="#121216" BorderThickness="1" BorderColor="#3A3A44" />
             </PanelContainer.PanelOverride>
             <TextureRect Name="Icon"
                          Access="Public"

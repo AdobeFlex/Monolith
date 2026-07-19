@@ -52,8 +52,8 @@ public sealed partial class DynamicMarketSystem : EntitySystem
     private readonly Dictionary<string, MarketQuote> _quotes = new();
 
     private bool _enabled = true;
-    private float _minFactor = 0.25f;
-    private float _maxFactor = 3f;
+    private float _minFactor = 0.01f;
+    private float _maxFactor = 9.99f;
     private float _sellImpact = 0.08f;
     private float _buyImpact = 0.08f;
     private float _referenceVolume = 100f;

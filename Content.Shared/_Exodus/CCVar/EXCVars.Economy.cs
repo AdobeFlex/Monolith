@@ -14,15 +14,17 @@ public partial class EXCVars
 
     /// <summary>
     /// Minimum sector price factor (floor after sell pressure / clamp).
+    /// Default 0.01 = 1% of base price.
     /// </summary>
     public static readonly CVarDef<float> DynamicMarketMinFactor =
-        CVarDef.Create("exds.economy.market_min_factor", 0.25f, CVar.SERVERONLY);
+        CVarDef.Create("exds.economy.market_min_factor", 0.01f, CVar.SERVERONLY);
 
     /// <summary>
     /// Maximum sector price factor (ceiling after buy pressure / clamp).
+    /// Default 9.99 = 999% of base price.
     /// </summary>
     public static readonly CVarDef<float> DynamicMarketMaxFactor =
-        CVarDef.Create("exds.economy.market_max_factor", 3.0f, CVar.SERVERONLY);
+        CVarDef.Create("exds.economy.market_max_factor", 9.99f, CVar.SERVERONLY);
 
     /// <summary>
     /// Sell impact strength: each reference-volume of units multiplies factor by exp(-this).

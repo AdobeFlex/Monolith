@@ -1,33 +1,29 @@
-﻿<!-- Exodus: redesigned gas sale console with market lines / trends -->
+﻿<!-- Exodus: sector market terminal language (gas sale / Edison) -->
 <controls:FancyWindow xmlns="https://spacestation14.io"
                       xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
-                      xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
                       xmlns:customControls="clr-namespace:Content.Client.Administration.UI.CustomControls"
-                      SetSize="420 480"
-                      MinSize="360 400"
+                      xmlns:market="clr-namespace:Content.Client._Exodus.Economy.UI"
+                      SetSize="440 500"
+                      MinSize="380 420"
                       Title="{Loc 'gas-sale-console-menu-title'}">
     <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="6" HorizontalExpand="True" VerticalExpand="True">
 
-        <PanelContainer HorizontalExpand="True">
-            <PanelContainer.PanelOverride>
-                <gfx:StyleBoxFlat BackgroundColor="#1A1A1E" BorderThickness="1" BorderColor="#3A3A44" />
-            </PanelContainer.PanelOverride>
+        <market:MarketTerminalPanel Header="True" HorizontalExpand="True">
             <BoxContainer Orientation="Horizontal" Margin="10 8" SeparationOverride="8">
                 <Label Text="{Loc 'gas-sale-menu-appraisal-label'}"
-                       StyleClasses="LabelKeyText"
+                       StyleClasses="LabelSubText"
                        HorizontalExpand="True" />
                 <Label Name="AppraisalLabel"
                        Text="{Loc 'gas-sale-menu-no-value'}"
                        StyleClasses="LabelKeyText"
                        Align="Right" />
             </BoxContainer>
-        </PanelContainer>
+        </market:MarketTerminalPanel>
 
         <Label Text="{Loc 'gas-sale-menu-mixture-title'}"
                StyleClasses="LabelKeyText" />
         <customControls:HSeparator StyleClasses="LowDivider" />
 
-        <!-- Column headers -->
         <BoxContainer Orientation="Horizontal" Margin="2 0">
             <Label Text="{Loc 'gas-sale-menu-col-gas'}"
                    StyleClasses="LabelSubText"
@@ -50,17 +46,19 @@
                    Align="Right" />
         </BoxContainer>
 
-        <ScrollContainer VerticalExpand="True"
-                         HorizontalExpand="True"
-                         HScrollEnabled="False"
-                         MinHeight="200">
-            <BoxContainer Name="GasLines"
-                          Orientation="Vertical"
-                          HorizontalExpand="True"
-                          SeparationOverride="2" />
-        </ScrollContainer>
+        <market:MarketTerminalPanel Deep="True" VerticalExpand="True" HorizontalExpand="True">
+            <ScrollContainer VerticalExpand="True"
+                             HorizontalExpand="True"
+                             HScrollEnabled="False"
+                             Margin="4"
+                             MinHeight="200">
+                <BoxContainer Name="GasLines"
+                              Orientation="Vertical"
+                              HorizontalExpand="True"
+                              SeparationOverride="2" />
+            </ScrollContainer>
+        </market:MarketTerminalPanel>
 
-        <!-- Legacy containers kept empty for GenerateTypedNameReferences compatibility if any -->
         <BoxContainer Name="Gases" Visible="False" />
         <BoxContainer Name="GasAmounts" Visible="False" />
 
@@ -68,5 +66,6 @@
                 Text="{Loc 'gas-sale-refresh-button'}" />
         <Button Name="SellButton"
                 Text="{Loc 'gas-sale-sell-button'}" />
+        <market:MarketTerminalFooter />
     </BoxContainer>
 </controls:FancyWindow>

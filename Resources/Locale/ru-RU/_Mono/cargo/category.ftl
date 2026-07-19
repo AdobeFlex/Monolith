@@ -1,2 +1,2 @@
-cargoproduct-category-name-shipammo = Боеприпасы корабельных орудий
+cargoproduct-category-name-shipammo = Кораб. БК
 cargoproduct-category-name-armorplate = Бронеплиты

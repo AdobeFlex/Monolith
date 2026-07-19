@@ -2,6 +2,7 @@
                       xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
                       xmlns:customControls="clr-namespace:Content.Client.Administration.UI.CustomControls"
                       xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+                      xmlns:market="clr-namespace:Content.Client._Exodus.Economy.UI"
                       MinSize="1000 500"
                       Title="{Loc 'market-console-menu-title'}">
 
@@ -104,11 +105,9 @@
                         StyleClasses="LabelSubText" />
             </BoxContainer>
         </BoxContainer>
-        <BoxContainer Name="ContentFooter" HorizontalExpand="True" SetHeight="28" Margin="1 0 2 1">
-            <controls:StripeBack HasBottomEdge="False" HasMargins="False" HorizontalExpand="True">
-                <Label Text="Robust#OS ™" VerticalAlignment="Center" HorizontalAlignment="Right" HorizontalExpand="True"
-                       Margin="6 0" StyleClasses="PdaContentFooterText" />
-            </controls:StripeBack>
+        <!-- Exodus: shared sector market footer -->
+        <BoxContainer Name="ContentFooter" HorizontalExpand="True" Margin="1 0 2 1">
+            <market:MarketTerminalFooter />
         </BoxContainer>
     </BoxContainer>
 </controls:FancyWindow>
