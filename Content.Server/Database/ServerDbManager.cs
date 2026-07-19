@@ -326,6 +326,14 @@ namespace Content.Server.Database
 
         #endregion
 
+        // Exodus-begin: global dynamic market
+        Task<IReadOnlyList<(string MarketKey, double Factor, float Trend, DateTime UpdatedAt)>> GetAllEconomyMarketQuotes(CancellationToken cancel = default);
+        Task UpsertEconomyMarketQuote(string key, double factor, float trend, DateTime updatedAt, CancellationToken cancel = default);
+        Task UpsertEconomyMarketQuotes(IReadOnlyList<(string MarketKey, double Factor, float Trend)> quotes, CancellationToken cancel = default);
+        Task DeleteEconomyMarketQuotes(IReadOnlyCollection<string> keys, CancellationToken cancel = default);
+        Task ClearEconomyMarketQuotes(CancellationToken cancel = default);
+        // Exodus-end
+
         #region DB Notifications
 
         void SubscribeToNotifications(Action<DatabaseNotification> handler);
@@ -1060,6 +1068,38 @@ namespace Content.Server.Database
             return RunDbCommand(() => _db.RemoveCompanyMember(player, company));
         }
         // Mono-End
+
+        // Exodus-begin: global dynamic market
+        public Task<IReadOnlyList<(string MarketKey, double Factor, float Trend, DateTime UpdatedAt)>> GetAllEconomyMarketQuotes(CancellationToken cancel = default)
+        {
+            DbReadOpsMetric.Inc();
+            return RunDbCommand(() => _db.GetAllEconomyMarketQuotes(cancel));
+        }
+
+        public Task UpsertEconomyMarketQuote(string key, double factor, float trend, DateTime updatedAt, CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.UpsertEconomyMarketQuote(key, factor, trend, updatedAt, cancel));
+        }
+
+        public Task UpsertEconomyMarketQuotes(IReadOnlyList<(string MarketKey, double Factor, float Trend)> quotes, CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.UpsertEconomyMarketQuotes(quotes, cancel));
+        }
+
+        public Task DeleteEconomyMarketQuotes(IReadOnlyCollection<string> keys, CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.DeleteEconomyMarketQuotes(keys, cancel));
+        }
+
+        public Task ClearEconomyMarketQuotes(CancellationToken cancel = default)
+        {
+            DbWriteOpsMetric.Inc();
+            return RunDbCommand(() => _db.ClearEconomyMarketQuotes(cancel));
+        }
+        // Exodus-end
 
         public void SubscribeToNotifications(Action<DatabaseNotification> handler)
         {

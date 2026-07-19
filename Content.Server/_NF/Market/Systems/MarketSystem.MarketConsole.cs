@@ -12,6 +12,7 @@ using Content.Shared.Power;
 using Content.Shared.Stacks;
 using Content.Shared.Storage;
 using Content.Shared.Materials;
+using Content.Server._Exodus.Economy; // Exodus dynamic market
 using Robust.Shared.Prototypes;
 
 
@@ -401,12 +402,33 @@ public sealed partial class MarketSystem
         {
             marketData = market.MarketDataList;
         }
-        var cartBalance = MarketDataExtensions.GetMarketValue(cartData, marketMultiplier);
+
+        // Exodus: show sector-adjusted unit prices + trends on every terminal (same global index).
+        // Cart keeps base snapshot prices; checkout applies sequential factor + console mod.
+        var displayMarket = marketData;
+        if (_dynamicMarket.Enabled && marketData.Count > 0)
+        {
+            displayMarket = new List<MarketData>(marketData.Count);
+            foreach (var entry in marketData)
+            {
+                var key = _dynamicMarket.GetMarketKeyFromPrototype(entry.Prototype);
+                var factor = _dynamicMarket.GetFactor(key);
+                _dynamicMarket.TryGetQuote(key, out var quote);
+                displayMarket.Add(new MarketData(entry.Prototype, entry.StackPrototype, entry.Quantity, entry.Price * factor)
+                {
+                    Trend = quote.Trend,
+                    ChangePercent = quote.ChangePercent,
+                });
+            }
+        }
+
+        // Exodus: cart balance uses sequential sector factor + local console MarketModifier (marketMultiplier).
+        var cartBalance = GetDynamicMarketValue(cartData, marketMultiplier, out _);
 
         var newState = new MarketConsoleInterfaceState(
             balance,
             marketMultiplier,
-            marketData,
+            displayMarket, // Exodus: sector-adjusted display
             cartData,
             cartBalance,
             true, // TODO add enable/disable functionality
@@ -415,4 +437,46 @@ public sealed partial class MarketSystem
         );
         _ui.SetUiState(consoleUid, MarketConsoleUiKey.Default, newState);
     }
+
+    // Exodus-begin: global sequential pricing for market console carts
+    /// <summary>
+    /// Values a cart/list with sequential stack lots against the global sector market,
+    /// then multiplies each lot by the console's local <paramref name="marketModifier"/>.
+    /// Does not write the global index. When the market is enabled,
+    /// <paramref name="marketTx"/> holds working factors to <see cref="DynamicMarketSystem.CommitTransaction"/>
+    /// after successful payment (same transaction as the quoted cost).
+    /// </summary>
+    private int GetDynamicMarketValue(List<MarketData> dataList, float marketModifier, out MarketTransactionState? marketTx)
+    {
+        marketTx = null;
+        if (dataList.Count <= 0)
+            return 0;
+
+        if (!_dynamicMarket.Enabled)
+            return MarketDataExtensions.GetMarketValue(dataList, marketModifier);
+
+        marketTx = new MarketTransactionState();
+        double total = 0;
+
+        // Stable order so all market consoles price the same cart the same way.
+        var ordered = new List<MarketData>(dataList);
+        ordered.Sort((a, b) => string.CompareOrdinal(a.Prototype, b.Prototype));
+
+        foreach (var entry in ordered)
+        {
+            var key = _dynamicMarket.GetMarketKeyFromPrototype(entry.Prototype);
+            var lotSize = _dynamicMarket.GetLotSizeForPrototype(entry.Prototype, entry.StackPrototype);
+            total += _dynamicMarket.CalculateSequentialBuyCost(
+                key,
+                entry.Price,
+                entry.Quantity,
+                lotSize,
+                marketModifier,
+                marketTx,
+                applyImpact: false);
+        }
+
+        return (int)Math.Round(total);
+    }
+    // Exodus-end
 }

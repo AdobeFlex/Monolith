@@ -6,19 +6,40 @@
             HorizontalExpand="True"
             VerticalExpand="True" />
     <BoxContainer Orientation="Horizontal"
-                  HorizontalExpand="True">
+                  HorizontalExpand="True"
+                  SeparationOverride="4">
         <TextureRect Name="Icon"
                      Access="Public"
                      MinSize="32 32"
+                     MaxSize="32 32"
+                     HorizontalExpand="False"
                      RectClipContent="True" />
+        <!-- Name takes remaining space and clips so price stays visible -->
         <Label Name="ProductName"
                Access="Public"
-               HorizontalExpand="True" />
-        <PanelContainer StyleClasses="BackgroundDark">
-            <Label Name="PointCost"
+               HorizontalExpand="True"
+               ClipText="True"
+               VerticalAlignment="Center" />
+        <!-- Exodus-begin: fixed-width price column (no push-off in "All" category) -->
+        <BoxContainer Orientation="Vertical"
+                      HorizontalExpand="False"
+                      MinWidth="88"
+                      MaxWidth="100"
+                      Align="End"
+                      VerticalAlignment="Center">
+            <PanelContainer StyleClasses="BackgroundDark"
+                            HorizontalExpand="True">
+                <Label Name="PointCost"
+                       Access="Public"
+                       Align="Right"
+                       HorizontalExpand="True" />
+            </PanelContainer>
+            <Label Name="Trend"
                    Access="Public"
-                   MinSize="52 32"
-                   Align="Right" />
-        </PanelContainer>
+                   Align="Right"
+                   HorizontalExpand="True"
+                   StyleClasses="LabelSubText" />
+        </BoxContainer>
+        <!-- Exodus-end -->
     </BoxContainer>
 </PanelContainer>

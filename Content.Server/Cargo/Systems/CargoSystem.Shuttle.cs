@@ -19,6 +19,9 @@ using Content.Shared._NF.Bank.BUI;
 using Content.Shared._NF.Trade;
 using Content.Shared.Mech.Components;
 using Robust.Shared.Toolshed.Commands.Math; // Mono
+using Content.Server._Exodus.Economy; // Exodus dynamic market
+using Content.Shared._Exodus.Economy; // Exodus CargoPalletAppraisalEntry
+using Content.Shared.Stacks; // Exodus stack qty on appraisal lines
 
 
 namespace Content.Server.Cargo.Systems;
@@ -79,7 +82,8 @@ public sealed partial class CargoSystem
         }
 
         // Frontier: per-object market modification
-        GetPalletGoods(uid, gridUid, out var toSell, out var amount, out var noModAmount, out var blackMarketTaxAmount, out var frontierTaxAmount, out var nfsdTaxAmount, out var medicalTaxAmount);
+        // Exodus: appraise / UI refresh — no market commit; also builds per-line listing for UI.
+        GetPalletGoods(uid, gridUid, out var toSell, out var amount, out var noModAmount, out var blackMarketTaxAmount, out var frontierTaxAmount, out var nfsdTaxAmount, out var medicalTaxAmount, out _, out var appraisalItems);
 
         amount += noModAmount;
         // End Frontier
@@ -97,7 +101,7 @@ public sealed partial class CargoSystem
 
         _uiSystem.SetUiState(uid.Owner,
             CargoPalletConsoleUiKey.Sale, // Frontier: uid<uid.Owner
-            new CargoPalletConsoleInterfaceState((int)amount, toSell.Count, true, tradeCrateMultiplier, otherMultiplier));
+            new CargoPalletConsoleInterfaceState((int)amount, toSell.Count, true, tradeCrateMultiplier, otherMultiplier, appraisalItems)); // Exodus items
         // End Monolith
     }
 
@@ -286,12 +290,15 @@ public sealed partial class CargoSystem
 
     private bool SellPallets(Entity<CargoPalletConsoleComponent> consoleUid, EntityUid gridUid, out double amount, out double noMultiplierAmount, out double blackMarketTaxAmount, out double frontierTaxAmount, out double nfsdTaxAmount, out double medicalTaxAmount) // Frontier: first arg to Entity, add noMultiplierAmount
     {
-        GetPalletGoods(consoleUid, gridUid, out var toSell, out amount, out noMultiplierAmount, out blackMarketTaxAmount, out frontierTaxAmount, out nfsdTaxAmount, out medicalTaxAmount); // Frontier: add noMultiplierAmount
+        // Exodus: price with applyImpact=false; commit market only after a real non-empty sale.
+        GetPalletGoods(consoleUid, gridUid, out var toSell, out amount, out noMultiplierAmount, out blackMarketTaxAmount, out frontierTaxAmount, out nfsdTaxAmount, out medicalTaxAmount, out var marketTx, out _); // Frontier + Exodus
 
         Log.Debug($"Cargo sold {toSell.Count} entities for {amount} (plus {noMultiplierAmount} without mods). (Taxes: Black Market: {blackMarketTaxAmount}, CO: {frontierTaxAmount}, TSFMC: {nfsdTaxAmount}, MD: {medicalTaxAmount})"); // Frontier: add section in parentheses
 
         if (toSell.Count == 0)
             return false;
+
+        _dynamicMarket.CommitTransaction(marketTx); // Exodus: sell pressure only on confirmed sale (not appraise)
 
         var ev = new EntitySoldEvent(toSell, gridUid); // Frontier: add gridUid
         RaiseLocalEvent(ref ev);
@@ -339,7 +346,14 @@ public sealed partial class CargoSystem
         }
     }
 
-    private void GetPalletGoods(Entity<CargoPalletConsoleComponent> consoleUid, EntityUid gridUid, out HashSet<EntityUid> toSell, out double amount, out double noMultiplierAmount, out double blackMarketTaxAmount, out double frontierTaxAmount, out double nfsdTaxAmount, out double medicalTaxAmount) // Frontier: first arg to Entity, add noMultiplierAmount
+    /// <param name="marketTx">
+    /// Exodus: working factors for sequential stack pricing. Caller must
+    /// <see cref="DynamicMarketSystem.CommitTransaction"/> only on a real sale, never on appraise.
+    /// </param>
+    /// <param name="appraisalItems">
+    /// Exodus: per-entity lines for the sell console scroll list (market-adjusted totals).
+    /// </param>
+    private void GetPalletGoods(Entity<CargoPalletConsoleComponent> consoleUid, EntityUid gridUid, out HashSet<EntityUid> toSell, out double amount, out double noMultiplierAmount, out double blackMarketTaxAmount, out double frontierTaxAmount, out double nfsdTaxAmount, out double medicalTaxAmount, out MarketTransactionState marketTx, out List<CargoPalletAppraisalEntry> appraisalItems) // Frontier + Exodus
     {
         amount = 0;
         noMultiplierAmount = 0;
@@ -348,6 +362,12 @@ public sealed partial class CargoSystem
         nfsdTaxAmount = 0;
         medicalTaxAmount = 0;
         toSell = new HashSet<EntityUid>();
+        marketTx = new MarketTransactionState(); // Exodus
+        appraisalItems = new List<CargoPalletAppraisalEntry>(); // Exodus
+
+        // Exodus: collect first, then price in stable order with one transaction state
+        // so multi-stack dumps walk factor lot-by-lot (anti-abuse). Never writes global here.
+        var priced = new List<(EntityUid Ent, double BasePrice, double ConsoleMod, bool IgnoreConsoleMod)>();
 
         foreach (var (palletUid, _, _) in GetCargoPallets(consoleUid, gridUid, BuySellType.Sell))
         {
@@ -386,11 +406,12 @@ public sealed partial class CargoSystem
 
                 var station = _station.GetOwningStation(ent);
                 double multiplier = 1;
+                var ignoreConsoleMod = HasComp<IgnoreMarketModifierComponent>(ent);
 
                 if (station != null
                     && !HasComp<TradeCrateWildcardDestinationComponent>(station)
                     && TryComp<MarketModifierComponent>(consoleUid, out var marketModifier)
-                    && !HasComp<IgnoreMarketModifierComponent>(ent)
+                    && !ignoreConsoleMod
                     && !marketModifier.Buy
                     && !HasComp<TradeCrateComponent>(ent))
                 {
@@ -404,41 +425,71 @@ public sealed partial class CargoSystem
                     multiplier = wildcard.ValueMultiplier;
                 }
 
-                // Frontier: check for items that are immune to market modifiers
-                if (HasComp<IgnoreMarketModifierComponent>(ent))
-                    noMultiplierAmount += price;
-                else
-                    amount += price * multiplier;
-
-
-                // End Frontier: check for items that are immune to market modifiers
-                // Mono: ItemTaxs to budgets.
-                if (TryComp<ItemTaxComponent>(ent, out var itemTax))
-                {
-                    foreach (var (account, taxCoeff) in itemTax.TaxAccounts)
-                    {
-                        switch (account)
-                        {
-                            case SectorBankAccount.BlackMarket:
-                                blackMarketTaxAmount += price * taxCoeff;
-                                break;
-                            case SectorBankAccount.Frontier:
-                                frontierTaxAmount += price * taxCoeff;
-                                break;
-                            case SectorBankAccount.Nfsd:
-                                nfsdTaxAmount += price * taxCoeff;
-                                break;
-                            case SectorBankAccount.Medical:
-                                medicalTaxAmount += price * taxCoeff;
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
-                // End Mono
+                priced.Add((ent, price, multiplier, ignoreConsoleMod));
             }
         }
+
+        // Exodus-begin: stable order + sequential lots; applyImpact=false (commit only in SellPallets)
+        priced.Sort((a, b) => a.Ent.CompareTo(b.Ent));
+
+        foreach (var (ent, basePrice, consoleMod, ignoreConsoleMod) in priced)
+        {
+            // consoleMod preserves per-console MarketModifier tiers (VeryHigh..VeryLow).
+            // Sector factor is global; sequential lots lower factor for the next stack.
+            var adjustedPrice = _dynamicMarket.CalculateEntitySellValue(
+                ent,
+                basePrice,
+                consoleMod,
+                marketTx,
+                applyImpact: false);
+
+            if (ignoreConsoleMod)
+                noMultiplierAmount += adjustedPrice;
+            else
+                amount += adjustedPrice;
+
+            // Per-line UI entry (same sequential total the player will be paid for this entity).
+            var qty = 1;
+            if (TryComp<StackComponent>(ent, out var stack))
+                qty = Math.Max(1, stack.Count);
+
+            var linePrice = (int)Math.Round(adjustedPrice);
+            appraisalItems.Add(new CargoPalletAppraisalEntry
+            {
+                Name = Name(ent),
+                PrototypeId = Prototype(ent)?.ID,
+                Quantity = qty,
+                Price = linePrice,
+                UnitPrice = qty > 0 ? linePrice / qty : linePrice,
+            });
+
+            // Mono: ItemTaxs to budgets (on market-adjusted payout).
+            if (TryComp<ItemTaxComponent>(ent, out var itemTax))
+            {
+                foreach (var (account, taxCoeff) in itemTax.TaxAccounts)
+                {
+                    switch (account)
+                    {
+                        case SectorBankAccount.BlackMarket:
+                            blackMarketTaxAmount += adjustedPrice * taxCoeff;
+                            break;
+                        case SectorBankAccount.Frontier:
+                            frontierTaxAmount += adjustedPrice * taxCoeff;
+                            break;
+                        case SectorBankAccount.Nfsd:
+                            nfsdTaxAmount += adjustedPrice * taxCoeff;
+                            break;
+                        case SectorBankAccount.Medical:
+                            medicalTaxAmount += adjustedPrice * taxCoeff;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            // End Mono
+        }
+        // Exodus-end
     }
 
     private bool CanSell(EntityUid uid, TransformComponent xform)

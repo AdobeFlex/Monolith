@@ -823,6 +823,31 @@ namespace Content.Server.Database.Migrations.Sqlite
                     b.ToTable("connection_log", (string)null);
                 });
 
+            // Exodus
+            modelBuilder.Entity("Content.Server.Database.EconomyMarketQuote", b =>
+                {
+                    b.Property<string>("MarketKey")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("market_key");
+
+                    b.Property<double>("Factor")
+                        .HasColumnType("REAL")
+                        .HasColumnName("factor");
+
+                    b.Property<float>("Trend")
+                        .HasColumnType("REAL")
+                        .HasColumnName("trend");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("MarketKey")
+                        .HasName("PK_economy_market_quotes");
+
+                    b.ToTable("economy_market_quotes", (string)null);
+                });
+
             modelBuilder.Entity("Content.Server.Database.IPIntelCache", b =>
                 {
                     b.Property<int>("Id")

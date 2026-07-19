@@ -21,6 +21,8 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 using System.Linq;
 using Content.Shared._NF.Bank.BUI; // Frontier
+using Content.Server._Exodus.Economy; // Exodus dynamic market
+using Content.Shared._Exodus.Economy; // Exodus CargoMarketListing
 
 namespace Content.Server.Cargo.Systems
 {
@@ -211,7 +213,23 @@ namespace Content.Server.Cargo.Systems
                 PlayDenySound(uid, component);
             }
 
-            var cost = order.Price * order.OrderQuantity;
+            // Exodus-begin: sequential buy lots × global sector factor; optional local MarketModifier on console
+            var marketKey = _dynamicMarket.GetMarketKeyFromPrototype(order.ProductId);
+            var lotSize = _dynamicMarket.GetLotSizeForPrototype(order.ProductId);
+            var consoleMod = 1.0;
+            if (TryComp<MarketModifierComponent>(uid, out var orderMarketMod) && orderMarketMod.Buy)
+                consoleMod = orderMarketMod.Mod;
+
+            var marketTx = new MarketTransactionState();
+            var cost = (int)Math.Round(_dynamicMarket.CalculateSequentialBuyCost(
+                marketKey,
+                order.Price,
+                order.OrderQuantity,
+                lotSize,
+                consoleMod,
+                marketTx,
+                applyImpact: false));
+            // Exodus-end
 
             // Not enough balance
             if (!_bank.TryBankWithdraw(player, cost, dry: true)) // Exodus: Correct bank check
@@ -238,6 +256,16 @@ namespace Content.Server.Cargo.Systems
             //     }
             // }
             // End Frontier
+
+            // Exodus: charge first — do not approve / tax / market-impact on failed payment.
+            if (!_bank.TryBankWithdraw(player, cost))
+            {
+                ConsolePopup(args.Actor, Loc.GetString("cargo-console-insufficient-funds", ("cost", cost)));
+                PlayDenySound(uid, component);
+                return;
+            }
+
+            _dynamicMarket.CommitTransaction(marketTx); // Exodus: commit global buy pressure after payment
 
             order.Approved = true;
             _audio.PlayPvs(component.ConfirmSound, uid);
@@ -274,7 +302,6 @@ namespace Content.Server.Cargo.Systems
                 var tax = (int)Math.Floor(cost * taxCoeff);
                 _bank.TrySectorDeposit(account, tax, LedgerEntryType.CargoTax);
             }
-            _bank.TryBankWithdraw(player, cost);
             // End Frontier
 
             UpdateOrders(station.Value);
@@ -420,17 +447,54 @@ namespace Content.Server.Cargo.Systems
                 var filteredOrders = orderDatabase.Orders
                     .Where(order => order.Computer == EntityManager.GetNetEntity(uid)).ToList();
 
+                // Exodus-begin: live catalog listings from global sector market
+                var marketListings = BuildCargoMarketListings(uid, component);
                 var state = new CargoConsoleInterfaceState(
                     MetaData(user).EntityName,
                     GetOutstandingOrderCount(orderDatabase),
                     orderDatabase.Capacity,
                     balance,
-                    filteredOrders);
+                    filteredOrders,
+                    marketListings);
+                // Exodus-end
 
                 _uiSystem.SetUiState(uid, CargoConsoleUiKey.Orders, state);
             }
         }
         // End Frontier
+
+        // Exodus-begin: catalog prices for all order consoles share one global market index
+        private List<CargoMarketListing> BuildCargoMarketListings(EntityUid consoleUid, CargoOrderConsoleComponent component)
+        {
+            var listings = new List<CargoMarketListing>();
+            if (!_dynamicMarket.Enabled)
+                return listings;
+
+            var consoleMod = 1.0;
+            if (TryComp<MarketModifierComponent>(consoleUid, out var mod) && mod.Buy)
+                consoleMod = mod.Mod;
+
+            foreach (var product in _protoMan.EnumeratePrototypes<CargoProductPrototype>())
+            {
+                if (component.AllowedGroups != null && !component.AllowedGroups.Contains(product.Group))
+                    continue;
+
+                var key = _dynamicMarket.GetMarketKeyFromPrototype(product.Product);
+                _dynamicMarket.TryGetQuote(key, out var quote);
+                var unitPrice = (int)Math.Max(0, Math.Round(product.Cost * quote.Factor * consoleMod));
+
+                listings.Add(new CargoMarketListing
+                {
+                    ProductId = product.ID,
+                    UnitPrice = unitPrice,
+                    Trend = quote.Trend,
+                    ChangePercent = quote.ChangePercent,
+                });
+            }
+
+            return listings;
+        }
+        // Exodus-end
 
         private void ConsolePopup(EntityUid actor, string text)
         {

@@ -68,18 +68,25 @@ public sealed partial class MarketSystem
         if (!TryComp<MarketItemSpawnerComponent>(crateMachineUid, out var itemSpawner))
             return;
 
-        var cartBalance = MarketDataExtensions.GetMarketValue(consoleComponent.CartDataList, marketMod);
-        if (playerBank.Balance < cartBalance)
+        // Exodus: one sequential walk for cost + working factors; commit only after payment.
+        // TransactionCost is the crate/machine fee shown in UI (cartBalance + cratecost).
+        var cartCost = Math.Abs(GetDynamicMarketValue(consoleComponent.CartDataList, marketMod, out var marketTx));
+        var spawnCost = cartCost + consoleComponent.TransactionCost; // Exodus: include crate fee in withdraw
+        if (playerBank.Balance < spawnCost)
             return;
 
         // Withdraw spesos from player
-        var spawnCost = int.Abs(MarketDataExtensions.GetMarketValue(consoleComponent.CartDataList, marketMod));
         if (!_bankSystem.TryBankWithdraw(player, spawnCost))
         {
             _popup.PopupEntity(Loc.GetString("market-insufficient-funds"), consoleUid, player);
             _audio.PlayPredicted(consoleComponent.ErrorSound, consoleUid, null, AudioParams.Default.WithMaxDistance(5f));
             return;
         }
+
+        // Exodus: commit buy pressure only after successful payment (same tx as quoted cart cost).
+        if (marketTx != null)
+            _dynamicMarket.CommitTransaction(marketTx); // Exodus dynamic market
+
         _audio.PlayPredicted(consoleComponent.SuccessSound, consoleUid, null, AudioParams.Default.WithMaxDistance(5f));
 
         itemSpawner.ItemsToSpawn = consoleComponent.CartDataList;

@@ -121,6 +121,7 @@ namespace Content.Client.Cargo.BUI
 
             AccountName = cState.Name;
 
+            _menu?.SetMarketListings(cState.MarketListings); // Exodus dynamic market
             Populate(cState.Orders);
             _menu?.UpdateCargoCapacity(OrderCount, OrderCapacity);
             _menu?.UpdateBankData(AccountName, BankBalance);

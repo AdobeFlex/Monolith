@@ -50,6 +50,7 @@ namespace Content.Server.Database
         public DbSet<BanTemplate> BanTemplate { get; set; } = null!;
         public DbSet<IPIntelCache> IPIntelCache { get; set; } = null!;
         public DbSet<CompanyMember> CompanyMembers { get; set; } = null!;
+        public DbSet<EconomyMarketQuote> EconomyMarketQuotes { get; set; } = null!; // Exodus
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -303,6 +304,11 @@ namespace Content.Server.Database
                 .HasForeignKey(w => w.PlayerUserId)
                 .HasPrincipalKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Exodus-begin
+            modelBuilder.Entity<EconomyMarketQuote>()
+                .HasKey(e => e.MarketKey);
+            // Exodus-end
 
             ModelBan.OnModelCreating(modelBuilder);
         }
@@ -1087,4 +1093,21 @@ namespace Content.Server.Database
         public string CompanyId { get; set; } = default!;
     }
     // Mono-End
+
+    // Exodus-begin
+    /// <summary>
+    /// Persisted global dynamic market quote (cross-round supply/demand factor).
+    /// </summary>
+    public class EconomyMarketQuote
+    {
+        [Key]
+        public string MarketKey { get; set; } = null!;
+
+        public double Factor { get; set; } = 1.0;
+
+        public float Trend { get; set; }
+
+        public DateTime UpdatedAt { get; set; }
+    }
+    // Exodus-end
 }

@@ -2,6 +2,7 @@ using Content.Server._NF.Bank;
 using Content.Server.Cargo.Systems;
 using Content.Server.Stack;
 using Content.Server.Station.Systems;
+using Content.Server._Exodus.Economy; // Exodus dynamic market
 using Content.Shared._NF.Market;
 using Content.Shared.Popups;
 using Content.Shared.Whitelist;
@@ -23,6 +24,7 @@ public sealed partial class MarketSystem: SharedMarketSystem
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private StationSystem _station = default!;
+    [Dependency] private DynamicMarketSystem _dynamicMarket = default!; // Exodus dynamic market
 
     public override void Initialize()
     {

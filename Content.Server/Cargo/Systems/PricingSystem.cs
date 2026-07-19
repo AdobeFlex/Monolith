@@ -211,7 +211,7 @@ public sealed partial class PricingSystem : EntitySystem
 
         // TODO: Proper container support.
 
-        return price;
+        return ApplyUnpricedFallback(prototype, price); // Exodus default prices for items without StaticPrice/materials
     }
 
     /// <summary>
@@ -281,7 +281,7 @@ public sealed partial class PricingSystem : EntitySystem
             }
         }
 
-        return price;
+        return ApplyUnpricedFallback(uid, price); // Exodus default prices for items without StaticPrice/materials
     }
 
     /// <summary>
@@ -326,7 +326,7 @@ public sealed partial class PricingSystem : EntitySystem
             }
         }
 
-        return price;
+        return ApplyUnpricedFallback(uid, price); // Exodus default prices for items without StaticPrice/materials
     }
 
     // Begin Frontier - GetPrice variant that uses predicate

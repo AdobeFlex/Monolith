@@ -21,6 +21,7 @@ using Robust.Shared.Random;
 using Content.Server._NF.SectorServices; // Frontier
 using Content.Shared.Whitelist;
 using Content.Server._NF.Bank; // Frontier
+using Content.Server._Exodus.Economy; // Exodus dynamic market
 
 namespace Content.Server.Cargo.Systems;
 
@@ -47,6 +48,7 @@ public sealed partial class CargoSystem : SharedCargoSystem
     [Dependency] private SectorServiceSystem _sectorService = default!; // Frontier
     [Dependency] private EntityWhitelistSystem _whitelist = default!; // Frontier
     [Dependency] private BankSystem _bank = default!;
+    [Dependency] private DynamicMarketSystem _dynamicMarket = default!; // Exodus dynamic market
 
     private EntityQuery<TransformComponent> _xformQuery;
     private EntityQuery<CargoSellBlacklistComponent> _blacklistQuery;

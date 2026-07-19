@@ -7,6 +7,7 @@ using Robust.Client.GameObjects;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
+using Robust.Shared.Maths; // Exodus dynamic market
 using Robust.Shared.Prototypes;
 
 namespace Content.Client._NF.Market.UI;
@@ -137,6 +138,9 @@ public sealed partial class MarketMenu : FancyWindow
                     Price = { Text = priceText },
                     Icon = { Texture = sprite.Icon?.Default }
                 };
+                // Exodus-begin: sector trend arrow / percent
+                ApplyMarketTrend(productRow.Trend, marketData.ChangePercent);
+                // Exodus-end
                 productRow.AddToCart1.OnPressed += args => { OnAddToCart1?.Invoke(args); };
                 productRow.AddToCart1.Disabled = !enabled;
 
@@ -187,4 +191,23 @@ public sealed partial class MarketMenu : FancyWindow
         var text = _searchText.Trim();
         return string.IsNullOrEmpty(text) || prototype.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase);
     }
+
+    // Exodus-begin: trend text by sign, color by ±0.5 threshold
+    private static void ApplyMarketTrend(Label trendLabel, double changePercent)
+    {
+        if (changePercent > 0)
+            trendLabel.Text = Loc.GetString("economy-market-trend-up", ("percent", changePercent.ToString("0.0")));
+        else if (changePercent < 0)
+            trendLabel.Text = Loc.GetString("economy-market-trend-down", ("percent", changePercent.ToString("0.0")));
+        else
+            trendLabel.Text = Loc.GetString("economy-market-trend-flat");
+
+        if (changePercent > 0.5)
+            trendLabel.FontColorOverride = Color.FromHex("#80FF80");
+        else if (changePercent < -0.5)
+            trendLabel.FontColorOverride = Color.FromHex("#FF8080");
+        else
+            trendLabel.FontColorOverride = Color.FromHex("#A0A0A0");
+    }
+    // Exodus-end
 }

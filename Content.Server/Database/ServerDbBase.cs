@@ -1913,6 +1913,105 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({players[player]}, {id}
 
         #endregion
 
+        // Exodus-begin: global dynamic market persistence
+        public async Task<IReadOnlyList<(string MarketKey, double Factor, float Trend, DateTime UpdatedAt)>> GetAllEconomyMarketQuotes(CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            var rows = await db.DbContext.EconomyMarketQuotes.AsNoTracking().ToListAsync(cancel);
+            var result = new List<(string, double, float, DateTime)>(rows.Count);
+            foreach (var row in rows)
+            {
+                result.Add((row.MarketKey, row.Factor, row.Trend, NormalizeDatabaseTime(row.UpdatedAt)));
+            }
+
+            return result;
+        }
+
+        public async Task UpsertEconomyMarketQuote(string key, double factor, float trend, DateTime updatedAt, CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            var existing = await db.DbContext.EconomyMarketQuotes
+                .SingleOrDefaultAsync(q => q.MarketKey == key, cancel);
+
+            if (existing == null)
+            {
+                db.DbContext.EconomyMarketQuotes.Add(new EconomyMarketQuote
+                {
+                    MarketKey = key,
+                    Factor = factor,
+                    Trend = trend,
+                    UpdatedAt = updatedAt,
+                });
+            }
+            else
+            {
+                existing.Factor = factor;
+                existing.Trend = trend;
+                existing.UpdatedAt = updatedAt;
+            }
+
+            await db.DbContext.SaveChangesAsync(cancel);
+        }
+
+        public async Task UpsertEconomyMarketQuotes(IReadOnlyList<(string MarketKey, double Factor, float Trend)> quotes, CancellationToken cancel = default)
+        {
+            if (quotes.Count == 0)
+                return;
+
+            await using var db = await GetDb(cancel);
+            var now = DateTime.UtcNow;
+            var keys = new List<string>(quotes.Count);
+            for (var i = 0; i < quotes.Count; i++)
+            {
+                keys.Add(quotes[i].MarketKey);
+            }
+
+            var existing = await db.DbContext.EconomyMarketQuotes
+                .Where(e => keys.Contains(e.MarketKey))
+                .ToDictionaryAsync(e => e.MarketKey, cancel);
+
+            foreach (var (key, factor, trend) in quotes)
+            {
+                if (existing.TryGetValue(key, out var row))
+                {
+                    row.Factor = factor;
+                    row.Trend = trend;
+                    row.UpdatedAt = now;
+                }
+                else
+                {
+                    db.DbContext.EconomyMarketQuotes.Add(new EconomyMarketQuote
+                    {
+                        MarketKey = key,
+                        Factor = factor,
+                        Trend = trend,
+                        UpdatedAt = now,
+                    });
+                }
+            }
+
+            await db.DbContext.SaveChangesAsync(cancel);
+        }
+
+        public async Task DeleteEconomyMarketQuotes(IReadOnlyCollection<string> keys, CancellationToken cancel = default)
+        {
+            if (keys.Count == 0)
+                return;
+
+            await using var db = await GetDb(cancel);
+            var keyList = keys as List<string> ?? keys.ToList();
+            await db.DbContext.EconomyMarketQuotes
+                .Where(e => keyList.Contains(e.MarketKey))
+                .ExecuteDeleteAsync(cancel);
+        }
+
+        public async Task ClearEconomyMarketQuotes(CancellationToken cancel = default)
+        {
+            await using var db = await GetDb(cancel);
+            await db.DbContext.EconomyMarketQuotes.ExecuteDeleteAsync(cancel);
+        }
+        // Exodus-end
+
         public abstract Task SendNotification(DatabaseNotification notification);
 
         // SQLite returns DateTime as Kind=Unspecified, Npgsql actually knows for sure it's Kind=Utc.

@@ -873,6 +873,31 @@ namespace Content.Server.Database.Migrations.Postgres
                         });
                 });
 
+            // Exodus
+            modelBuilder.Entity("Content.Server.Database.EconomyMarketQuote", b =>
+                {
+                    b.Property<string>("MarketKey")
+                        .HasColumnType("text")
+                        .HasColumnName("market_key");
+
+                    b.Property<double>("Factor")
+                        .HasColumnType("double precision")
+                        .HasColumnName("factor");
+
+                    b.Property<float>("Trend")
+                        .HasColumnType("real")
+                        .HasColumnName("trend");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("MarketKey")
+                        .HasName("PK_economy_market_quotes");
+
+                    b.ToTable("economy_market_quotes", (string)null);
+                });
+
             modelBuilder.Entity("Content.Server.Database.IPIntelCache", b =>
                 {
                     b.Property<int>("Id")
