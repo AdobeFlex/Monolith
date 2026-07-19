@@ -1,6 +1,8 @@
 // (c) Space Exodus Team - EXDS-RL with CLA
 using Content.Shared._Exodus.CCVar;
 using Content.Shared._Exodus.Economy;
+using Content.Shared.Atmos.Components;
+using Content.Shared.Atmos.Piping.Unary.Components;
 using Content.Shared.Stacks;
 using Robust.Shared.Configuration;
 using Robust.Shared.Prototypes;
@@ -102,10 +104,17 @@ public sealed partial class DynamicMarketSystem : EntitySystem
 
     /// <summary>
     /// Resolve the global market key for a live entity.
-    /// Stacks share one key by stack type so sheet dumps hit one curve.
+    /// Stacks share one key by stack type; filled gas canisters use dominant gas:* key
+    /// so they track Edison gas-sale prices.
     /// </summary>
     public string GetMarketKey(EntityUid uid, MetaDataComponent? meta = null)
     {
+        if (TryComp<GasCanisterComponent>(uid, out var can) &&
+            TryGetDominantGasMarketKey(can.Air) is { } liveGasKey)
+        {
+            return liveGasKey;
+        }
+
         if (TryComp<StackComponent>(uid, out var stack))
             return StackKey(stack.StackTypeId);
 
@@ -118,13 +127,20 @@ public sealed partial class DynamicMarketSystem : EntitySystem
 
     /// <summary>
     /// Resolve market key from an entity prototype id (cargo catalog / market stock).
+    /// Filled gas canisters map to gas:* for correlation with Edison.
     /// </summary>
     public string GetMarketKeyFromPrototype(string prototypeId)
     {
-        if (_prototypes.TryIndex<EntityPrototype>(prototypeId, out var proto) &&
-            proto.TryGetComponent<StackComponent>(out var stack, _factory))
+        if (_prototypes.TryIndex<EntityPrototype>(prototypeId, out var proto))
         {
-            return StackKey(stack.StackTypeId);
+            if (proto.TryGetComponent<GasCanisterComponent>(out var can, _factory) &&
+                TryGetDominantGasMarketKey(can.Air) is { } gasKey)
+            {
+                return gasKey;
+            }
+
+            if (proto.TryGetComponent<StackComponent>(out var stack, _factory))
+                return StackKey(stack.StackTypeId);
         }
 
         return ProtoKey(prototypeId);
@@ -279,6 +295,7 @@ public sealed partial class DynamicMarketSystem : EntitySystem
 
     /// <summary>
     /// Convenience: sell pricing for a single entity already on a pallet.
+    /// Gas canisters/tanks use gas:* keys (not proto) so bulk O2 dumps track Edison.
     /// </summary>
     public double CalculateEntitySellValue(
         EntityUid uid,
@@ -290,6 +307,13 @@ public sealed partial class DynamicMarketSystem : EntitySystem
     {
         if (!_enabled || entityBasePrice <= 0)
             return entityBasePrice * consoleMod;
+
+        // Filled gas containers: reprice via gas market (entityBasePrice may already include base gas $).
+        if (TryComp<GasCanisterComponent>(uid, out var canister))
+            return CalculateGasContainerSellValue(uid, canister.Air, consoleMod, tx, applyImpact, usePurity: true);
+
+        if (TryComp<GasTankComponent>(uid, out var tank))
+            return CalculateGasContainerSellValue(uid, tank.Air, consoleMod, tx, applyImpact, usePurity: true);
 
         var units = 1;
         if (TryComp<StackComponent>(uid, out var stack))

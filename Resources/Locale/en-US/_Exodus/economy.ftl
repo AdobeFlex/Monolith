@@ -16,3 +16,10 @@ cargo-console-menu-queue-heading = Order queue
 cargo-console-menu-product-count = {$count} items
 cargo-console-menu-clear-search = Clear search
 cargo-console-menu-footer = Sector logistics terminal
+
+# Gas sale console (Edison) — market UI
+gas-sale-menu-col-gas = Gas
+gas-sale-menu-col-moles = Moles
+gas-sale-menu-col-unit = $/mol
+gas-sale-menu-col-total = Total
+gas-sale-menu-col-trend = Market

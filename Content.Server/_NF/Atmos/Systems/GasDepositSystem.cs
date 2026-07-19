@@ -4,11 +4,13 @@ using Content.Server.Administration.Logs;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Atmos.Piping.Components;
 using Content.Server.Audio;
+using Content.Server._Exodus.Economy; // Exodus dynamic gas market
 using Content.Server.NodeContainer.EntitySystems;
 using Content.Server.NodeContainer.NodeGroups;
 using Content.Server.NodeContainer.Nodes;
 using Content.Server.Power.Components;
 using Content.Server.Stack;
+using Content.Shared._Exodus.Economy; // Exodus GasMarketLine
 using Content.Shared._NF.Atmos.BUI;
 using Content.Shared._NF.Atmos.Components;
 using Content.Shared._NF.Atmos.Events;
@@ -41,6 +43,7 @@ public sealed partial class GasDepositSystem : SharedGasDepositSystem
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private NodeContainerSystem _nodeContainer = default!;
     [Dependency] private StackSystem _stack = default!;
+    [Dependency] private DynamicMarketSystem _dynamicMarket = default!; // Exodus
 
     /// <summary>
     /// The fraction that a deposit's volume should be depleted to before it is considered "low volume".
@@ -277,9 +280,18 @@ public sealed partial class GasDepositSystem : SharedGasDepositSystem
             salePoint.Comp.GasStorage.Clear();
         }
 
-        var amount = _atmosphere.GetPriceNoPurity(mixture); // Mono - No purity penalty
+        // Exodus: sector gas:* market + local console MarketModifier (Edison VeryHigh 1.5 etc.)
+        var consoleMod = 1.0;
         if (TryComp<MarketModifierComponent>(ent, out var priceMod))
-            amount *= priceMod.Mod;
+            consoleMod = priceMod.Mod;
+
+        var marketTx = new MarketTransactionState();
+        var amount = _dynamicMarket.CalculateGasMixtureSellValue(
+            mixture,
+            consoleMod,
+            marketTx,
+            applyImpact: true, // sell pressure on gas:Oxygen etc. — also lowers filled canisters
+            usePurity: false); // Mono: Edison has no purity penalty
 
         var stackPrototype = _prototype.Index(ent.Comp.CashType);
         _stack.Spawn((int)amount, stackPrototype, xform.Coordinates);
@@ -299,13 +311,25 @@ public sealed partial class GasDepositSystem : SharedGasDepositSystem
             return;
         }
 
-        GetNearbyMixtures(ent, gridUid, out var mixture, out var amount);
+        GetNearbyMixtures(ent, gridUid, out var mixture, out _);
+
+        var consoleMod = 1.0;
         if (TryComp<MarketModifierComponent>(ent, out var priceMod))
-            amount *= priceMod.Mod;
+            consoleMod = priceMod.Mod;
+
+        // Exodus: appraisal uses same gas market as sell (no impact commit on UI refresh)
+        var amount = _dynamicMarket.CalculateGasMixtureSellValue(
+            mixture,
+            consoleMod,
+            tx: null,
+            applyImpact: false,
+            usePurity: false);
+
+        var lines = _dynamicMarket.BuildGasMarketLines(mixture, consoleMod, usePurity: false);
 
         UI.SetUiState(ent.Owner,
             GasSaleConsoleUiKey.Key,
-            new GasSaleConsoleBoundUserInterfaceState((int)amount, mixture, mixture.TotalMoles > 0));
+            new GasSaleConsoleBoundUserInterfaceState((int)amount, mixture, mixture.TotalMoles > 0, lines)); // Exodus lines
     }
 
     private void GetNearbyMixtures(EntityUid consoleUid, EntityUid gridUid, out GasMixture mixture, out double value)
@@ -317,6 +341,7 @@ public sealed partial class GasDepositSystem : SharedGasDepositSystem
             _atmosphere.Merge(mixture, salePoint.Comp.GasStorage);
         }
 
+        // Legacy out value kept for callers; UI path recomputes with dynamic market.
         value = _atmosphere.GetPriceNoPurity(mixture); // Mono - No purity penalty
     }
 

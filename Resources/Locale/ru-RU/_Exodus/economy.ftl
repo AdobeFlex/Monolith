@@ -16,3 +16,10 @@ cargo-console-menu-queue-heading = Очередь заказов
 cargo-console-menu-product-count = {$count} поз.
 cargo-console-menu-clear-search = Очистить поиск
 cargo-console-menu-footer = Терминал секторной логистики
+
+# Консоль продажи газов (Edison)
+gas-sale-menu-col-gas = Газ
+gas-sale-menu-col-moles = Моли
+gas-sale-menu-col-unit = $/моль
+gas-sale-menu-col-total = Итого
+gas-sale-menu-col-trend = Рынок

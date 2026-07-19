@@ -1,5 +1,6 @@
 using Content.Server.Cargo.Systems;
 using Content.Server.Explosion.EntitySystems;
+using Content.Server._Exodus.Economy; // Exodus gas market
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Examine;
@@ -26,6 +27,7 @@ namespace Content.Server.Atmos.EntitySystems
         [Dependency] private IRobustRandom _random = default!;
         [Dependency] private ThrowingSystem _throwing = default!;
         [Dependency] private IConfigurationManager _cfg = default!;
+        [Dependency] private DynamicMarketSystem _dynamicMarket = default!; // Exodus
 
         private const float TimerDelay = 0.5f;
         private float _timer = 0f;
@@ -240,7 +242,13 @@ namespace Content.Server.Atmos.EntitySystems
 
         private void OnGasTankPrice(EntityUid uid, GasTankComponent component, ref PriceCalculationEvent args)
         {
-            args.Price += _atmosphereSystem.GetPrice(component.Air);
+            // Exodus: same gas:* market as Edison / canisters
+            args.Price += _dynamicMarket.CalculateGasMixtureSellValue(
+                component.Air,
+                consoleMod: 1.0,
+                tx: null,
+                applyImpact: false,
+                usePurity: true);
         }
     }
 }
