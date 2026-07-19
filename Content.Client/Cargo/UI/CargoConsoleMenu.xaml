@@ -1,68 +1,156 @@
-﻿<controls:FancyWindow xmlns="https://spacestation14.io"
-                           xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
-                           xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
-                           SetSize="600 600"
-                           MinSize="600 600">
-    <BoxContainer Orientation="Vertical" Margin="5 0 5 0">
-        <BoxContainer Orientation="Horizontal">
-            <Label Text="{Loc 'cargo-console-menu-account-name-label'}"
-                   StyleClasses="LabelKeyText" />
-            <Label Name="AccountNameLabel"
-                   Text="{Loc 'cargo-console-menu-account-name-none-text'}" />
-        </BoxContainer>
-        <BoxContainer Orientation="Horizontal">
-            <Label Text="{Loc 'cargo-console-menu-points-label'}"
-                   StyleClasses="LabelKeyText" />
-            <Label Name="PointsLabel"
-                   Text="-" /> <!-- Frontier: "$0"<"-" -->
-        </BoxContainer>
-        <BoxContainer Orientation="Horizontal">
-            <Label Text="{Loc 'cargo-console-menu-order-capacity-label'}"
-                   StyleClasses="LabelKeyText" />
-            <Label Name="ShuttleCapacityLabel"
-                   Text="0/20" />
-        </BoxContainer>
-        <BoxContainer Orientation="Horizontal">
-            <OptionButton Name="Categories"
-                          Prefix="{Loc 'cargo-console-menu-categories-label'}"
-                          HorizontalExpand="True" />
-            <LineEdit Name="SearchBar"
-                      PlaceHolder="{Loc 'cargo-console-menu-search-bar-placeholder'}"
-                      HorizontalExpand="True" />
-        </BoxContainer>
-        <ScrollContainer HorizontalExpand="True"
-                         VerticalExpand="True"
-                         SizeFlagsStretchRatio="6">
-            <BoxContainer Name="Products"
-                          Orientation="Vertical"
-                          HorizontalExpand="True"
-                          VerticalExpand="True">
-                <!-- Products get added here by code -->
-            </BoxContainer>
-        </ScrollContainer>
-        <PanelContainer VerticalExpand="True"
-                        SizeFlagsStretchRatio="6">
+﻿<!-- Exodus: redesigned cargo order terminal UI -->
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      xmlns:customControls="clr-namespace:Content.Client.Administration.UI.CustomControls"
+                      SetSize="920 620"
+                      MinSize="780 520">
+    <BoxContainer Orientation="Vertical" Margin="8 6 8 6" SeparationOverride="6">
+
+        <!-- Status header -->
+        <PanelContainer HorizontalExpand="True">
             <PanelContainer.PanelOverride>
-                <gfx:StyleBoxFlat BackgroundColor="#000000" />
+                <gfx:StyleBoxFlat BackgroundColor="#1A1A1E" BorderThickness="1" BorderColor="#3A3A44" />
             </PanelContainer.PanelOverride>
-            <ScrollContainer VerticalExpand="True">
-                <BoxContainer Orientation="Vertical">
-                    <Label Text="{Loc 'cargo-console-menu-requests-label'}" />
-                    <BoxContainer Name="Requests"
-                                  Orientation="Vertical"
-                                  VerticalExpand="True">
-                        <!-- Requests are added here by code -->
-                    </BoxContainer>
-                    <Label Text="{Loc 'cargo-console-menu-orders-label'}" />
-                    <BoxContainer Name="Orders"
-                                  Orientation="Vertical"
-                                  StyleClasses="transparentItemList"
-                                  VerticalExpand="True">
-                        <!-- Orders are added here by code -->
-                    </BoxContainer>
+            <BoxContainer Orientation="Horizontal" Margin="10 8" SeparationOverride="16">
+                <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+                    <Label Text="{Loc 'cargo-console-menu-account-name-label'}"
+                           StyleClasses="LabelSubText" />
+                    <Label Name="AccountNameLabel"
+                           Text="{Loc 'cargo-console-menu-account-name-none-text'}"
+                           StyleClasses="LabelKeyText"
+                           ClipText="True" />
                 </BoxContainer>
-            </ScrollContainer>
+                <customControls:VSeparator />
+                <BoxContainer Orientation="Vertical" MinWidth="140">
+                    <Label Text="{Loc 'cargo-console-menu-points-label'}"
+                           StyleClasses="LabelSubText" />
+                    <Label Name="PointsLabel"
+                           Text="-"
+                           StyleClasses="LabelKeyText" />
+                </BoxContainer>
+                <customControls:VSeparator />
+                <BoxContainer Orientation="Vertical" MinWidth="110">
+                    <Label Text="{Loc 'cargo-console-menu-order-capacity-label'}"
+                           StyleClasses="LabelSubText" />
+                    <Label Name="ShuttleCapacityLabel"
+                           Text="0/20"
+                           StyleClasses="LabelKeyText" />
+                </BoxContainer>
+            </BoxContainer>
         </PanelContainer>
-        <TextureButton VerticalExpand="True" />
+
+        <!-- Main workspace: categories | catalog | queue -->
+        <BoxContainer Orientation="Horizontal"
+                      HorizontalExpand="True"
+                      VerticalExpand="True"
+                      SeparationOverride="8">
+
+            <!-- Category sidebar -->
+            <PanelContainer VerticalExpand="True" MinWidth="160" MaxWidth="200">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#141418" BorderThickness="1" BorderColor="#3A3A44" />
+                </PanelContainer.PanelOverride>
+                <BoxContainer Orientation="Vertical" Margin="6" VerticalExpand="True">
+                    <Label Text="{Loc 'cargo-console-menu-categories-heading'}"
+                           StyleClasses="LabelKeyText"
+                           Margin="2 0 2 6" />
+                    <ScrollContainer VerticalExpand="True"
+                                    HorizontalExpand="True"
+                                    HScrollEnabled="False">
+                        <BoxContainer Name="CategoryListContainer"
+                                      Orientation="Vertical"
+                                      HorizontalExpand="True"
+                                      SeparationOverride="2" />
+                    </ScrollContainer>
+                </BoxContainer>
+            </PanelContainer>
+
+            <!-- Product catalog -->
+            <PanelContainer VerticalExpand="True" HorizontalExpand="True" SizeFlagsStretchRatio="2.2">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#141418" BorderThickness="1" BorderColor="#3A3A44" />
+                </PanelContainer.PanelOverride>
+                <BoxContainer Orientation="Vertical" Margin="8" VerticalExpand="True" SeparationOverride="6">
+                    <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+                        <Label Name="CatalogTitleLabel"
+                               Text="{Loc 'cargo-console-menu-catalog-heading'}"
+                               StyleClasses="LabelKeyText"
+                               HorizontalExpand="True"
+                               ClipText="True" />
+                        <Label Name="ProductCountLabel"
+                               StyleClasses="LabelSubText"
+                               Align="Right" />
+                    </BoxContainer>
+                    <BoxContainer Orientation="Horizontal" SeparationOverride="4">
+                        <LineEdit Name="SearchBar"
+                                  PlaceHolder="{Loc 'cargo-console-menu-search-bar-placeholder'}"
+                                  HorizontalExpand="True"
+                                  MinHeight="28" />
+                        <Button Name="ClearSearchButton"
+                                Text="✖"
+                                MinWidth="36"
+                                ToolTip="{Loc 'cargo-console-menu-clear-search'}" />
+                    </BoxContainer>
+                    <customControls:HSeparator StyleClasses="LowDivider" />
+                    <ScrollContainer HorizontalExpand="True"
+                                    VerticalExpand="True"
+                                    HScrollEnabled="False">
+                        <BoxContainer Name="Products"
+                                      Orientation="Vertical"
+                                      HorizontalExpand="True"
+                                      SeparationOverride="3"
+                                      Margin="0 2 0 2" />
+                    </ScrollContainer>
+                </BoxContainer>
+            </PanelContainer>
+
+            <!-- Orders / requests -->
+            <PanelContainer VerticalExpand="True" HorizontalExpand="True" SizeFlagsStretchRatio="1.4" MinWidth="260">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#141418" BorderThickness="1" BorderColor="#3A3A44" />
+                </PanelContainer.PanelOverride>
+                <BoxContainer Orientation="Vertical" Margin="8" VerticalExpand="True" SeparationOverride="4">
+                    <Label Text="{Loc 'cargo-console-menu-queue-heading'}"
+                           StyleClasses="LabelKeyText" />
+                    <customControls:HSeparator StyleClasses="LowDivider" />
+                    <Label Text="{Loc 'cargo-console-menu-requests-label'}"
+                           StyleClasses="LabelSubText"
+                           Margin="0 4 0 2" />
+                    <ScrollContainer VerticalExpand="True"
+                                    HorizontalExpand="True"
+                                    HScrollEnabled="False"
+                                    SizeFlagsStretchRatio="1.1">
+                        <BoxContainer Name="Requests"
+                                      Orientation="Vertical"
+                                      HorizontalExpand="True"
+                                      SeparationOverride="3" />
+                    </ScrollContainer>
+                    <Label Text="{Loc 'cargo-console-menu-orders-label'}"
+                           StyleClasses="LabelSubText"
+                           Margin="0 6 0 2" />
+                    <ScrollContainer VerticalExpand="True"
+                                    HorizontalExpand="True"
+                                    HScrollEnabled="False"
+                                    SizeFlagsStretchRatio="1">
+                        <BoxContainer Name="Orders"
+                                      Orientation="Vertical"
+                                      HorizontalExpand="True"
+                                      StyleClasses="transparentItemList"
+                                      SeparationOverride="3" />
+                    </ScrollContainer>
+                </BoxContainer>
+            </PanelContainer>
+        </BoxContainer>
+
+        <!-- Footer -->
+        <controls:StripeBack HasBottomEdge="False" HasMargins="False" HorizontalExpand="True" SetHeight="22">
+            <Label Text="{Loc 'cargo-console-menu-footer'}"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Right"
+                   HorizontalExpand="True"
+                   Margin="8 0"
+                   StyleClasses="PdaContentFooterText" />
+        </controls:StripeBack>
     </BoxContainer>
 </controls:FancyWindow>

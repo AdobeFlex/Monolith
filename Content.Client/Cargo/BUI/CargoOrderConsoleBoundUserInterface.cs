@@ -103,8 +103,10 @@ namespace Content.Client.Cargo.BUI
         {
             if (_menu == null) return;
 
+            // Categories first so product filter uses the preserved selection
+            // (balance/order state updates must not reset the player to "All").
+            _menu.PopulateCategories(); // Exodus: preserve category across UI refresh
             _menu.PopulateProducts();
-            _menu.PopulateCategories();
             _menu.PopulateOrders(orders);
         }
 

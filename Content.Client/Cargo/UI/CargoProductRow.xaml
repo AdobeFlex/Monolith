@@ -1,45 +1,60 @@
+﻿<!-- Exodus: card-style catalog product row -->
 <PanelContainer xmlns="https://spacestation14.io"
-                HorizontalExpand="True">
+                xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+                HorizontalExpand="True"
+                Margin="0 0 0 0">
+    <PanelContainer.PanelOverride>
+        <gfx:StyleBoxFlat BackgroundColor="#1E1E24" BorderThickness="1" BorderColor="#33333C" />
+    </PanelContainer.PanelOverride>
     <Button Name="MainButton"
             ToolTip=""
             Access="Public"
             HorizontalExpand="True"
-            VerticalExpand="True" />
+            VerticalExpand="True"
+            StyleClasses="ButtonSquare" />
     <BoxContainer Orientation="Horizontal"
                   HorizontalExpand="True"
-                  SeparationOverride="4">
-        <TextureRect Name="Icon"
-                     Access="Public"
-                     MinSize="32 32"
-                     MaxSize="32 32"
-                     HorizontalExpand="False"
-                     RectClipContent="True" />
-        <!-- Name takes remaining space and clips so price stays visible -->
+                  Margin="6 4"
+                  SeparationOverride="8"
+                  MouseFilter="Ignore">
+        <PanelContainer MinSize="40 40" MaxSize="40 40" HorizontalExpand="False">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#0F0F12" />
+            </PanelContainer.PanelOverride>
+            <TextureRect Name="Icon"
+                         Access="Public"
+                         MinSize="36 36"
+                         MaxSize="36 36"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         Stretch="KeepAspectCentered"
+                         MouseFilter="Ignore" />
+        </PanelContainer>
         <Label Name="ProductName"
                Access="Public"
                HorizontalExpand="True"
                ClipText="True"
-               VerticalAlignment="Center" />
-        <!-- Exodus-begin: fixed-width price column (no push-off in "All" category) -->
+               VerticalAlignment="Center"
+               MouseFilter="Ignore" />
         <BoxContainer Orientation="Vertical"
                       HorizontalExpand="False"
-                      MinWidth="88"
-                      MaxWidth="100"
+                      MinWidth="92"
+                      MaxWidth="110"
                       Align="End"
-                      VerticalAlignment="Center">
-            <PanelContainer StyleClasses="BackgroundDark"
-                            HorizontalExpand="True">
-                <Label Name="PointCost"
-                       Access="Public"
-                       Align="Right"
-                       HorizontalExpand="True" />
-            </PanelContainer>
+                      VerticalAlignment="Center"
+                      MouseFilter="Ignore">
+            <Label Name="PointCost"
+                   Access="Public"
+                   Align="Right"
+                   HorizontalExpand="True"
+                   StyleClasses="LabelKeyText"
+                   MouseFilter="Ignore" />
             <Label Name="Trend"
                    Access="Public"
                    Align="Right"
                    HorizontalExpand="True"
-                   StyleClasses="LabelSubText" />
+                   StyleClasses="LabelSubText"
+                   MouseFilter="Ignore" />
         </BoxContainer>
-        <!-- Exodus-end -->
     </BoxContainer>
 </PanelContainer>
