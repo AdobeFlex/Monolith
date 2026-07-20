@@ -4,21 +4,50 @@ using Robust.Shared.Serialization;
 namespace Content.Shared._Exodus.Economy;
 
 /// <summary>
-/// Live cargo catalog row for a single product on a trade console
-/// (unit price already includes sector market factor).
+/// Live row on a cargo order console: static catalog product and/or resale stock from sold goods.
 /// </summary>
 [Serializable, NetSerializable]
 public sealed class CargoMarketListing
 {
-    /// <summary>Cargo product prototype id (matches <c>CargoProductPrototype.ID</c>).</summary>
+    /// <summary>
+    /// Catalog: <c>CargoProductPrototype.ID</c>.
+    /// Resale: <c>resale:{EntityPrototype.ID}</c>.
+    /// </summary>
     public string ProductId = string.Empty;
 
-    /// <summary>Unit catalog price already multiplied by sector factor and console buy modifier.</summary>
+    /// <summary>Entity prototype to spawn (catalog product entity or resale entity).</summary>
+    public string EntityProtoId = string.Empty;
+
+    /// <summary>Display name for UI.</summary>
+    public string DisplayName = string.Empty;
+
+    /// <summary>Category loc-id / key for sidebar filter (resale uses a fixed "resale" category).</summary>
+    public string Category = string.Empty;
+
+    /// <summary>Unit price (sector factor + console mod already applied for catalog).</summary>
     public int UnitPrice;
 
-    /// <summary>Last-step factor delta (positive = rising). Optional UI hint; catalog uses <see cref="ChangePercent"/>.</summary>
     public float Trend;
-
-    /// <summary>Percent vs base factor 1.0 (e.g. +12.5 when factor is 1.125).</summary>
     public double ChangePercent;
+
+    /// <summary>Null = unlimited catalog stock. Non-null = available resale units on this station.</summary>
+    public int? StockQuantity;
+
+    /// <summary>True when this row is from pallet-sold market stock, not YAML cargo catalog.</summary>
+    public bool IsResale;
+
+    public const string ResaleIdPrefix = "resale:";
+    public const string ResaleCategoryKey = "cargoproduct-category-name-resale";
+
+    public static string MakeResaleProductId(string entityProtoId) => ResaleIdPrefix + entityProtoId;
+
+    public static bool TryParseResaleId(string productId, out string entityProtoId)
+    {
+        entityProtoId = string.Empty;
+        if (!productId.StartsWith(ResaleIdPrefix, StringComparison.Ordinal))
+            return false;
+
+        entityProtoId = productId[ResaleIdPrefix.Length..];
+        return entityProtoId.Length > 0;
+    }
 }

@@ -48,7 +48,13 @@ namespace Content.Shared.Cargo
 
         public NetEntity? Computer = null;
 
-        public CargoOrderData(int orderId, string productId, string productName, int price, int amount, string requester, string reason, NetEntity? computer)
+        /// <summary>
+        /// Exodus: order filled from station cargo market stock (sold goods), not YAML catalog.
+        /// Stock is deducted on approve; ProductId is the entity prototype to spawn.
+        /// </summary>
+        public bool FromResaleStock; // Exodus
+
+        public CargoOrderData(int orderId, string productId, string productName, int price, int amount, string requester, string reason, NetEntity? computer, bool fromResaleStock = false) // Exodus fromResaleStock
         {
             OrderId = orderId;
             ProductId = productId;
@@ -58,6 +64,7 @@ namespace Content.Shared.Cargo
             Requester = requester;
             Reason = reason;
             Computer = computer;
+            FromResaleStock = fromResaleStock; // Exodus
         }
 
         public void SetApproverData(string? approver)

@@ -294,6 +294,19 @@ public sealed partial class DynamicMarketSystem : EntitySystem
     }
 
     /// <summary>
+    /// Apply buy-side market pressure for a volume without recomputing a money cost
+    /// (used when unit price was already frozen with the live factor, e.g. resale stock).
+    /// </summary>
+    public void ApplyBuyPressure(string marketKey, int totalUnits, int lotSize, MarketTransactionState? tx = null)
+    {
+        if (!_enabled || totalUnits <= 0)
+            return;
+
+        // unitBasePrice=1 is irrelevant — we only care about factor walk + commit via tx.
+        ProcessLots(marketKey, unitBasePrice: 1.0, totalUnits, lotSize, consoleMod: 1.0, isSell: false, tx, applyImpact: false);
+    }
+
+    /// <summary>
     /// Convenience: sell pricing for a single entity already on a pallet.
     /// Gas canisters/tanks use gas:* keys (not proto) so bulk O2 dumps track Edison.
     /// </summary>

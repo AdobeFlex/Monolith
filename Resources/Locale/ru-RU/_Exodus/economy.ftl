@@ -26,3 +26,9 @@ gas-sale-menu-col-trend = Рынок
 
 # Общий хром торговых терминалов
 economy-terminal-footer = SECTOR MARKET · EXODUS NET
+
+# Склад перепродажи (продано игроками, нет в YAML-каталоге)
+cargoproduct-category-name-resale = Перепродажа
+cargo-console-menu-resale-name = {$name}  ·  x{$qty}
+cargo-console-menu-resale-tooltip = Склад станции: {$qty} шт. (продано игроками)
+cargo-console-resale-out-of-stock = Нет на складе перепродажи

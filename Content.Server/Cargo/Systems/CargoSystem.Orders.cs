@@ -22,7 +22,10 @@ using Robust.Shared.Utility;
 using System.Linq;
 using Content.Shared._NF.Bank.BUI; // Frontier
 using Content.Server._Exodus.Economy; // Exodus dynamic market
+using Content.Server._NF.Market.Components; // Exodus resale stock
+using Content.Server._NF.Market.Extensions; // Exodus market upsert deduct
 using Content.Shared._Exodus.Economy; // Exodus CargoMarketListing
+using Content.Shared.Stacks;
 
 namespace Content.Server.Cargo.Systems
 {
@@ -213,6 +216,25 @@ namespace Content.Server.Cargo.Systems
                 PlayDenySound(uid, component);
             }
 
+            // Exodus: resale stock — cannot approve more than remaining station market stock
+            if (order.FromResaleStock)
+            {
+                var available = GetResaleStockQuantity(station.Value, order.ProductId);
+                if (available <= 0)
+                {
+                    ConsolePopup(args.Actor, Loc.GetString("cargo-console-resale-out-of-stock"));
+                    PlayDenySound(uid, component);
+                    return;
+                }
+
+                if (order.OrderQuantity > available)
+                {
+                    order.OrderQuantity = available;
+                    ConsolePopup(args.Actor, Loc.GetString("cargo-console-snip-snip"));
+                    PlayDenySound(uid, component);
+                }
+            }
+
             // Exodus-begin: sequential buy lots × global sector factor; optional local MarketModifier on console
             var marketKey = _dynamicMarket.GetMarketKeyFromPrototype(order.ProductId);
             var lotSize = _dynamicMarket.GetLotSizeForPrototype(order.ProductId);
@@ -221,14 +243,24 @@ namespace Content.Server.Cargo.Systems
                 consoleMod = orderMarketMod.Mod;
 
             var marketTx = new MarketTransactionState();
-            var cost = (int)Math.Round(_dynamicMarket.CalculateSequentialBuyCost(
-                marketKey,
-                order.Price,
-                order.OrderQuantity,
-                lotSize,
-                consoleMod,
-                marketTx,
-                applyImpact: false));
+            int cost;
+            if (order.FromResaleStock)
+            {
+                // Unit price frozen at add-time (already includes factor); do not multiply factor again.
+                cost = order.Price * order.OrderQuantity;
+                _dynamicMarket.ApplyBuyPressure(marketKey, order.OrderQuantity, lotSize, marketTx);
+            }
+            else
+            {
+                cost = (int)Math.Round(_dynamicMarket.CalculateSequentialBuyCost(
+                    marketKey,
+                    order.Price,
+                    order.OrderQuantity,
+                    lotSize,
+                    consoleMod,
+                    marketTx,
+                    applyImpact: false));
+            }
             // Exodus-end
 
             // Not enough balance
@@ -261,6 +293,16 @@ namespace Content.Server.Cargo.Systems
             if (!_bank.TryBankWithdraw(player, cost))
             {
                 ConsolePopup(args.Actor, Loc.GetString("cargo-console-insufficient-funds", ("cost", cost)));
+                PlayDenySound(uid, component);
+                return;
+            }
+
+            // Exodus: deduct resale stock only after successful payment
+            if (order.FromResaleStock && !TryDeductResaleStock(station.Value, order.ProductId, order.OrderQuantity))
+            {
+                // Refund on stock race
+                _bank.TryBankDeposit(player, cost);
+                ConsolePopup(args.Actor, Loc.GetString("cargo-console-resale-out-of-stock"));
                 PlayDenySound(uid, component);
                 return;
             }
@@ -381,6 +423,14 @@ namespace Content.Server.Cargo.Systems
             if (!TryGetOrderDatabase(uid, out var dbUid, out var orderDatabase, component))
                 return;
 
+            // Exodus-begin: resale stock from sold goods (not YAML cargo catalog)
+            if (CargoMarketListing.TryParseResaleId(args.CargoProductId, out var resaleEntityId))
+            {
+                TryAddResaleOrder(uid, component, player, orderDatabase, args, resaleEntityId);
+                return;
+            }
+            // Exodus-end
+
             if (!_protoMan.TryIndex<CargoProductPrototype>(args.CargoProductId, out var product))
             {
                 Log.Error($"Tried to add invalid cargo product {args.CargoProductId} as order!");
@@ -463,36 +513,187 @@ namespace Content.Server.Cargo.Systems
         }
         // End Frontier
 
-        // Exodus-begin: catalog prices for all order consoles share one global market index
+        // Exodus-begin: catalog + resale stock listings
         private List<CargoMarketListing> BuildCargoMarketListings(EntityUid consoleUid, CargoOrderConsoleComponent component)
         {
             var listings = new List<CargoMarketListing>();
-            if (!_dynamicMarket.Enabled)
-                return listings;
 
             var consoleMod = 1.0;
             if (TryComp<MarketModifierComponent>(consoleUid, out var mod) && mod.Buy)
                 consoleMod = mod.Mod;
+
+            // Entity prototypes already offered by YAML cargo catalog (skip in resale section).
+            var catalogEntityIds = new HashSet<string>();
 
             foreach (var product in _protoMan.EnumeratePrototypes<CargoProductPrototype>())
             {
                 if (component.AllowedGroups != null && !component.AllowedGroups.Contains(product.Group))
                     continue;
 
+                catalogEntityIds.Add(product.Product);
+
                 var key = _dynamicMarket.GetMarketKeyFromPrototype(product.Product);
+                var factor = _dynamicMarket.Enabled ? _dynamicMarket.GetFactor(key) : 1.0;
                 _dynamicMarket.TryGetQuote(key, out var quote);
-                var unitPrice = (int)Math.Max(0, Math.Round(product.Cost * quote.Factor * consoleMod));
+                var unitPrice = (int)Math.Max(0, Math.Round(product.Cost * factor * consoleMod));
 
                 listings.Add(new CargoMarketListing
                 {
                     ProductId = product.ID,
+                    EntityProtoId = product.Product,
+                    DisplayName = product.Name,
+                    Category = product.Category,
                     UnitPrice = unitPrice,
                     Trend = quote.Trend,
                     ChangePercent = quote.ChangePercent,
+                    StockQuantity = null,
+                    IsResale = false,
                 });
             }
 
+            // Sold goods on this station's cargo market that are NOT in the static catalog.
+            var station = _station.GetOwningStation(consoleUid);
+            if (station != null && TryComp<CargoMarketDataComponent>(station, out var market))
+            {
+                foreach (var entry in market.MarketDataList)
+                {
+                    if (entry.Quantity <= 0)
+                        continue;
+
+                    if (catalogEntityIds.Contains(entry.Prototype))
+                        continue;
+
+                    if (!_protoMan.TryIndex<EntityPrototype>(entry.Prototype, out var entProto))
+                        continue;
+
+                    var key = _dynamicMarket.GetMarketKeyFromPrototype(entry.Prototype);
+                    var factor = _dynamicMarket.Enabled ? _dynamicMarket.GetFactor(key) : 1.0;
+                    _dynamicMarket.TryGetQuote(key, out var quote);
+
+                    // Base unit from sell-time appraisal snapshot, live sector factor on top.
+                    var unitPrice = (int)Math.Max(1, Math.Round(entry.Price * factor * consoleMod));
+
+                    listings.Add(new CargoMarketListing
+                    {
+                        ProductId = CargoMarketListing.MakeResaleProductId(entry.Prototype),
+                        EntityProtoId = entry.Prototype,
+                        DisplayName = entProto.Name,
+                        Category = CargoMarketListing.ResaleCategoryKey,
+                        UnitPrice = unitPrice,
+                        Trend = quote.Trend,
+                        ChangePercent = quote.ChangePercent,
+                        StockQuantity = entry.Quantity,
+                        IsResale = true,
+                    });
+                }
+            }
+
             return listings;
+        }
+
+        private void TryAddResaleOrder(
+            EntityUid consoleUid,
+            CargoOrderConsoleComponent component,
+            EntityUid player,
+            StationCargoOrderDatabaseComponent orderDatabase,
+            CargoConsoleAddOrderMessage args,
+            string entityProtoId)
+        {
+            if (!_protoMan.TryIndex<EntityPrototype>(entityProtoId, out var entProto))
+            {
+                PlayDenySound(consoleUid, component);
+                return;
+            }
+
+            var station = _station.GetOwningStation(consoleUid);
+            if (station == null || !TryComp<CargoMarketDataComponent>(station, out var market))
+            {
+                ConsolePopup(player, Loc.GetString("cargo-console-resale-out-of-stock"));
+                PlayDenySound(consoleUid, component);
+                return;
+            }
+
+            Content.Shared._NF.Market.MarketData? stock = null;
+            foreach (var entry in market.MarketDataList)
+            {
+                if (entry.Prototype == entityProtoId)
+                {
+                    stock = entry;
+                    break;
+                }
+            }
+
+            if (stock == null || stock.Quantity <= 0)
+            {
+                ConsolePopup(player, Loc.GetString("cargo-console-resale-out-of-stock"));
+                PlayDenySound(consoleUid, component);
+                return;
+            }
+
+            var amount = Math.Clamp(args.Amount, 1, stock.Quantity);
+            var consoleMod = 1.0;
+            if (TryComp<MarketModifierComponent>(consoleUid, out var mod) && mod.Buy)
+                consoleMod = mod.Mod;
+
+            var key = _dynamicMarket.GetMarketKeyFromPrototype(entityProtoId);
+            var factor = _dynamicMarket.Enabled ? _dynamicMarket.GetFactor(key) : 1.0;
+            var unitPrice = (int)Math.Max(1, Math.Round(stock.Price * factor * consoleMod));
+
+            var data = new CargoOrderData(
+                GenerateOrderId(orderDatabase),
+                entityProtoId,
+                entProto.Name,
+                unitPrice,
+                amount,
+                args.Requester,
+                args.Reason,
+                EntityManager.GetNetEntity(consoleUid),
+                fromResaleStock: true);
+
+            if (!TryAddOrder(orderDatabase.Owner, data, orderDatabase))
+            {
+                PlayDenySound(consoleUid, component);
+                return;
+            }
+
+            _adminLogger.Add(LogType.Action, LogImpact.Low,
+                $"{ToPrettyString(player):user} added resale order [orderId:{data.OrderId}, quantity:{data.OrderQuantity}, product:{data.ProductId}]");
+
+            UpdateOrders(station.Value);
+        }
+
+        private int GetResaleStockQuantity(EntityUid station, string entityProtoId)
+        {
+            if (!TryComp<CargoMarketDataComponent>(station, out var market))
+                return 0;
+
+            foreach (var entry in market.MarketDataList)
+            {
+                if (entry.Prototype == entityProtoId)
+                    return entry.Quantity;
+            }
+
+            return 0;
+        }
+
+        private bool TryDeductResaleStock(EntityUid station, string entityProtoId, int amount)
+        {
+            if (!TryComp<CargoMarketDataComponent>(station, out var market) || amount <= 0)
+                return false;
+
+            foreach (var entry in market.MarketDataList)
+            {
+                if (entry.Prototype != entityProtoId)
+                    continue;
+
+                if (entry.Quantity < amount)
+                    return false;
+
+                market.MarketDataList.Upsert(entityProtoId, -amount, entry.Price, entry.StackPrototype);
+                return true;
+            }
+
+            return false;
         }
         // Exodus-end
 

@@ -169,42 +169,64 @@ namespace Content.Client.Cargo.UI
         public void PopulateProducts()
         {
             Products.RemoveAllChildren();
-            var products = ProductPrototypes.ToList();
-            products.Sort((x, y) =>
-                string.Compare(x.Name, y.Name, StringComparison.CurrentCultureIgnoreCase));
-
             var search = SearchBar.Text.Trim().ToLowerInvariant();
             var shown = 0;
 
-            foreach (var prototype in products)
+            // Prefer server listings (catalog + resale stock). Fallback to prototypes only.
+            if (_marketListings is { Count: > 0 })
             {
-                if (!PassesFilters(prototype, search))
-                    continue;
-
-                var unitCost = prototype.Cost;
-                double? changePercent = null;
-                if (_marketListings != null)
+                var rows = _marketListings.Values.ToList();
+                rows.Sort((a, b) =>
                 {
-                    changePercent = 0;
-                    if (_marketListings.TryGetValue(prototype.ID, out var listing))
-                    {
-                        unitCost = listing.UnitPrice;
-                        changePercent = listing.ChangePercent;
-                    }
+                    // Resale after catalog, then by name.
+                    var cmp = a.IsResale.CompareTo(b.IsResale);
+                    if (cmp != 0)
+                        return cmp;
+                    return string.Compare(a.DisplayName, b.DisplayName, StringComparison.CurrentCultureIgnoreCase);
+                });
+
+                foreach (var listing in rows)
+                {
+                    if (!PassesListingFilters(listing, search))
+                        continue;
+
+                    AddListingRow(listing);
+                    shown++;
                 }
+            }
+            else
+            {
+                var products = ProductPrototypes.ToList();
+                products.Sort((x, y) =>
+                    string.Compare(x.Name, y.Name, StringComparison.CurrentCultureIgnoreCase));
 
-                var button = new CargoProductRow
+                foreach (var prototype in products)
                 {
-                    Product = prototype,
-                    ProductName = { Text = prototype.Name },
-                    MainButton = { ToolTip = prototype.Description },
-                    PointCost = { Text = BankSystemExtensions.ToSpesoString(unitCost) },
-                    Icon = { Texture = _spriteSystem.Frame0(prototype.Icon) },
-                };
-                MarketTerminalTheme.ApplyTrendOptional(button.Trend, changePercent);
-                button.MainButton.OnPressed += args => OnItemSelected?.Invoke(args);
-                Products.AddChild(button);
-                shown++;
+                    if (search.Length != 0)
+                    {
+                        if (!prototype.Name.Contains(search, StringComparison.CurrentCultureIgnoreCase) &&
+                            !prototype.Description.Contains(search, StringComparison.CurrentCultureIgnoreCase))
+                            continue;
+                    }
+                    else if (_category != null &&
+                             NormalizeCategoryKey(prototype.Category) != _category)
+                    {
+                        continue;
+                    }
+
+                    var button = new CargoProductRow
+                    {
+                        Product = prototype,
+                        ListingProductId = prototype.ID,
+                        ProductName = { Text = prototype.Name },
+                        MainButton = { ToolTip = prototype.Description },
+                        PointCost = { Text = BankSystemExtensions.ToSpesoString(prototype.Cost) },
+                        Icon = { Texture = _spriteSystem.Frame0(prototype.Icon) },
+                    };
+                    button.MainButton.OnPressed += args => OnItemSelected?.Invoke(args);
+                    Products.AddChild(button);
+                    shown++;
+                }
             }
 
             ProductCountLabel.Text = Loc.GetString("cargo-console-menu-product-count", ("count", shown));
@@ -214,30 +236,83 @@ namespace Content.Client.Cargo.UI
                     ("category", CategoryDisplayName(_category)));
         }
 
-        private bool PassesFilters(CargoProductPrototype prototype, string search)
+        private void AddListingRow(CargoMarketListing listing)
+        {
+            var name = listing.DisplayName;
+            if (listing.IsResale && listing.StockQuantity is { } qty)
+                name = Loc.GetString("cargo-console-menu-resale-name", ("name", listing.DisplayName), ("qty", qty));
+
+            var tooltip = listing.IsResale
+                ? Loc.GetString("cargo-console-menu-resale-tooltip", ("qty", listing.StockQuantity ?? 0))
+                : listing.DisplayName;
+
+            CargoProductPrototype? cargoProduct = null;
+
+            if (!listing.IsResale && _protoManager.TryIndex<CargoProductPrototype>(listing.ProductId, out var product))
+            {
+                cargoProduct = product;
+                tooltip = product.Description;
+            }
+
+            var button = new CargoProductRow
+            {
+                Product = cargoProduct,
+                ListingProductId = listing.ProductId,
+                IsResale = listing.IsResale,
+                StockQuantity = listing.StockQuantity,
+                ProductName = { Text = name },
+                MainButton = { ToolTip = tooltip },
+                PointCost = { Text = BankSystemExtensions.ToSpesoString(listing.UnitPrice) },
+            };
+
+            if (!listing.IsResale && cargoProduct != null)
+                button.Icon.Texture = _spriteSystem.Frame0(cargoProduct.Icon);
+            else if (_protoManager.TryIndex<EntityPrototype>(listing.EntityProtoId, out var ep))
+                button.Icon.Texture = _spriteSystem.Frame0(ep);
+
+            MarketTerminalTheme.ApplyTrendOptional(button.Trend, listing.ChangePercent);
+            button.MainButton.OnPressed += args => OnItemSelected?.Invoke(args);
+            Products.AddChild(button);
+        }
+
+        private bool PassesListingFilters(CargoMarketListing listing, string search)
         {
             if (search.Length != 0)
             {
-                return prototype.Name.Contains(search, StringComparison.CurrentCultureIgnoreCase)
-                       || prototype.Description.Contains(search, StringComparison.CurrentCultureIgnoreCase);
+                return listing.DisplayName.Contains(search, StringComparison.CurrentCultureIgnoreCase);
             }
 
             if (_category == null)
                 return true;
 
-            return NormalizeCategoryKey(prototype.Category) == _category;
+            if (listing.IsResale)
+                return _category == CargoMarketListing.ResaleCategoryKey;
+
+            return NormalizeCategoryKey(listing.Category) == _category;
         }
 
         public void PopulateCategories()
         {
             // Rebuild category set without wiping the player's current filter.
-            // Keys are normalized loc-ids so "Engineering" and cargoproduct-category-name-engineering merge.
             var next = new List<string>();
             foreach (var prototype in ProductPrototypes)
             {
                 var key = NormalizeCategoryKey(prototype.Category);
                 if (!next.Contains(key))
                     next.Add(key);
+            }
+
+            // Resale stock category when station has non-catalog sold goods.
+            if (_marketListings != null)
+            {
+                foreach (var listing in _marketListings.Values)
+                {
+                    if (!listing.IsResale)
+                        continue;
+                    if (!next.Contains(CargoMarketListing.ResaleCategoryKey))
+                        next.Add(CargoMarketListing.ResaleCategoryKey);
+                    break;
+                }
             }
 
             // Sort by localized display name for the sidebar.

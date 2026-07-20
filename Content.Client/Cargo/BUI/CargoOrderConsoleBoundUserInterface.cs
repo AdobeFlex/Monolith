@@ -36,10 +36,16 @@ namespace Content.Client.Cargo.BUI
         public int OrderCount { get; private set; }
 
         /// <summary>
-        /// Currently selected product
+        /// Currently selected product (catalog) or resale listing id.
         /// </summary>
         [ViewVariables]
         private CargoProductPrototype? _product;
+
+        /// <summary>Exodus: listing id sent to server (cargo product id or resale:EntityId).</summary>
+        private string? _selectedListingId;
+
+        /// <summary>Exodus: max amount for resale stock orders.</summary>
+        private int? _selectedStockCap;
 
         public CargoOrderConsoleBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
         {
@@ -78,11 +84,28 @@ namespace Content.Client.Cargo.BUI
 
                 _orderMenu.Description.SetMessage(description);
                 _product = row.Product;
+                _selectedListingId = !string.IsNullOrEmpty(row.ListingProductId)
+                    ? row.ListingProductId
+                    : row.Product?.ID;
+                _selectedStockCap = row.StockQuantity;
                 _orderMenu.ProductName.Text = row.ProductName.Text;
                 _orderMenu.PointCost.Text = row.PointCost.Text;
                 _orderMenu.Requester.Text = orderRequester;
                 _orderMenu.Reason.Text = "";
                 _orderMenu.Amount.Value = 1;
+                // Exodus: cap amount to resale stock / order capacity via SpinBox.IsValid
+                var stockCap = _selectedStockCap;
+                var orderCap = OrderCapacity;
+                _orderMenu.Amount.IsValid = n =>
+                {
+                    if (n < 1)
+                        return false;
+                    if (n > orderCap)
+                        return false;
+                    if (stockCap is { } sc && n > sc)
+                        return false;
+                    return true;
+                };
 
                 _orderMenu.OpenCentered();
             };
@@ -147,10 +170,17 @@ namespace Content.Client.Cargo.BUI
                 return false;
             }
 
+            if (_selectedStockCap is { } stockCap && orderAmt > stockCap)
+                orderAmt = stockCap;
+
+            var productId = _selectedListingId ?? _product?.ID ?? "";
+            if (string.IsNullOrEmpty(productId))
+                return false;
+
             SendMessage(new CargoConsoleAddOrderMessage(
                 _orderMenu?.Requester.Text ?? "",
                 _orderMenu?.Reason.Text ?? "",
-                _product?.ID ?? "",
+                productId,
                 orderAmt));
 
             return true;
