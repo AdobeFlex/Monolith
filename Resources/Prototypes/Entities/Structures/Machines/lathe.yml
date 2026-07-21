@@ -267,6 +267,15 @@
     - UpgradeKits # Mono
     - UpgradeKits_Goob # Mono
     - SMSurgery # Shitmed Change
+    # Exodus-begin company-fleet
+    - CompanyBlackhawkDynamic
+    - CompanyHorizonDynamic
+    - CompanyRedSailDynamic
+    - CompanyMacoDynamic
+    - CompanyShmDynamic
+    - CompanyCerberusDynamic
+    - CompanyBratvaDynamic
+    # Exodus-end
     # WD EDIT START
     - VisionGoggles
     # WD EDIT END
@@ -894,6 +903,8 @@
     productValueModifier: 0.05
     staticPacks:
     - MedicalSynthLimbsStatic
+    dynamicPacks: # Exodus company-fleet
+    - CompanyHmeOrgansDynamic # Exodus company-fleet
   - type: EmagLatheRecipes
     emagStaticPacks:
     - MedicalPizzaLimbsStatic

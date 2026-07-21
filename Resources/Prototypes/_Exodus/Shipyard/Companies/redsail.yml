@@ -1,0 +1,73 @@
+- type: vessel
+  id: RedSailSloop
+  parent: BaseVessel
+  name: company-vessel-redsail-sloop-name
+  description: company-vessel-redsail-sloop-description
+  price: 68000
+  category: Small
+  group: Shipyard
+  requiredCompanies:
+  - RedSailCorsairs
+  shuttlePath: /SharedMaps/_Mono/Shuttles/phantom.yml
+  class:
+  - Pirate
+  engine:
+  - Plasma
+  limit: 3
+
+- type: gameMap
+  id: RedSailSloop
+  mapName: 'Красный Парус Шлюп'
+  mapPath: /SharedMaps/_Mono/Shuttles/phantom.yml
+  minPlayers: 0
+  stations:
+    RedSailSloop:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Шлюп{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+          Pilot: [ 0, 0 ]
+          Mercenary: [ 0, 0 ]
+
+- type: vessel
+  id: RedSailPrize
+  parent: BaseVessel
+  name: company-vessel-redsail-prize-name
+  description: company-vessel-redsail-prize-description
+  price: 98000
+  category: Medium
+  group: Shipyard
+  requiredCompanies:
+  - RedSailCorsairs
+  shuttlePath: /SharedMaps/_Mono/Shuttles/BlackMarket/vulture.yml
+  class:
+  - Pirate
+  engine:
+  - AME
+  limit: 2
+
+- type: gameMap
+  id: RedSailPrize
+  mapName: 'Красный Парус Приз'
+  mapPath: /SharedMaps/_Mono/Shuttles/BlackMarket/vulture.yml
+  minPlayers: 0
+  stations:
+    RedSailPrize:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Приз{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+          Pilot: [ 0, 0 ]
+          Mercenary: [ 0, 0 ]

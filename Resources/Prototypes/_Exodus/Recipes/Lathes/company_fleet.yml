@@ -1,0 +1,191 @@
+# Company fleet / unique craft recipes (unlocked via tech disks).
+
+# --- Blackhawk ---
+- type: latheRecipe
+  id: ShipArmorModuleBlackhawkFlatpack
+  result: ShipArmorModuleBlackhawkFlatpack
+  completetime: 10
+  materials:
+    Steel: 2500
+    Plasma: 1200
+    Silver: 400
+
+# --- Horizon ---
+- type: latheRecipe
+  id: NebulaGasSiphonFlatpack
+  result: NebulaGasSiphonFlatpack
+  completetime: 10
+  materials:
+    Steel: 2000
+    Plasma: 800
+    Glass: 500
+
+- type: latheRecipe
+  id: NebulaGasSiphonMachineCircuitboard
+  parent: BaseCircuitboardRecipe
+  result: NebulaGasSiphonMachineCircuitboard
+
+# --- Red Sail ---
+- type: latheRecipe
+  id: NearestShuttleTeleporterFlatpack
+  result: NearestShuttleTeleporterFlatpack
+  completetime: 12
+  materials:
+    Steel: 1500
+    Plasma: 1000
+    Gold: 300
+    Silver: 300
+
+# --- HME organs ---
+- type: latheRecipe
+  id: HmeSynthHeart
+  result: HmeSynthHeart
+  completetime: 15
+  materials:
+    Biomass: 14
+    Plasma: 200
+
+- type: latheRecipe
+  id: HmeSynthLungs
+  result: HmeSynthLungs
+  completetime: 15
+  materials:
+    Biomass: 14
+    Plasma: 200
+
+- type: latheRecipe
+  id: HmeSynthLiver
+  result: HmeSynthLiver
+  completetime: 15
+  materials:
+    Biomass: 14
+    Plasma: 200
+
+- type: latheRecipe
+  id: HmeSynthEyes
+  result: HmeSynthEyes
+  completetime: 12
+  materials:
+    Biomass: 10
+    Glass: 200
+    Plasma: 100
+
+- type: latheRecipe
+  id: HmeSynthLeftLeg
+  result: HmeSynthLeftLeg
+  completetime: 12
+  materials:
+    Biomass: 12
+    Steel: 100
+
+- type: latheRecipe
+  id: HmeSynthRightLeg
+  result: HmeSynthRightLeg
+  completetime: 12
+  materials:
+    Biomass: 12
+    Steel: 100
+
+# --- Midnight Arms ---
+- type: latheRecipe
+  id: WeaponPistolMaco
+  result: WeaponPistolMaco
+  completetime: 6
+  materials:
+    Steel: 800
+    Plastic: 300
+
+- type: latheRecipe
+  id: MagazinePistolMaco
+  result: Magazine9x19mmPistolFMJ
+  completetime: 3
+  materials:
+    Steel: 150
+
+# --- Steel Hammer ---
+- type: latheRecipe
+  id: SheetPlasteelShm
+  result: SheetPlasteel1
+  completetime: 2
+  materials:
+    Steel: 100
+    Plasma: 100
+
+- type: latheRecipe
+  id: RCDAmmoShm
+  result: RCDAmmo
+  completetime: 4
+  materials:
+    Steel: 400
+    Plastic: 200
+
+# --- Cerberus ---
+- type: latheRecipe
+  id: SyndicateBombCerberus
+  result: SyndicateBomb
+  completetime: 30
+  materials:
+    Steel: 5000
+    Plasma: 3000
+    Uranium: 1000
+    Plastic: 1000
+
+# --- Bratva ---
+- type: latheRecipe
+  id: ClothingOuterHardsuitBratva
+  result: ClothingOuterHardsuitBratva
+  completetime: 12
+  materials:
+    Steel: 2000
+    Plastic: 1000
+    Cloth: 500
+    Plasma: 300
+
+# --- Packs (dynamic unlock via tech disk) ---
+- type: latheRecipePack
+  id: CompanyBlackhawkDynamic
+  recipes:
+  - ShipArmorModuleBlackhawkFlatpack
+
+- type: latheRecipePack
+  id: CompanyHorizonDynamic
+  recipes:
+  - NebulaGasSiphonFlatpack
+  - NebulaGasSiphonMachineCircuitboard
+
+- type: latheRecipePack
+  id: CompanyRedSailDynamic
+  recipes:
+  - NearestShuttleTeleporterFlatpack
+
+- type: latheRecipePack
+  id: CompanyHmeOrgansDynamic
+  recipes:
+  - HmeSynthHeart
+  - HmeSynthLungs
+  - HmeSynthLiver
+  - HmeSynthEyes
+  - HmeSynthLeftLeg
+  - HmeSynthRightLeg
+
+- type: latheRecipePack
+  id: CompanyMacoDynamic
+  recipes:
+  - WeaponPistolMaco
+  - MagazinePistolMaco
+
+- type: latheRecipePack
+  id: CompanyShmDynamic
+  recipes:
+  - SheetPlasteelShm
+  - RCDAmmoShm
+
+- type: latheRecipePack
+  id: CompanyCerberusDynamic
+  recipes:
+  - SyndicateBombCerberus
+
+- type: latheRecipePack
+  id: CompanyBratvaDynamic
+  recipes:
+  - ClothingOuterHardsuitBratva

@@ -1,0 +1,14 @@
+- type: entity
+  parent: WeaponPistolMk58
+  id: WeaponPistolMaco
+  name: maco-licensed-pistol-name
+  description: maco-licensed-pistol-description
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Pistols/mk58.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+      color: "#FF2E2E"
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]

@@ -1,0 +1,73 @@
+- type: vessel
+  id: ShmTug
+  parent: BaseVessel
+  name: company-vessel-shm-tug-name
+  description: company-vessel-shm-tug-description
+  price: 58000
+  category: Small
+  group: Shipyard
+  requiredCompanies:
+  - SteelHammerManufacturing
+  shuttlePath: /SharedMaps/_Mono/Shuttles/hammerhead.yml
+  class:
+  - Engineering
+  engine:
+  - Plasma
+  limit: 4
+
+- type: gameMap
+  id: ShmTug
+  mapName: 'СМ Буксир'
+  mapPath: /SharedMaps/_Mono/Shuttles/hammerhead.yml
+  minPlayers: 0
+  stations:
+    ShmTug:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Буксир{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+          Pilot: [ 0, 0 ]
+          Mercenary: [ 0, 0 ]
+
+- type: vessel
+  id: ShmFrameyard
+  parent: BaseVessel
+  name: company-vessel-shm-frameyard-name
+  description: company-vessel-shm-frameyard-description
+  price: 100000
+  category: Medium
+  group: Shipyard
+  requiredCompanies:
+  - SteelHammerManufacturing
+  shuttlePath: /SharedMaps/_Mono/Shuttles/framework.yml
+  class:
+  - Engineering
+  engine:
+  - AME
+  limit: 2
+
+- type: gameMap
+  id: ShmFrameyard
+  mapName: 'СМ Стапель'
+  mapPath: /SharedMaps/_Mono/Shuttles/framework.yml
+  minPlayers: 0
+  stations:
+    ShmFrameyard:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Стапель{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+          Pilot: [ 0, 0 ]
+          Mercenary: [ 0, 0 ]

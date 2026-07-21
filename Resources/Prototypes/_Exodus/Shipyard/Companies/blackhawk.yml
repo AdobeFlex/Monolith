@@ -1,0 +1,75 @@
+# Blackhawk PMC — company-gated fleet.
+
+- type: vessel
+  id: BlackhawkStiletto
+  parent: BaseVessel
+  name: company-vessel-blackhawk-stiletto-name
+  description: company-vessel-blackhawk-stiletto-description
+  price: 65000
+  category: Small
+  group: Shipyard
+  requiredCompanies:
+  - blackhawkpmc
+  shuttlePath: /SharedMaps/_Mono/Shuttles/kestrel.yml
+  class:
+  - Mercenary
+  engine:
+  - Uranium
+  limit: 4
+
+- type: gameMap
+  id: BlackhawkStiletto
+  mapName: 'Блэкхок Стилет'
+  mapPath: /SharedMaps/_Mono/Shuttles/kestrel.yml
+  minPlayers: 0
+  stations:
+    BlackhawkStiletto:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Стилет{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+          Pilot: [ 0, 0 ]
+          Mercenary: [ 0, 0 ]
+
+- type: vessel
+  id: BlackhawkContractor
+  parent: BaseVessel
+  name: company-vessel-blackhawk-contractor-name
+  description: company-vessel-blackhawk-contractor-description
+  price: 95000
+  category: Medium
+  group: Shipyard
+  requiredCompanies:
+  - blackhawkpmc
+  shuttlePath: /SharedMaps/_Exodus/Shuttles/scout.yml
+  class:
+  - Mercenary
+  engine:
+  - Plasma
+  limit: 2
+
+- type: gameMap
+  id: BlackhawkContractor
+  mapName: 'Блэкхок Контрактор'
+  mapPath: /SharedMaps/_Exodus/Shuttles/scout.yml
+  minPlayers: 0
+  stations:
+    BlackhawkContractor:
+      stationProto: StandardFrontierVessel
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Контрактор{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          Contractor: [ 0, 0 ]
+          Pilot: [ 0, 0 ]
+          Mercenary: [ 0, 0 ]

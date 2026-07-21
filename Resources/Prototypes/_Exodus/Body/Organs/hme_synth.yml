@@ -1,0 +1,97 @@
+# Harmony Medical — advanced surgical synth organs.
+# Buffs via existing Organ.OnAdd / OrganEffectSystem and organ-local Metabolizer
+# (same pattern as asakim / cybernetic organs). No corp-named EntitySystems.
+
+- type: entity
+  parent: BioSynthHeart
+  id: HmeSynthHeart
+  name: hme-synth-heart-name
+  description: hme-synth-heart-description
+  components:
+  # Asakim-style: stronger metabolizer on the organ itself (no custom body component).
+  - type: Metabolizer
+    maxReagents: 4
+    metabolizerTypes: [ Human ]
+    groups:
+    - id: Medicine
+      rateModifier: 1.3
+    - id: Cryogenic
+    - id: Poison
+      rateModifier: 1.15
+    - id: Narcotic
+
+- type: entity
+  parent: BioSynthLungs
+  id: HmeSynthLungs
+  name: hme-synth-lungs-name
+  description: hme-synth-lungs-description
+  components:
+  - type: Organ
+    slotId: lungs
+    onAdd:
+    - type: StaminaModifier
+      modifier: 1.2
+  - type: Metabolizer
+    removeEmpty: true
+    solutionOnBody: false
+    solution: "Lung"
+    metabolizerTypes: [ Human ]
+    groups:
+    - id: Gas
+      rateModifier: 120.0
+
+- type: entity
+  parent: BioSynthLiver
+  id: HmeSynthLiver
+  name: hme-synth-liver-name
+  description: hme-synth-liver-description
+  components:
+  - type: Organ
+    slotId: liver
+    onAdd:
+    - type: DamageProtectionBuff
+      modifiers:
+        hmeLiver:
+          id: HmeLiverProtection
+          coefficients:
+            Poison: 0.8
+  - type: Metabolizer
+    maxReagents: 3
+    metabolizerTypes: [ Human ]
+    groups:
+    - id: Medicine
+    - id: Poison
+      rateModifier: 1.35
+    - id: Narcotic
+
+- type: entity
+  parent: BioSynthEyes
+  id: HmeSynthEyes
+  name: hme-synth-eyes-name
+  description: hme-synth-eyes-description
+  components:
+  - type: Organ
+    slotId: eyes
+    onAdd:
+    - type: FlashImmunity
+    - type: EyeProtection
+
+- type: entity
+  parent: BioSynthLeftLeg
+  id: HmeSynthLeftLeg
+  name: hme-synth-left-leg-name
+  description: hme-synth-left-leg-description
+  components:
+  - type: MovementBodyPart
+    walkSpeed: 2.7
+    sprintSpeed: 4.85
+
+- type: entity
+  parent: BioSynthRightLeg
+  id: HmeSynthRightLeg
+  name: hme-synth-right-leg-name
+  description: hme-synth-right-leg-description
+  components:
+  - type: MovementBodyPart
+    walkSpeed: 2.7
+    sprintSpeed: 4.85

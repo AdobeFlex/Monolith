@@ -10,4 +10,13 @@ public sealed partial class CompanyPrototype
     /// </summary>
     [DataField]
     public ProtoId<NpcFactionPrototype>? NpcFaction { get; private set; }
+
+    // Exodus-begin company-fleet
+    /// <summary>
+    /// Entity prototypes granted once on player spawn after company assignment
+    /// (tech disks, starter kits, etc.). Empty = nothing extra.
+    /// </summary>
+    [DataField]
+    public List<EntProtoId> StartingItems { get; private set; } = new();
+    // Exodus-end
 }

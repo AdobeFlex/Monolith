@@ -57,3 +57,35 @@
     increment: 90
   - type: Flatpack
     entity: ShipArmorModule
+
+- type: entity
+  parent: BaseFlatpack
+  id: ShipArmorModuleBlackhawkFlatpack
+  name: ship-armor-module-blackhawk-flatpack-name
+  description: ship-armor-module-blackhawk-flatpack-description
+  components:
+  - type: Transform
+    noRot: false
+  - type: Rotatable
+    rotateWhileAnchored: false
+    increment: 90
+  - type: Flatpack
+    entity: ShipArmorModuleBlackhawk
+
+- type: entity
+  parent: BaseFlatpack
+  id: NebulaGasSiphonFlatpack
+  name: nebula-gas-siphon-flatpack-name
+  description: nebula-gas-siphon-flatpack-description
+  components:
+  - type: Flatpack
+    entity: NebulaGasSiphon
+
+- type: entity
+  parent: BaseFlatpack
+  id: NearestShuttleTeleporterFlatpack
+  name: nearest-shuttle-teleporter-flatpack-name
+  description: nearest-shuttle-teleporter-flatpack-description
+  components:
+  - type: Flatpack
+    entity: NearestShuttleTeleporterPad

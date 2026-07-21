@@ -1,0 +1,45 @@
+- type: entity
+  id: NearestShuttleTeleporterPad
+  parent: BaseStructure
+  name: nearest-shuttle-teleporter-pad-name
+  description: nearest-shuttle-teleporter-pad-description
+  components:
+  - type: Sprite
+    sprite: Structures/Machines/cloning.rsi
+    state: pod_0
+    color: "#930000"
+  - type: Transform
+    anchored: true
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 60
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: InteractionOutline
+  - type: Clickable
+  - type: NearestShuttleTeleporter
+    maxRange: 512
+    cooldown: 60
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 150
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+  - type: StaticPrice
+    price: 4000
+  placement:
+    mode: SnapgridCenter

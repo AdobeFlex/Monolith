@@ -1,0 +1,65 @@
+- type: entity
+  id: NebulaGasSiphon
+  parent: [ BaseMachinePowered, ConstructibleMachine ]
+  name: nebula-gas-siphon-name
+  description: nebula-gas-siphon-description
+  components:
+  - type: Sprite
+    sprite: Structures/Shuttles/thruster.rsi
+    layers:
+    - state: base
+    - state: thrust
+      shader: unshaded
+      color: "#69E37F"
+  - type: Transform
+    anchored: true
+  - type: Rotatable
+    rotateWhileAnchored: true
+  - type: ApcPowerReceiver
+    powerLoad: 500
+  - type: ExtensionCableReceiver
+  - type: NebulaGasSiphon
+    range: 3
+    minDensity: 0.75
+    minSpeed: 1.5
+    molesPerSecond: 8
+    spawnGas: Plasma
+  - type: NodeContainer
+    nodes:
+      pipe:
+        !type:PipeNode
+        nodeGroupID: Pipe
+        pipeDirection: All
+  - type: AtmosPipeColor
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Electronic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 200
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+  - type: Machine
+    board: NebulaGasSiphonMachineCircuitboard
+  - type: StaticPrice
+    price: 2500
+  placement:
+    mode: SnapgridCenter
+
+- type: entity
+  id: NebulaGasSiphonMachineCircuitboard
+  parent: BaseMachineCircuitboard
+  name: nebula-gas-siphon-board-name
+  description: nebula-gas-siphon-board-description
+  components:
+  - type: MachineBoard
+    prototype: NebulaGasSiphon
+    stackRequirements:
+      Steel: 4
+      Cable: 2
