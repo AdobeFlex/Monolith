@@ -49,6 +49,7 @@
     spaceAxisRotation: 0
     minDensity: 0.75
     minSpeed: 1.5
+    fullSpeed: 300
     molesPerSecond: 8
     targetPressure: 101.325
     filterSlot:
