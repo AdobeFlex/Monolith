@@ -48,6 +48,12 @@ public sealed partial class NebulaGasSiphonComponent : Component
     public float MinSpeed = 1.5f;
 
     /// <summary>
+    /// Parent grid speed at which the siphon reaches full speed efficiency.
+    /// </summary>
+    [DataField]
+    public float FullSpeed = 300f;
+
+    /// <summary>
     /// Moles of gas injected into the pipe per second at full nebula density.
     /// </summary>
     [DataField]
