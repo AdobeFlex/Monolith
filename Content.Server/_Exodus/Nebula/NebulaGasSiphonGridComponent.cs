@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Robust.Shared.Maths;
 
 namespace Content.Server._Exodus.Nebula;
 
@@ -8,5 +9,8 @@ namespace Content.Server._Exodus.Nebula;
 [RegisterComponent]
 public sealed partial class NebulaGasSiphonGridComponent : Component
 {
+    public const int ClearanceBucketSize = 4;
+
     public readonly HashSet<EntityUid> Siphons = new();
+    public readonly Dictionary<Vector2i, HashSet<EntityUid>> ClearanceBuckets = new();
 }
