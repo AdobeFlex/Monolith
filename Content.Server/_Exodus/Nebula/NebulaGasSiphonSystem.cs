@@ -19,10 +19,13 @@ using Content.Shared.Maps;
 using Robust.Server.GameObjects;
 using Robust.Shared.Containers;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
+using Robust.Shared.Physics.Events;
 using Robust.Shared.Timing;
 
 namespace Content.Server._Exodus.Nebula;
@@ -34,6 +37,8 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
 {
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly SharedMapSystem _map = default!;
+    [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private readonly EntityLookupSystem _lookup = default!;
     [Dependency] private readonly TurfSystem _turf = default!;
     [Dependency] private readonly NodeContainerSystem _nodeContainer = default!;
     [Dependency] private readonly AtmosphereSystem _atmosphere = default!;
@@ -44,17 +49,21 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
     [Dependency] private readonly IComponentFactory _componentFactory = default!;
 
     private EntityQuery<PhysicsComponent> _physicsQuery;
+    private EntityQuery<FixturesComponent> _fixturesQuery;
     private EntityQuery<NebulaPresenceComponent> _presenceQuery;
     private EntityQuery<MapGridComponent> _gridQuery;
     private EntityQuery<NebulaGasSiphonGridComponent> _siphonGridQuery;
     private readonly PriorityQueue<EntityUid, TimeSpan> _siphonQueue = new();
     private readonly Dictionary<string, NebulaGasSiphonProfile?> _profiles = new();
     private readonly GasMixture _mergeBuffer = new();
+    private readonly HashSet<EntityUid> _tileEntityBuffer = new();
+    private readonly HashSet<EntityUid> _clearanceInvalidationBuffer = new();
 
     public override void Initialize()
     {
         base.Initialize();
         _physicsQuery = GetEntityQuery<PhysicsComponent>();
+        _fixturesQuery = GetEntityQuery<FixturesComponent>();
         _presenceQuery = GetEntityQuery<NebulaPresenceComponent>();
         _gridQuery = GetEntityQuery<MapGridComponent>();
         _siphonGridQuery = GetEntityQuery<NebulaGasSiphonGridComponent>();
@@ -64,12 +73,22 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         SubscribeLocalEvent<NebulaGasSiphonComponent, ComponentRemove>(OnSiphonRemove);
         SubscribeLocalEvent<NebulaGasSiphonComponent, EntityUnpausedEvent>(OnSiphonUnpaused);
         SubscribeLocalEvent<NebulaGasSiphonComponent, AnchorStateChangedEvent>(OnSiphonAnchorChanged);
+        SubscribeLocalEvent<NebulaGasSiphonComponent, MoveEvent>(OnSiphonMove);
         SubscribeLocalEvent<NebulaGasSiphonComponent, EntParentChangedMessage>(OnSiphonParentChanged);
         SubscribeLocalEvent<NebulaGasSiphonComponent, EntInsertedIntoContainerMessage>(OnFilterInserted);
         SubscribeLocalEvent<NebulaGasSiphonComponent, EntRemovedFromContainerMessage>(OnFilterRemoved);
         SubscribeLocalEvent<NebulaGasSiphonFilterComponent, ComponentStartup>(OnFilterStartup);
+        SubscribeLocalEvent<ActiveNebulaGasSiphonComponent, ComponentShutdown>(OnActiveSiphonShutdown);
         SubscribeLocalEvent<NebulaGasSiphonFilterComponent, ExaminedEvent>(OnFilterExamined);
         SubscribeLocalEvent<NebulaPresenceChangedEvent>(OnPresenceChanged);
+        SubscribeLocalEvent<TileChangedEvent>(OnTileChanged);
+        SubscribeLocalEvent<CollisionChangeEvent>(OnCollisionChange);
+        SubscribeLocalEvent<CollisionLayerChangeEvent>(OnCollisionLayerChange);
+        SubscribeLocalEvent<PhysicsBodyTypeChangedEvent>(OnBodyTypeChange);
+        SubscribeLocalEvent<FixturesComponent, ComponentStartup>(OnFixturesStartup);
+        SubscribeLocalEvent<FixturesComponent, ComponentShutdown>(OnFixturesShutdown);
+        SubscribeLocalEvent<FixturesComponent, GridFixtureChangeEvent>(OnGridFixtureChange);
+        SubscribeLocalEvent<AnchorStateChangedEvent>(OnAnchorStateChanged);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
 
@@ -84,18 +103,22 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
 
             if (TerminatingOrDeleted(uid)
                 || MetaData(uid).EntityPaused
-                || !HasComp<ActiveNebulaGasSiphonComponent>(uid)
+                || !TryComp<ActiveNebulaGasSiphonComponent>(uid, out var active)
                 || !TryComp<NebulaGasSiphonComponent>(uid, out var siphon)
                 || siphon.NextUpdate != nextUpdate)
             {
                 continue;
             }
 
-            ProcessSiphon(uid, siphon, curTime);
+            ProcessSiphon(uid, siphon, active, curTime);
         }
     }
 
-    private void ProcessSiphon(EntityUid uid, NebulaGasSiphonComponent siphon, TimeSpan curTime)
+    private void ProcessSiphon(
+        EntityUid uid,
+        NebulaGasSiphonComponent siphon,
+        ActiveNebulaGasSiphonComponent active,
+        TimeSpan curTime)
     {
         if (siphon.UpdateInterval <= TimeSpan.Zero)
             return;
@@ -112,10 +135,17 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         if (siphon.NextUpdate == TimeSpan.Zero)
             siphon.NextUpdate = curTime;
 
-        siphon.NextUpdate += siphon.UpdateInterval;
-        if (siphon.NextUpdate < curTime)
-            siphon.NextUpdate = curTime + siphon.UpdateInterval;
+        var nextUpdate = siphon.NextUpdate + siphon.UpdateInterval;
+        if (nextUpdate < curTime)
+            nextUpdate = curTime + siphon.UpdateInterval;
 
+        if (!active.PhaseApplied)
+        {
+            nextUpdate += active.PhaseOffset;
+            active.PhaseApplied = true;
+        }
+
+        siphon.NextUpdate = nextUpdate;
         _siphonQueue.Enqueue(uid, siphon.NextUpdate);
 
         if (presence.Density <= siphon.MinDensity)
@@ -134,20 +164,23 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         if (!_gridQuery.TryGetComponent(gridUid, out var grid))
             return;
 
-        if (!HasClearAxis(xform, gridUid, grid, siphon.Range, siphon.FootprintLength, siphon.SpaceAxisRotation))
-            return;
-
-        if (!_nodeContainer.TryGetNode(uid, siphon.PipeNodeName, out PipeNode? pipe)
-            || pipe.NodeGroup is not PipeNet { NodeCount: > 1 } net)
-            return;
-
         if (!TryGetWorkingFilter(siphon, out var filterUid, out var filter))
         {
             RemCompDeferred<ActiveNebulaGasSiphonComponent>(uid);
             return;
         }
 
+        if (!_nodeContainer.TryGetNode(uid, siphon.PipeNodeName, out PipeNode? pipe)
+            || pipe.NodeGroup is not PipeNet { NodeCount: > 1 } net)
+            return;
+
         if (!TryGetProfile(presence.Marker, out var profile))
+        {
+            RemCompDeferred<ActiveNebulaGasSiphonComponent>(uid);
+            return;
+        }
+
+        if (!HasClearAxisCached(uid, xform, gridUid, grid, siphon, active))
             return;
 
         var densityMultiplier = Math.Clamp(presence.Density, 0f, 1f);
@@ -187,6 +220,280 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         }
     }
 
+    private void OnTileChanged(ref TileChangedEvent args)
+    {
+        if (!_siphonGridQuery.TryGetComponent(args.Entity.Owner, out var gridSiphons))
+            return;
+
+        _clearanceInvalidationBuffer.Clear();
+        foreach (var change in args.Changes)
+        {
+            var bucketKey = GetClearanceBucket(change.GridIndices);
+            if (!gridSiphons.ClearanceBuckets.TryGetValue(bucketKey, out var bucket))
+                continue;
+
+            foreach (var uid in bucket)
+                _clearanceInvalidationBuffer.Add(uid);
+        }
+
+        foreach (var uid in _clearanceInvalidationBuffer)
+        {
+            if (TryComp<ActiveNebulaGasSiphonComponent>(uid, out var active) && active.AxisCacheValid)
+                active.AxisCacheValid = false;
+        }
+    }
+
+    private void OnCollisionChange(ref CollisionChangeEvent args)
+    {
+        if (args.Body.BodyType != BodyType.Static
+            || !TryComp<TransformComponent>(args.BodyUid, out var xform)
+            || !HasSiphons(xform.GridUid))
+        {
+            return;
+        }
+
+        InvalidateGridEntityArea(xform.GridUid!.Value, args.BodyUid, xform.Coordinates, xform.LocalRotation);
+    }
+
+    private void OnCollisionLayerChange(ref CollisionLayerChangeEvent args)
+    {
+        if (args.Body.Comp.BodyType != BodyType.Static
+            || !TryComp<TransformComponent>(args.Body.Owner, out var xform)
+            || !HasSiphons(xform.GridUid))
+        {
+            return;
+        }
+
+        InvalidateGridEntityArea(xform.GridUid!.Value, args.Body.Owner, xform.Coordinates, xform.LocalRotation);
+    }
+
+    private void OnBodyTypeChange(ref PhysicsBodyTypeChangedEvent args)
+    {
+        if (args.New != BodyType.Static && args.Old != BodyType.Static
+            || !TryComp<TransformComponent>(args.Entity, out var xform)
+            || !HasSiphons(xform.GridUid))
+        {
+            return;
+        }
+
+        InvalidateGridEntityArea(xform.GridUid!.Value, args.Entity, xform.Coordinates, xform.LocalRotation);
+    }
+
+    private void OnFixturesStartup(Entity<FixturesComponent> ent, ref ComponentStartup args)
+    {
+        if (!IsStaticBody(ent.Owner)
+            || !TryComp<TransformComponent>(ent.Owner, out var xform)
+            || !HasSiphons(xform.GridUid))
+        {
+            return;
+        }
+
+        InvalidateGridEntityArea(xform.GridUid!.Value, ent.Owner, xform.Coordinates, xform.LocalRotation);
+    }
+
+    private void OnFixturesShutdown(Entity<FixturesComponent> ent, ref ComponentShutdown args)
+    {
+        if (IsStaticBody(ent.Owner) && TryComp<TransformComponent>(ent.Owner, out var xform))
+            InvalidateGrid(xform.GridUid);
+    }
+
+    private void OnGridFixtureChange(Entity<FixturesComponent> ent, GridFixtureChangeEvent args)
+    {
+        InvalidateGrid(ent.Owner);
+    }
+
+    private void OnAnchorStateChanged(ref AnchorStateChangedEvent args)
+    {
+        if (args.Transform.GridUid is not { } gridUid)
+            return;
+
+        if (_gridQuery.HasComp(args.Entity))
+        {
+            InvalidateGrid(args.Entity);
+            return;
+        }
+
+        if (!HasComp<FixturesComponent>(args.Entity)
+            || !IsStaticBody(args.Entity)
+            || !HasSiphons(gridUid))
+            return;
+
+        InvalidateGridEntityArea(
+            gridUid,
+            args.Entity,
+            args.Transform.Coordinates,
+            args.Transform.LocalRotation);
+    }
+
+    private bool IsStaticBody(EntityUid uid)
+    {
+        return _physicsQuery.TryGetComponent(uid, out var physics) && physics.BodyType == BodyType.Static;
+    }
+
+    private bool HasSiphons(EntityUid? gridUid)
+    {
+        return gridUid is { } grid && _siphonGridQuery.HasComp(grid);
+    }
+
+    private void InvalidateGrid(EntityUid? gridUid)
+    {
+        if (gridUid is not { } grid
+            || !_siphonGridQuery.TryGetComponent(grid, out var gridSiphons))
+        {
+            return;
+        }
+
+        _clearanceInvalidationBuffer.Clear();
+        foreach (var bucket in gridSiphons.ClearanceBuckets.Values)
+        {
+            foreach (var uid in bucket)
+                _clearanceInvalidationBuffer.Add(uid);
+        }
+
+        foreach (var uid in _clearanceInvalidationBuffer)
+        {
+            if (TryComp<ActiveNebulaGasSiphonComponent>(uid, out var active))
+                active.AxisCacheValid = false;
+        }
+    }
+
+    private void InvalidateGridEntityArea(
+        EntityUid gridUid,
+        EntityUid entityUid,
+        EntityCoordinates coordinates,
+        Angle rotation)
+    {
+        var localAabb = _lookup.GetAABBNoContainer(entityUid, coordinates.Position, rotation);
+        if (coordinates.EntityId == gridUid)
+        {
+            InvalidateGridArea(gridUid, localAabb);
+            return;
+        }
+
+        if (!TryComp<TransformComponent>(coordinates.EntityId, out var parentXform))
+        {
+            InvalidateGrid(gridUid);
+            return;
+        }
+
+        var worldAabb = _transform.GetWorldMatrix(parentXform).TransformBox(localAabb);
+        var gridLocalAabb = _transform.GetInvWorldMatrix(gridUid).TransformBox(worldAabb);
+        InvalidateGridArea(gridUid, gridLocalAabb);
+    }
+
+    private void InvalidateGridArea(EntityUid? gridUid, Box2 localAabb)
+    {
+        if (gridUid is not { } grid
+            || !_siphonGridQuery.TryGetComponent(grid, out var gridSiphons)
+            || !_gridQuery.TryGetComponent(grid, out var gridComponent))
+        {
+            return;
+        }
+
+        var minTile = new Vector2i(
+            (int)MathF.Floor(localAabb.Left / gridComponent.TileSize),
+            (int)MathF.Floor(localAabb.Bottom / gridComponent.TileSize));
+        var maxTile = new Vector2i(
+            (int)MathF.Floor(localAabb.Right / gridComponent.TileSize),
+            (int)MathF.Floor(localAabb.Top / gridComponent.TileSize));
+        var minBucket = GetClearanceBucket(minTile);
+        var maxBucket = GetClearanceBucket(maxTile);
+
+        _clearanceInvalidationBuffer.Clear();
+        for (var x = minBucket.X; x <= maxBucket.X; x++)
+        {
+            for (var y = minBucket.Y; y <= maxBucket.Y; y++)
+            {
+                if (!gridSiphons.ClearanceBuckets.TryGetValue(new Vector2i(x, y), out var bucket))
+                    continue;
+
+                foreach (var uid in bucket)
+                    _clearanceInvalidationBuffer.Add(uid);
+            }
+        }
+
+        foreach (var uid in _clearanceInvalidationBuffer)
+        {
+            if (TryComp<ActiveNebulaGasSiphonComponent>(uid, out var active) && active.AxisCacheValid)
+                active.AxisCacheValid = false;
+        }
+    }
+
+    private static Vector2i GetClearanceBucket(Vector2i tile)
+    {
+        var bucketSize = (float)NebulaGasSiphonGridComponent.ClearanceBucketSize;
+        return new Vector2i(
+            (int)MathF.Floor(tile.X / bucketSize),
+            (int)MathF.Floor(tile.Y / bucketSize));
+    }
+
+    private void InvalidateSiphonAxisCache(EntityUid uid)
+    {
+        if (!TryComp<ActiveNebulaGasSiphonComponent>(uid, out var active))
+            return;
+
+        RemoveClearanceIndex(uid, active);
+        active.AxisCacheValid = false;
+    }
+
+    private void AddClearanceIndex(
+        EntityUid uid,
+        EntityUid gridUid,
+        ActiveNebulaGasSiphonComponent active)
+    {
+        if (!_siphonGridQuery.TryGetComponent(gridUid, out var gridSiphons))
+            return;
+
+        var minBucket = GetClearanceBucket(active.ClearanceMin);
+        var maxBucket = GetClearanceBucket(active.ClearanceMax);
+        active.ClearanceGrid = gridUid;
+
+        for (var x = minBucket.X; x <= maxBucket.X; x++)
+        {
+            for (var y = minBucket.Y; y <= maxBucket.Y; y++)
+            {
+                var bucketKey = new Vector2i(x, y);
+                if (!gridSiphons.ClearanceBuckets.TryGetValue(bucketKey, out var bucket))
+                {
+                    bucket = new HashSet<EntityUid>();
+                    gridSiphons.ClearanceBuckets.Add(bucketKey, bucket);
+                }
+
+                bucket.Add(uid);
+                active.ClearanceBucketKeys.Add(bucketKey);
+            }
+        }
+    }
+
+    private void RemoveClearanceIndex(EntityUid uid, ActiveNebulaGasSiphonComponent active)
+    {
+        if (active.ClearanceGrid is not { } grid
+            || !_siphonGridQuery.TryGetComponent(grid, out var gridSiphons))
+        {
+            active.ClearanceBucketKeys.Clear();
+            active.ClearanceGrid = null;
+            return;
+        }
+
+        foreach (var bucketKey in active.ClearanceBucketKeys)
+        {
+            if (!gridSiphons.ClearanceBuckets.TryGetValue(bucketKey, out var bucket))
+                continue;
+
+            bucket.Remove(uid);
+            if (bucket.Count == 0)
+                gridSiphons.ClearanceBuckets.Remove(bucketKey);
+        }
+
+        active.ClearanceBucketKeys.Clear();
+        active.ClearanceGrid = null;
+    }
+
+    private void OnActiveSiphonShutdown(Entity<ActiveNebulaGasSiphonComponent> ent, ref ComponentShutdown args)
+    {
+        RemoveClearanceIndex(ent.Owner, ent.Comp);
+    }
+
     private void OnRoundRestart(RoundRestartCleanupEvent args)
     {
         _siphonQueue.Clear();
@@ -215,6 +522,8 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
 
     private void OnSiphonAnchorChanged(Entity<NebulaGasSiphonComponent> ent, ref AnchorStateChangedEvent args)
     {
+        InvalidateSiphonAxisCache(ent.Owner);
+
         if (args.Anchored)
         {
             UpdateSiphonIndex(ent.Owner);
@@ -226,9 +535,15 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         RemCompDeferred<ActiveNebulaGasSiphonComponent>(ent.Owner);
     }
 
+    private void OnSiphonMove(Entity<NebulaGasSiphonComponent> ent, ref MoveEvent args)
+    {
+        InvalidateSiphonAxisCache(ent.Owner);
+    }
+
     private void OnSiphonParentChanged(Entity<NebulaGasSiphonComponent> ent, ref EntParentChangedMessage args)
     {
         RemoveSiphonFromGrid(ResolveGridUid(args.OldParent), ent.Owner);
+        InvalidateSiphonAxisCache(ent.Owner);
         UpdateSiphonIndex(ent.Owner);
         UpdateSiphonActivity(ent.Owner);
     }
@@ -278,6 +593,9 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
 
     private void RemoveSiphonFromGrid(EntityUid? gridUid, EntityUid siphonUid)
     {
+        if (TryComp<ActiveNebulaGasSiphonComponent>(siphonUid, out var active))
+            RemoveClearanceIndex(siphonUid, active);
+
         if (gridUid is not { } grid
             || !_siphonGridQuery.TryGetComponent(grid, out var gridSiphons)
             || !gridSiphons.Siphons.Remove(siphonUid))
@@ -285,7 +603,7 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
             return;
         }
 
-        if (gridSiphons.Siphons.Count == 0)
+        if (gridSiphons.Siphons.Count == 0 && gridSiphons.ClearanceBuckets.Count == 0)
             RemCompDeferred<NebulaGasSiphonGridComponent>(grid);
     }
 
@@ -331,7 +649,11 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
             return;
         }
 
-        EnsureComp<ActiveNebulaGasSiphonComponent>(uid);
+        var activeSiphon = EnsureComp<ActiveNebulaGasSiphonComponent>(uid);
+        if (!activeSiphon.PhaseInitialized)
+            siphon.NextUpdate = _timing.CurTime;
+
+        EnsureSiphonPhase(uid, siphon, activeSiphon);
         ScheduleSiphon(uid, siphon);
     }
 
@@ -457,6 +779,36 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         return (byte)Math.Clamp(stage, 0, NebulaGasSiphonFilterComponent.RemainingStageCount);
     }
 
+    private void EnsureSiphonPhase(
+        EntityUid uid,
+        NebulaGasSiphonComponent siphon,
+        ActiveNebulaGasSiphonComponent active)
+    {
+        if (active.PhaseInitialized && active.PhaseInterval == siphon.UpdateInterval)
+            return;
+
+        active.PhaseOffset = GetPhaseOffset(uid, siphon.UpdateInterval);
+        active.PhaseInterval = siphon.UpdateInterval;
+        active.PhaseInitialized = true;
+        active.PhaseApplied = false;
+    }
+
+    private static TimeSpan GetPhaseOffset(EntityUid uid, TimeSpan interval)
+    {
+        var intervalTicks = interval.Ticks;
+        if (intervalTicks <= 1)
+            return TimeSpan.Zero;
+
+        var hash = unchecked((uint) uid.Id);
+        hash ^= hash >> 16;
+        hash = unchecked(hash * 0x7FEB352Du);
+        hash ^= hash >> 15;
+        hash = unchecked(hash * 0x846CA68Bu);
+        hash ^= hash >> 16;
+
+        return TimeSpan.FromTicks((long) (hash % (ulong) intervalTicks));
+    }
+
     private void UpdateSiphonAppearance(EntityUid uid, bool filterInstalled)
     {
         _appearance.SetData(uid, NebulaGasSiphonVisuals.FilterState,
@@ -533,22 +885,69 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         return true;
     }
 
-    private bool HasClearAxis(
+    private bool HasClearAxisCached(
+        EntityUid uid,
         TransformComponent xform,
         EntityUid gridUid,
         MapGridComponent grid,
-        int range,
-        int footprintLength,
-        Angle spaceAxisRotation)
+        NebulaGasSiphonComponent siphon,
+        ActiveNebulaGasSiphonComponent active)
+    {
+        if (!active.AxisCacheValid)
+        {
+            RemoveClearanceIndex(uid, active);
+            UpdateClearanceBounds(xform, gridUid, grid, siphon, active);
+            active.AxisClear = ComputeHasClearAxis(xform, gridUid, grid, siphon);
+            AddClearanceIndex(uid, gridUid, active);
+            active.AxisCacheValid = true;
+        }
+
+        return active.AxisClear;
+    }
+
+    private void UpdateClearanceBounds(
+        TransformComponent xform,
+        EntityUid gridUid,
+        MapGridComponent grid,
+        NebulaGasSiphonComponent siphon,
+        ActiveNebulaGasSiphonComponent active)
+    {
+        var center = _map.TileIndicesFor(gridUid, grid, xform.Coordinates);
+        var range = Math.Max(0, siphon.Range);
+        if (range == 0)
+        {
+            active.ClearanceMin = center;
+            active.ClearanceMax = center;
+            return;
+        }
+
+        var dir = (xform.LocalRotation + siphon.SpaceAxisRotation).GetCardinalDir().ToIntVec();
+        var firstFreeTile = Math.Max(0, siphon.FootprintLength) / 2 + 1;
+        var lastFreeTile = firstFreeTile + range - 1;
+        var forward = center + dir * lastFreeTile;
+        var backward = center - dir * lastFreeTile;
+        active.ClearanceMin = new Vector2i(
+            Math.Min(forward.X, backward.X),
+            Math.Min(forward.Y, backward.Y));
+        active.ClearanceMax = new Vector2i(
+            Math.Max(forward.X, backward.X),
+            Math.Max(forward.Y, backward.Y));
+    }
+
+    private bool ComputeHasClearAxis(
+        TransformComponent xform,
+        EntityUid gridUid,
+        MapGridComponent grid,
+        NebulaGasSiphonComponent siphon)
     {
         var tile = _map.TileIndicesFor(gridUid, grid, xform.Coordinates);
-        var dir = (xform.LocalRotation + spaceAxisRotation).GetCardinalDir();
+        var dir = (xform.LocalRotation + siphon.SpaceAxisRotation).GetCardinalDir();
         var forward = dir.ToIntVec();
         var backward = -forward;
-        var footprintHalfLength = Math.Max(0, footprintLength) / 2;
+        var footprintHalfLength = Math.Max(0, siphon.FootprintLength) / 2;
         var firstFreeTile = footprintHalfLength + 1;
 
-        for (var i = firstFreeTile; i < firstFreeTile + range; i++)
+        for (var i = firstFreeTile; i < firstFreeTile + siphon.Range; i++)
         {
             if (!IsClearTile(gridUid, grid, tile + forward * i))
                 return false;
@@ -566,7 +965,31 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
             return true;
 
         return (_turf.IsSpace(tileRef) || tileRef.Tile.IsEmpty)
-            && !_turf.IsTileBlocked(tileRef, CollisionGroup.MobMask);
+            && !IsTileBlockedByStatic(gridUid, grid, indices);
+    }
+
+    private bool IsTileBlockedByStatic(EntityUid gridUid, MapGridComponent grid, Vector2i indices)
+    {
+        var tileSize = grid.TileSize;
+        var tileCenter = (indices + new Vector2(0.5f, 0.5f)) * tileSize;
+        var tileBounds = Box2.UnitCentered.Scale(0.95f * tileSize).Translated(tileCenter);
+
+        // Dynamic movers are intentionally excluded: their movement must not invalidate or rebuild this cache.
+        _tileEntityBuffer.Clear();
+        _lookup.GetLocalEntitiesIntersecting(gridUid, tileBounds, _tileEntityBuffer, LookupFlags.Static);
+        foreach (var entity in _tileEntityBuffer)
+        {
+            if (!_fixturesQuery.TryGetComponent(entity, out var fixtures))
+                continue;
+
+            foreach (var fixture in fixtures.Fixtures.Values)
+            {
+                if (fixture.Hard && (fixture.CollisionLayer & (int)CollisionGroup.MobMask) != 0)
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     private sealed record NebulaGasSiphonProfile(GasMixture Composition, float Temperature, float ExtractionMultiplier);
