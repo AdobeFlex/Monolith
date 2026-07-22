@@ -1,13 +1,15 @@
 - type: entity
   parent: RogueSiliconGiftBox
-  id: ClothingBackpackAIFleetLoot
-  name: AI fleet equipment cache
+  id: ClothingBackpackFleetLootT1
+  name: fleet container T1
   description: A cache recovered from an autonomous fleet ship. Contains ship components and technical data.
-  suffix: AI Loot
+  suffix: Boss Loot
   components:
   - type: Sprite
     sprite: _Exodus/Objects/Tools/bundles.rsi
     state: fleet-base
+  - type: StaticPrice
+    vendPrice: 350000
   - type: SpawnItemsOnUse
     items:
     - id: ScrapOre100
@@ -33,7 +35,10 @@
     - id: FemtoManipulatorStockPart
       prob: 0.2
     - id: BluespaceMatterBinStockPart
-      prob: 0.1
+      prob: 0.3
+    - id: IngotPlutonium1
+      amount: 5
+      prob: 0.75
     - id: PowerCellAntiqueProto
       prob: 0.15
     - id: PowerCellAntiqueProtoEmpProof
