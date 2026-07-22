@@ -1,0 +1,17 @@
+{
+    "version": 1,
+    "license": "EXDS-RL",
+    "copyright": "Made for Exodus",
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "states": [
+        {
+            "name": "intact"
+        },
+        {
+            "name": "depleted"
+        }
+    ]
+}

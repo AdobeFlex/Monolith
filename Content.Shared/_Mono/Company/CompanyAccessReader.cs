@@ -19,6 +19,13 @@ public sealed partial class CompanyAccessReaderComponent : Component
     public bool Inverted = false;
 
     /// <summary>
+    /// Requires the user to present an ID card with a company assigned. An empty
+    /// <see cref="RequiredCompanies"/> list accepts any company card.
+    /// </summary>
+    [DataField] // Exodus-company-card-access
+    public bool RequireCompanyCard = false;
+
+    /// <summary>
     /// Message to show when access is denied due to incorrect company.
     /// </summary>
     [DataField("popupMessage")]

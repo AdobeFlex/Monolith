@@ -63,7 +63,7 @@
   color: "#92a2a1"
   image: /Textures/_Mono/Companies/steel_hammer.png
   startingItems: # Exodus company-fleet
-  - TechDiskShmHull
+  - CompanyTechDiskCaseSteelHammer # Exodus company-fleet
 
 - type: company
   id: HarmonyMedicalEnterprises
@@ -72,7 +72,7 @@
   color: "#FC7303"
   image: /Textures/_Mono/Companies/HME.png
   startingItems: # Exodus company-fleet
-  - TechDiskHmeAdvancedOrgans
+  - CompanyTechDiskCaseHme # Exodus company-fleet
 
 - type: company
   id: MidnightArmsCo
@@ -81,7 +81,7 @@
   color: "#FF2E2E"
   image: /Textures/_Mono/Companies/MACo.png
   startingItems: # Exodus company-fleet
-  - TechDiskMacoSmallArms
+  - CompanyTechDiskCaseMaco # Exodus company-fleet
 
 - type: company
   id: USSP
@@ -114,7 +114,7 @@
   color: "#69E37F"
   image: /Textures/_Mono/Companies/horizon_energy.png
   startingItems: # Exodus company-fleet
-  - TechDiskHorizonSiphon
+  - CompanyTechDiskCaseHorizon # Exodus company-fleet
 
 
 # Minor companies
@@ -153,7 +153,7 @@
   color: "#419E23"
   image: /Textures/_Mono/Companies/BMC.png
   startingItems: # Exodus company-fleet
-  - TechDiskBlackhawkArmor
+  - CompanyTechDiskCaseBlackhawk # Exodus company-fleet
 
 
 # Religious groups
@@ -185,7 +185,7 @@
   description: paycheck-bratva-description
   color: "#7a0303"
   startingItems: # Exodus company-fleet
-  - TechDiskBratvaSuit
+  - CompanyTechDiskCaseBratva # Exodus company-fleet
 
 - type: company
   id: CerberusSurplusProvisions
@@ -195,7 +195,7 @@
   image: /Textures/_Mono/Companies/CSP.png
   whitelisted: true
   startingItems: # Exodus company-fleet
-  - TechDiskCerberusBomb
+  - CompanyTechDiskCaseCerberus # Exodus company-fleet
 
 # Exodus disable-viper-group — prototype kept for job refs; hidden from lobby
 - type: company
@@ -215,4 +215,4 @@
   image: /Textures/_Mono/Companies/redsailcorsairs.png
   whitelisted: true
   startingItems: # Exodus company-fleet
-  - TechDiskRedSailTeleporter
+  - CompanyTechDiskCaseRedSail # Exodus company-fleet

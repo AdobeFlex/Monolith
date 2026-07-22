@@ -5,14 +5,39 @@
   description: nebula-gas-siphon-description
   components:
   - type: Sprite
-    sprite: Structures/Shuttles/thruster.rsi
+    sprite: _Exodus/Structures/Shuttles/nebula_gas_siphon.rsi
+    snapCardinals: true
     layers:
-    - state: base
-    - state: thrust
+    - state: base_empty
+      map: [ "enum.NebulaGasSiphonVisualLayers.Base" ]
+    - state: Emission_0
+      map: [ "enum.NebulaGasSiphonVisualLayers.Emission" ]
       shader: unshaded
-      color: "#69E37F"
+      visible: false
+    - sprite: Structures/Piping/Atmospherics/pipe.rsi
+      state: pipeUnaryConnectors
+      map: [ "enum.PipeVisualLayers.Pipe" ]
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.NebulaGasSiphonVisuals.FilterState:
+        enum.NebulaGasSiphonVisualLayers.Base:
+          Empty: { state: base_empty }
+          Full: { state: base_full }
+        enum.NebulaGasSiphonVisualLayers.Emission:
+          Empty: { visible: false }
+          Full: { visible: true }
+      enum.NebulaGasSiphonVisuals.EmissionState:
+        enum.NebulaGasSiphonVisualLayers.Emission:
+          Full: { state: Emission_0 }
+          Level1: { state: Emission_1 }
+          Level2: { state: Emission_2 }
+          Level3: { state: Emission_3 }
+          Empty: { state: Emission_4 }
+  - type: PipeColorVisuals
   - type: Transform
     anchored: true
+    noRot: false
   - type: Rotatable
     rotateWhileAnchored: true
   - type: ApcPowerReceiver
@@ -20,17 +45,36 @@
   - type: ExtensionCableReceiver
   - type: NebulaGasSiphon
     range: 3
+    footprintLength: 3
+    spaceAxisRotation: 0
     minDensity: 0.75
     minSpeed: 1.5
     molesPerSecond: 8
-    spawnGas: Plasma
+    targetPressure: 101.325
+    filterSlot:
+      name: nebula-gas-siphon-filter-slot
+      whitelist:
+        components:
+        - NebulaGasSiphonFilter
   - type: NodeContainer
     nodes:
       pipe:
         !type:PipeNode
         nodeGroupID: Pipe
-        pipeDirection: All
+        pipeDirection: North
+  - type: PipeRestrictOverlap
   - type: AtmosPipeColor
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-1.45,0.45,1.45"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
   - type: Damageable
     damageContainer: StructuralInorganic
     damageModifierSet: Electronic
@@ -63,3 +107,19 @@
     stackRequirements:
       Steel: 4
       Cable: 2
+- # Spawned by the client when the siphon is examined to show its output port.
+  type: entity
+  id: NebulaGasSiphonArrow
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: Markers/teg_arrow.rsi
+    color: "#FFFFFFBB"
+    layers:
+    - state: arrow
+      offset: 0, 0.75
+  - type: TimedDespawn
+    lifetime: 2
+  - type: Tag
+    tags:
+    - HideContextMenu

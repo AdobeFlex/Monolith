@@ -1,21 +1,39 @@
 using Content.Shared.Atmos;
+using Content.Shared.Containers.ItemSlots;
 using Robust.Shared.GameStates;
+using Robust.Shared.Maths;
+using Robust.Shared.Serialization;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 
 namespace Content.Shared._Exodus.Nebula;
 
 /// <summary>
 /// Dual-facing thruster-like siphon: while the grid moves through a dense nebula
-/// with clear forward/back LOS, injects gas into a connected pipe node.
+/// with clear space along its working axis, injects gas into a connected pipe node.
 /// </summary>
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentPause]
 public sealed partial class NebulaGasSiphonComponent : Component
 {
+    public const string FilterSlotId = "filter";
+
     /// <summary>
-    /// Tiles checked forward and backward along local rotation.
+    /// Tiles checked forward and backward along the configured working axis.
     /// </summary>
     [DataField]
     public int Range = 3;
+
+    /// <summary>
+    /// Number of tiles occupied by the siphon along its forward/backward axis.
+    /// The free-space check starts beyond this footprint.
+    /// </summary>
+    [DataField]
+    public int FootprintLength = 1;
+
+    /// <summary>
+    /// Local rotation from the entity's facing to the long axis checked for free space.
+    /// </summary>
+    [DataField]
+    public Angle SpaceAxisRotation = Angle.Zero;
 
     /// <summary>
     /// Minimum nebula density on the parent grid.
@@ -30,22 +48,25 @@ public sealed partial class NebulaGasSiphonComponent : Component
     public float MinSpeed = 1.5f;
 
     /// <summary>
-    /// Moles of gas injected into the pipe per second when working.
+    /// Moles of gas injected into the pipe per second at full nebula density.
     /// </summary>
     [DataField]
     public float MolesPerSecond = 8f;
 
-    [DataField]
-    public Gas SpawnGas = Gas.Plasma;
-
-    [DataField]
-    public float SpawnTemperature = Atmospherics.T20C;
-
     /// <summary>
-    /// Max moles allowed in the connected pipe before siphon idles.
+    /// Max moles allowed in the connected pipe network before siphon idles.
     /// </summary>
     [DataField]
     public float MaxPipeMoles = 800f;
+
+    /// <summary>
+    /// Maximum pressure the siphon will target in the connected pipe network.
+    /// </summary>
+    [DataField]
+    public float TargetPressure = Atmospherics.OneAtmosphere;
+
+    [DataField(required: true)]
+    public ItemSlot FilterSlot = new();
 
     [DataField]
     public string PipeNodeName = "pipe";
@@ -55,4 +76,35 @@ public sealed partial class NebulaGasSiphonComponent : Component
 
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
     public TimeSpan NextUpdate;
+}
+
+[Serializable, NetSerializable]
+public enum NebulaGasSiphonVisuals : byte
+{
+    FilterState,
+    EmissionState,
+}
+
+[Serializable, NetSerializable]
+public enum NebulaGasSiphonState : byte
+{
+    Empty,
+    Full,
+}
+
+[Serializable, NetSerializable]
+public enum NebulaGasSiphonEmissionState : byte
+{
+    Full = 0,
+    Level1 = 1,
+    Level2 = 2,
+    Level3 = 3,
+    Empty = 4,
+}
+
+[Serializable, NetSerializable]
+public enum NebulaGasSiphonVisualLayers : byte
+{
+    Base,
+    Emission,
 }

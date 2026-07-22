@@ -25,6 +25,16 @@
   parent: BaseCircuitboardRecipe
   result: NebulaGasSiphonMachineCircuitboard
 
+- type: latheRecipe
+  id: NebulaGasSiphonFilter
+  result: NebulaGasSiphonFilter
+  completetime: 6
+  materials:
+    Steel: 300
+    Plastic: 250
+    Glass: 150
+    Cloth: 100
+
 # --- Red Sail ---
 - type: latheRecipe
   id: NearestShuttleTeleporterFlatpack
@@ -152,6 +162,7 @@
   recipes:
   - NebulaGasSiphonFlatpack
   - NebulaGasSiphonMachineCircuitboard
+  - NebulaGasSiphonFilter
 
 - type: latheRecipePack
   id: CompanyRedSailDynamic

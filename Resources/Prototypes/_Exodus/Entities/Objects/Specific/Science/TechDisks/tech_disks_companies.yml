@@ -80,6 +80,7 @@
     recipes:
     - NebulaGasSiphonFlatpack
     - NebulaGasSiphonMachineCircuitboard
+    - NebulaGasSiphonFilter
 
 - type: entity
   parent: TechDiskBase
