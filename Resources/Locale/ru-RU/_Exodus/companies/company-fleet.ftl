@@ -15,8 +15,8 @@ nebula-gas-siphon-flatpack-name = Плоская упаковка газовог
 nebula-gas-siphon-flatpack-description = Плоская упаковка для сборки небулярного газового сифона Horizon Energy.
 nearest-shuttle-teleporter-pad-name = Плита возврата абордажной команды
 nearest-shuttle-teleporter-pad-description = Встаньте на плиту и активируйте её, чтобы вернуться на ближайший другой шаттл карты. Популярна среди абордажных команд Красного Паруса.
-nearest-shuttle-teleporter-flatpack-name = Плоская упаковка плиты возврата
-nearest-shuttle-teleporter-flatpack-description = Плоская упаковка для сборки плиты возврата абордажной команды Красного Паруса.
+nearest-shuttle-teleporter-board-name = Плата телепортирующей панели
+nearest-shuttle-teleporter-board-description = Печатная плата для плиты возврата абордажной команды Красного Паруса.
 maco-licensed-pistol-name = Лицензионный пистолет МАКо
 maco-licensed-pistol-description = Надёжное баллистическое оружие, лицензированное Midnight Arms Co. для независимых подрядчиков.
 paycheck-bratva-combat-suit-name = Боевое облачение «Бухгалтерии»
@@ -71,14 +71,8 @@ ent-NebulaGasSiphon = небулярный газовый сифон
     .desc = Двунаправленный сборщик Horizon Energy, который закачивает газ в подключённую трубопроводную сеть во время движения корабля через плотную туманность.
 ent-NebulaGasSiphonMachineCircuitboard = микросхема небулярного газового сифона
     .desc = Печатная плата для небулярного газового сифона.
-ent-NebulaGasSiphonFlatpack = плоская упаковка газового сифона
-    .desc = Плоская упаковка для сборки газового сифона Horizon Energy.
-
 ent-NearestShuttleTeleporterPad = плита возврата абордажной команды
     .desc = Встаньте на плиту и активируйте её, чтобы вернуться на ближайший другой шаттл карты. Популярна среди абордажных команд Красного Паруса.
-ent-NearestShuttleTeleporterFlatpack = плоская упаковка плиты возврата
-    .desc = Плоская упаковка для сборки плиты возврата абордажной команды Красного Паруса.
-
 ent-WeaponPistolMaco = лицензионный пистолет МАКо
     .desc = Надёжное баллистическое оружие, лицензированное Midnight Arms Co. для независимых подрядчиков.
 ent-ClothingOuterHardsuitBratva = боевое облачение «Бухгалтерии»

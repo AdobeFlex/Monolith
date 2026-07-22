@@ -105,9 +105,13 @@
   components:
   - type: MachineBoard
     prototype: NebulaGasSiphon
+    requirements:
+      Capacitor: 8
+      MatterBin: 4
     stackRequirements:
-      Steel: 4
-      Cable: 2
+      Steel: 20
+      Plasma: 8
+      Plutonium: 1
 - # Spawned by the client when the siphon is examined to show its output port.
   type: entity
   id: NebulaGasSiphonArrow

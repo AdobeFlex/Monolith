@@ -1,13 +1,12 @@
 - type: entity
   id: NearestShuttleTeleporterPad
-  parent: BaseStructure
+  parent: [ BaseStructure, ConstructibleMachine ]
   name: nearest-shuttle-teleporter-pad-name
   description: nearest-shuttle-teleporter-pad-description
   components:
   - type: Sprite
-    sprite: Structures/Machines/cloning.rsi
-    state: pod_0
-    color: "#930000"
+    sprite: _Exodus/Structures/Machines/nearest_shuttle_teleporter.rsi
+    state: base
   - type: Transform
     anchored: true
   - type: Physics
@@ -39,7 +38,23 @@
       behaviors:
       - !type:DoActsBehavior
         acts: ["Destruction"]
+  - type: Machine
+    board: NearestShuttleTeleporterMachineCircuitboard
   - type: StaticPrice
     price: 4000
   placement:
     mode: SnapgridCenter
+- type: entity
+  id: NearestShuttleTeleporterMachineCircuitboard
+  parent: BaseMachineCircuitboard
+  name: nearest-shuttle-teleporter-board-name
+  description: nearest-shuttle-teleporter-board-description
+  components:
+  - type: MachineBoard
+    prototype: NearestShuttleTeleporterPad
+    stackRequirements:
+      Steel: 15
+      Plasma: 10
+      Gold: 3
+      Silver: 3
+      Plutonium: 1

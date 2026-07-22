@@ -15,8 +15,8 @@ nebula-gas-siphon-flatpack-name = Nebula gas siphon flatpack
 nebula-gas-siphon-flatpack-description = A flatpack used to construct a Horizon Energy nebula gas siphon.
 nearest-shuttle-teleporter-pad-name = Boarding recall pad
 nearest-shuttle-teleporter-pad-description = Stand on this pad and activate it to return to the nearest other shuttle on the map. Popular with Red Sail boarding teams.
-nearest-shuttle-teleporter-flatpack-name = Boarding recall pad flatpack
-nearest-shuttle-teleporter-flatpack-description = A flatpack used to construct a Red Sail boarding recall pad.
+nearest-shuttle-teleporter-board-name = Boarding recall pad machine board
+nearest-shuttle-teleporter-board-description = A machine circuit board for a Red Sail boarding recall pad.
 maco-licensed-pistol-name = MACo licensed pistol
 maco-licensed-pistol-description = A reliable ballistic sidearm licensed for independent contractors by Midnight Arms Co.
 paycheck-bratva-combat-suit-name = Accountant combat suit
@@ -71,14 +71,8 @@ ent-NebulaGasSiphon = nebula gas siphon
     .desc = A Horizon Energy bidirectional collector that pumps gas into a connected pipe network while the ship moves through a dense nebula.
 ent-NebulaGasSiphonMachineCircuitboard = nebula gas siphon circuit board
     .desc = A printed circuit board for a nebula gas siphon.
-ent-NebulaGasSiphonFlatpack = nebula gas siphon flatpack
-    .desc = A flatpack used for constructing a Horizon Energy gas siphon.
-
 ent-NearestShuttleTeleporterPad = boarding team recall pad
     .desc = Stand on the pad and activate it to return to the nearest other shuttle on the map. Popular among Red Sail boarding teams.
-ent-NearestShuttleTeleporterFlatpack = boarding team recall pad flatpack
-    .desc = A flatpack used for constructing a Red Sail boarding team recall pad.
-
 ent-WeaponPistolMaco = MACo licensed pistol
     .desc = A reliable ballistic sidearm licensed for independent contractors by Midnight Arms Co.
 ent-ClothingOuterHardsuitBratva = Paycheck Bratva combat suit

@@ -12,18 +12,11 @@
 
 # --- Horizon ---
 - type: latheRecipe
-  id: NebulaGasSiphonFlatpack
-  result: NebulaGasSiphonFlatpack
-  completetime: 10
-  materials:
-    Steel: 2000
-    Plasma: 800
-    Glass: 500
-
-- type: latheRecipe
   id: NebulaGasSiphonMachineCircuitboard
   parent: BaseCircuitboardRecipe
   result: NebulaGasSiphonMachineCircuitboard
+  materials:
+    Steel: 100
 
 - type: latheRecipe
   id: NebulaGasSiphonFilter
@@ -37,14 +30,9 @@
 
 # --- Red Sail ---
 - type: latheRecipe
-  id: NearestShuttleTeleporterFlatpack
-  result: NearestShuttleTeleporterFlatpack
-  completetime: 12
-  materials:
-    Steel: 1500
-    Plasma: 1000
-    Gold: 300
-    Silver: 300
+  id: NearestShuttleTeleporterMachineCircuitboard
+  parent: BaseCircuitboardRecipe
+  result: NearestShuttleTeleporterMachineCircuitboard
 
 # --- HME organs ---
 - type: latheRecipe
@@ -138,6 +126,7 @@
     Steel: 5000
     Plasma: 3000
     Uranium: 1000
+    Plutonium: 1
     Plastic: 1000
 
 # --- Bratva ---
@@ -160,14 +149,13 @@
 - type: latheRecipePack
   id: CompanyHorizonDynamic
   recipes:
-  - NebulaGasSiphonFlatpack
   - NebulaGasSiphonMachineCircuitboard
   - NebulaGasSiphonFilter
 
 - type: latheRecipePack
   id: CompanyRedSailDynamic
   recipes:
-  - NearestShuttleTeleporterFlatpack
+  - NearestShuttleTeleporterMachineCircuitboard
 
 - type: latheRecipePack
   id: CompanyHmeOrgansDynamic
