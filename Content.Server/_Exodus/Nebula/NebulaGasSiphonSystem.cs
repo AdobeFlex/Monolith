@@ -49,6 +49,7 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
     private EntityQuery<NebulaGasSiphonGridComponent> _siphonGridQuery;
     private readonly PriorityQueue<EntityUid, TimeSpan> _siphonQueue = new();
     private readonly Dictionary<string, NebulaGasSiphonProfile?> _profiles = new();
+    private readonly GasMixture _mergeBuffer = new();
 
     public override void Initialize()
     {
@@ -170,13 +171,12 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         if (toSpawn < Atmospherics.GasMinMoles)
             return;
 
-        var merger = profile.Composition.Clone();
-        merger.Multiply(toSpawn);
-        merger.Temperature = profile.Temperature;
-        _atmosphere.Merge(net.Air, merger);
+        _mergeBuffer.CopyFrom(profile.Composition);
+        _mergeBuffer.Multiply(toSpawn);
+        _mergeBuffer.Temperature = profile.Temperature;
+        _atmosphere.Merge(net.Air, _mergeBuffer);
 
         filter.Remaining = MathF.Max(0f, filter.Remaining - toSpawn * filter.ConsumptionPerMole);
-        Dirty(filterUid, filter);
         UpdateFilterAppearance(filterUid, filter);
         UpdateSiphonEmissionAppearance(uid, filter);
 
@@ -408,10 +408,7 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
     private void OnFilterStartup(Entity<NebulaGasSiphonFilterComponent> ent, ref ComponentStartup args)
     {
         if (ent.Comp.Remaining < 0f)
-        {
             ent.Comp.Remaining = MathF.Max(0f, ent.Comp.Capacity);
-            Dirty(ent);
-        }
 
         UpdateFilterAppearance(ent.Owner, ent.Comp);
 
@@ -431,10 +428,8 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         if (!args.IsInDetailsRange)
             return;
 
-        var percent = ent.Comp.Capacity > 0f
-            ? Math.Clamp(ent.Comp.Remaining / ent.Comp.Capacity * 100f, 0f, 100f)
-            : 0f;
-        args.PushMarkup(Loc.GetString("nebula-gas-siphon-filter-examine", ("percent", MathF.Round(percent))));
+        var percent = GetRemainingStage(ent.Comp) * 100 / NebulaGasSiphonFilterComponent.RemainingStageCount;
+        args.PushMarkup(Loc.GetString("nebula-gas-siphon-filter-examine", ("percent", percent)));
     }
 
     private void UpdateFilterAppearance(EntityUid uid, NebulaGasSiphonFilterComponent filter)
@@ -443,6 +438,23 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
             ? NebulaGasSiphonFilterState.Intact
             : NebulaGasSiphonFilterState.Depleted;
         _appearance.SetData(uid, NebulaGasSiphonFilterVisuals.State, state);
+
+        var remainingStage = GetRemainingStage(filter);
+        if (filter.RemainingStage == remainingStage)
+            return;
+
+        filter.RemainingStage = remainingStage;
+        Dirty(uid, filter);
+    }
+
+    private static byte GetRemainingStage(NebulaGasSiphonFilterComponent filter)
+    {
+        if (filter.Capacity <= 0f || filter.Remaining < Atmospherics.GasMinMoles)
+            return 0;
+
+        var fillRatio = Math.Clamp(filter.Remaining / filter.Capacity, 0f, 1f);
+        var stage = (int)MathF.Floor(fillRatio * NebulaGasSiphonFilterComponent.RemainingStageCount);
+        return (byte)Math.Clamp(stage, 0, NebulaGasSiphonFilterComponent.RemainingStageCount);
     }
 
     private void UpdateSiphonAppearance(EntityUid uid, bool filterInstalled)
