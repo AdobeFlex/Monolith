@@ -53,7 +53,7 @@ public sealed class CdmShieldReserveSystem : EntitySystem
         args.PushMarkup(Loc.GetString(
             "cdm-shield-generator-reserve-examine",
             ("cartridges", GetCartridgeCount(ent)),
-            ("maximum", CdmShieldReserveComponent.MaxCartridges),
+            ("maximum", ent.Comp.MaxCartridges),
             ("reserve", MathF.Round(ent.Comp.EmergencyShieldFraction * 100f))));
     }
 
@@ -85,7 +85,7 @@ public sealed class CdmShieldReserveSystem : EntitySystem
         if (cartridgeCount == 0)
             return false;
 
-        for (var i = 0; i < CdmShieldReserveComponent.MaxCartridges; i++)
+        for (var i = 0; i < ent.Comp.MaxCartridges; i++)
         {
             if (!_itemSlots.TryGetSlot(ent.Owner, CdmShieldReserveComponent.GetSlotId(i), out var slot)
                 || slot.Item is not { } cartridge
@@ -106,7 +106,7 @@ public sealed class CdmShieldReserveSystem : EntitySystem
     private int GetCartridgeCount(Entity<CdmShieldReserveComponent> ent)
     {
         var count = 0;
-        for (var i = 0; i < CdmShieldReserveComponent.MaxCartridges; i++)
+        for (var i = 0; i < ent.Comp.MaxCartridges; i++)
         {
             if (!_itemSlots.TryGetSlot(ent.Owner, CdmShieldReserveComponent.GetSlotId(i), out var slot)
                 || slot.Item is not { } cartridge
@@ -127,7 +127,7 @@ public sealed class CdmShieldReserveSystem : EntitySystem
         var count = Math.Clamp(
             cartridgeCount ?? GetCartridgeCount(ent),
             0,
-            CdmShieldReserveComponent.MaxCartridges);
+            Math.Max(ent.Comp.MaxCartridges, 0));
         _appearance.SetData(ent.Owner, CdmShieldReserveVisuals.CartridgeCount, count);
     }
 

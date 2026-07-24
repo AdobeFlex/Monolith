@@ -236,6 +236,7 @@
           components:
           - CdmShieldReserveCartridge
   - type: CdmShieldReserve
+    maxCartridges: 4
     emergencyShieldFraction: 0.25
   - type: PointLight
     color: "#48C96B"
@@ -260,7 +261,7 @@
   - type: Rotatable
     rotateWhileAnchored: true
   - type: Sprite
-    sprite: _Mono/Structures/ShuttleComponents/shield.rsi
+    sprite: _Exodus/Structures/ShuttleComponents/liberty_shield_generator.rsi
     snapCardinals: true
     layers:
     - state: control
@@ -269,7 +270,33 @@
       map: ["enum.PowerDeviceVisualLayers.Powered"]
       visible: false
       color: "#0A5DFF"
+    - sprite: _Exodus/Structures/ShuttleComponents/liberty_shield_generator.rsi
+      state: reserve_0
+      map: ["enum.CdmShieldReserveVisualLayers.Cartridges"]
+  - type: GenericVisualizer
+    snapCardinals: true
+    visuals:
+      enum.PowerDeviceVisuals.Powered:
+        enum.PowerDeviceVisualLayers.Powered:
+          True: { visible: true }
+          False: { visible: false }
+      enum.CdmShieldReserveVisuals.CartridgeCount:
+        enum.CdmShieldReserveVisualLayers.Cartridges:
+          0: { state: reserve_0 }
+          1: { state: reserve_1 }
   - type: PointLight
     color: "#0A5DFF"
+  - type: ItemSlots
+    slots:
+      cdm-shield-reserve-0:
+        name: liberty-shield-reserve-slot-name
+        insertVerbText: liberty-shield-reserve-insert-verb
+        ejectVerbText: liberty-shield-reserve-eject-verb
+        swap: false
+        whitelist:
+          components:
+          - CdmShieldReserveCartridge
+  - type: CdmShieldReserve
+    maxCartridges: 1
   - type: Machine
     board: ShieldGeneratorUnsaMachineCircuitboard

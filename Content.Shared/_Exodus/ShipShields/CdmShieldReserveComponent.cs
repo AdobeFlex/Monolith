@@ -8,8 +8,11 @@ namespace Content.Shared._Exodus.ShipShields;
 [RegisterComponent]
 public sealed partial class CdmShieldReserveComponent : Component
 {
-    public const int MaxCartridges = 4;
+    public const int DefaultMaxCartridges = 4;
     public const string SlotPrefix = "cdm-shield-reserve-";
+
+    [DataField]
+    public int MaxCartridges = DefaultMaxCartridges;
 
     /// <summary>
     /// The fraction of shield capacity restored when a cartridge averts an overload.
