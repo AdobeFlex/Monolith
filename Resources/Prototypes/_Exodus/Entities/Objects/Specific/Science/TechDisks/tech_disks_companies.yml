@@ -100,7 +100,6 @@
   - type: TechnologyDisk
     recipes:
     - SheetPlasteelShm
-    - RCDAmmoShm
 
 - type: entity
   parent: TechDiskBase
@@ -240,9 +239,28 @@
 
 - type: entity
   parent: TechDiskBase
-  id: TechDiskUnsaPlutonium
-  name: tech-disk-unsa-plutonium-name
-  description: tech-disk-unsa-plutonium-description
+  id: TechDiskDmePlutonium
+  name: tech-disk-dme-plutonium-name
+  description: tech-disk-dme-plutonium-description
+  components:
+  - type: Sprite
+    layers:
+    - state: icon
+      map: ["enum.DamageStateVisualLayers.Base"]
+      color: "#BF00B9"
+    - state: label
+    - state: protect
+    - state: holo
+      shader: unshaded
+  - type: TechnologyDisk
+    recipes:
+    - UraniumCentrifugePlutoniumRecoveryMini
+    - UraniumCentrifugeAmericiumSynthesisMini
+- type: entity
+  parent: TechDiskBase
+  id: TechDiskUnsaShield
+  name: tech-disk-unsa-shield-name
+  description: tech-disk-unsa-shield-description
   components:
   - type: Sprite
     layers:
@@ -255,4 +273,4 @@
       shader: unshaded
   - type: TechnologyDisk
     recipes:
-    - UraniumCentrifugePlutoniumRecoveryMini
+    - ShieldGeneratorUnsaMachineCircuitboard

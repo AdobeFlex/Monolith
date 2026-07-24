@@ -1,17 +1,25 @@
 using System.Numerics;
 using Content.Server.Power.Components;
 using Content.Shared._Crescent.ShipShields;
+using Content.Shared._Exodus.ShipShields; // Exodus directional shields
+using Content.Shared.Physics; // Exodus directional shields
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Maths; // Exodus directional shields
+using Robust.Shared.Physics;
+using Robust.Shared.Physics.Collision.Shapes;
+using Robust.Shared.Physics.Components;
 
 namespace Content.Server._Crescent.ShipShields;
 
 public sealed partial class ShipShieldsSystem
 {
-    // Exodus-begin | shield hit absorption events
+    private const int DirectionalShieldCollisionChainCount = 4; // Exodus directional shields
+    // Exodus-begin | shield hit absorption and directional shield rotation
     private void InitializeShieldHitAbsorption()
     {
         SubscribeLocalEvent<ShipShieldedComponent, ShipShieldHitAttemptEvent>(OnShipShieldHitAttempt);
+        SubscribeLocalEvent<DirectionalShipShieldEmitterComponent, MoveEvent>(OnDirectionalShieldEmitterMoved);
     }
 
     private void OnShipShieldHitAttempt(EntityUid grid, ShipShieldedComponent shielded, ref ShipShieldHitAttemptEvent args)
@@ -26,6 +34,37 @@ public sealed partial class ShipShieldsSystem
             return;
 
         args.Absorbed = true;
+    }
+
+    private void OnDirectionalShieldEmitterMoved(Entity<DirectionalShipShieldEmitterComponent> ent, ref MoveEvent args)
+    {
+        if (args.OldRotation.EqualsApprox(args.NewRotation) ||
+            !TryComp<ShipShieldEmitterComponent>(ent, out var emitter) ||
+            emitter.Shield is not { } shield ||
+            emitter.Shielded is not { } grid ||
+            Deleted(shield) ||
+            !_mapGridQuery.TryGetComponent(grid, out var mapGrid) ||
+            !_shieldVisualsQuery.TryGetComponent(shield, out var visuals) ||
+            !TryComp<PhysicsComponent>(shield, out var shieldPhysics))
+        {
+            return;
+        }
+
+        _fixtureSystem.DestroyFixture(shield, "shield", updates: false, body: shieldPhysics);
+
+        for (var i = 0; i < DirectionalShieldCollisionChainCount; i++)
+        {
+            _fixtureSystem.DestroyFixture(shield, $"internalShield{i}", updates: false, body: shieldPhysics);
+        }
+
+        GenerateDirectionalShieldFixtures(
+            shield,
+            shieldPhysics,
+            mapGrid,
+            visuals.Padding,
+            ent.Comp,
+            args.NewRotation);
+        _physicsSystem.WakeBody(shield, body: shieldPhysics);
     }
 
     private bool IsPointInsideShield(EntityUid grid, ShipShieldedComponent shielded, MapCoordinates point)
@@ -51,8 +90,102 @@ public sealed partial class ShipShieldsSystem
 
         var dx = (localPoint.X - center.X) / halfWidth;
         var dy = (localPoint.Y - center.Y) / halfHeight;
-        return dx * dx + dy * dy <= 1f;
+        if (dx * dx + dy * dy > 1f)
+            return false;
+
+        if (_directionalShieldFieldQuery.TryGetComponent(shielded.Shield, out var directional) &&
+            !IsPointInsideDirectionalShieldArc(localPoint, center, directional))
+        {
+            return false;
+        }
+
+        return true;
     }
+
+    // Exodus-begin directional shield geometry
+    private void GenerateDirectionalShieldFixtures(
+        EntityUid shield,
+        PhysicsComponent shieldPhysics,
+        MapGridComponent mapGrid,
+        float padding,
+        DirectionalShipShieldEmitterComponent directional,
+        Angle direction)
+    {
+        var width = mapGrid.LocalAABB.Width + padding;
+        var height = mapGrid.LocalAABB.Height + padding;
+        var radius = MathF.Min(width, height) * 0.5f;
+        var scaleX = width > height;
+        var scale = scaleX ? width / height : height / width;
+        var arcRadians = Math.Clamp(directional.ArcDegrees, 1f, 359f) * MathF.PI / 180f;
+        var segments = Math.Max(16, (int)MathF.Ceiling(radius * 16f * arcRadians / MathF.Tau));
+        var step = arcRadians / segments;
+        var start = (float) direction.Theta - arcRadians * 0.5f;
+        var vertices = new Vector2[segments + 1];
+
+        Vector2 GetArcPoint(float angle)
+        {
+            var point = new Vector2(MathF.Cos(angle) * radius, MathF.Sin(angle) * radius);
+            if (scaleX)
+                point.X *= scale;
+            else
+                point.Y *= scale;
+
+            return point;
+        }
+
+        for (var i = 0; i <= segments; i++)
+        {
+            vertices[i] = GetArcPoint(start + step * i);
+        }
+
+        var previous = GetArcPoint(start - step);
+        var next = GetArcPoint(start + arcRadians + step);
+
+        var shieldChain = new ChainShape();
+        shieldChain.CreateChain(vertices, previous, next);
+        _fixtureSystem.TryCreateFixture(shield, shieldChain, "shield",
+            hard: false,
+            collisionLayer: (int)CollisionGroup.BulletImpassable,
+            body: shieldPhysics);
+
+        // Projectile raycasts use fixture broadphase boxes. Split the hard arc into short chains so those boxes
+        // follow the curve closely without adding invisible radial walls through the ship.
+        var collisionChains = Math.Min(DirectionalShieldCollisionChainCount, segments);
+        for (var i = 0; i < collisionChains; i++)
+        {
+            var first = i * segments / collisionChains;
+            var last = (i + 1) * segments / collisionChains;
+            var collisionChain = new ChainShape();
+            collisionChain.CreateChain(
+                vertices.AsSpan(first, last - first + 1),
+                first == 0 ? previous : vertices[first - 1],
+                last == segments ? next : vertices[last + 1]);
+            _fixtureSystem.TryCreateFixture(shield, collisionChain, $"internalShield{i}",
+                hard: true,
+                collisionLayer: (int)CollisionGroup.BulletImpassable,
+                body: shieldPhysics);
+        }
+
+        var field = EnsureComp<DirectionalShipShieldFieldComponent>(shield);
+        field.ArcDegrees = directional.ArcDegrees;
+        field.Direction = direction;
+    }
+
+    private static bool IsPointInsideDirectionalShieldArc(
+        Vector2 point,
+        Vector2 center,
+        DirectionalShipShieldFieldComponent directional)
+    {
+        var offset = point - center;
+        var lengthSquared = offset.LengthSquared();
+        if (lengthSquared <= float.Epsilon)
+            return true;
+
+        var arcRadians = Math.Clamp(directional.ArcDegrees, 1f, 359f) * MathF.PI / 180f;
+        var minimumDot = MathF.Cos(arcRadians * 0.5f);
+        return Vector2.Dot(offset, directional.Direction.ToWorldVec()) >= MathF.Sqrt(lengthSquared) * minimumDot;
+    }
+    // Exodus-end
 
     private bool TryApplyShieldLoad(ShipShieldedComponent shielded, float loadWatts)
     {

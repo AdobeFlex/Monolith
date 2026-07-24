@@ -35,14 +35,10 @@ public sealed class HealthThresholdModifierSystem : EntitySystem
         if (!float.IsFinite(multiplier) || multiplier <= 0f || !TryComp<MobThresholdsComponent>(uid, out var thresholds))
             return;
 
-        var modifiedThresholds = new SortedDictionary<FixedPoint2, MobState>(thresholds.Thresholds.Count);
-        foreach (var (threshold, state) in thresholds.Thresholds)
+        var originalThresholds = new Dictionary<FixedPoint2, MobState>(thresholds.Thresholds);
+        foreach (var (threshold, state) in originalThresholds)
         {
-            modifiedThresholds[threshold * multiplier] = state;
+            _mobThreshold.SetMobStateThreshold(uid, threshold * multiplier, state, thresholds);
         }
-
-        thresholds.Thresholds = modifiedThresholds;
-        Dirty(uid, thresholds);
-        _mobThreshold.VerifyThresholds(uid, thresholds);
     }
 }

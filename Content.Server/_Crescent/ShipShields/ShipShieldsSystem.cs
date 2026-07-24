@@ -39,6 +39,7 @@ public sealed partial class ShipShieldsSystem : EntitySystem
     private EntityQuery<ShipShieldEmitterComponent> _shieldEmitterQuery;
     private EntityQuery<ShipShieldVisualsComponent> _shieldVisualsQuery;
     private EntityQuery<TransformComponent> _transformQuery;
+    private EntityQuery<DirectionalShipShieldFieldComponent> _directionalShieldFieldQuery; // Exodus directional shields
     // Exodus-end
     // Exodus-begin shield deflection queue
     private readonly List<QueuedShieldDeflection> _queuedShieldDeflections = new();
@@ -170,6 +171,7 @@ public sealed partial class ShipShieldsSystem : EntitySystem
         _shieldEmitterQuery = GetEntityQuery<ShipShieldEmitterComponent>();
         _shieldVisualsQuery = GetEntityQuery<ShipShieldVisualsComponent>();
         _transformQuery = GetEntityQuery<TransformComponent>();
+        _directionalShieldFieldQuery = GetEntityQuery<DirectionalShipShieldFieldComponent>(); // Exodus directional shields
         // Exodus-end
 
         SubscribeLocalEvent<ShipShieldComponent, PreventCollideEvent>(OnPreventCollide);
@@ -292,27 +294,43 @@ public sealed partial class ShipShieldsSystem : EntitySystem
         _transformSystem.SetCoordinates(shield, gridCenter);
         _transformSystem.SetWorldRotation(shield, _transformSystem.GetWorldRotation(entity));
 
-        var chain = GenerateOvalFixture(shield, "shield", shieldPhysics, mapGrid, shieldVisuals.Padding);
-
-        List<Vector2> roughPoly = new();
-
-        var interval = chain.Count / PhysicsConstants.MaxPolygonVertices;
-
-        int i = 0;
-
-        while (i < PhysicsConstants.MaxPolygonVertices)
+        // Exodus-begin directional shield geometry
+        if (source is { } shieldSource &&
+            TryComp<DirectionalShipShieldEmitterComponent>(shieldSource, out var directional))
         {
-            roughPoly.Add(chain.Vertices[i * interval]);
-            i++;
+            GenerateDirectionalShieldFixtures(
+                shield,
+                shieldPhysics,
+                mapGrid,
+                shieldVisuals.Padding,
+                directional,
+                Transform(shieldSource).LocalRotation);
         }
+        else
+        // Exodus-end
+        {
+            var chain = GenerateOvalFixture(shield, "shield", shieldPhysics, mapGrid, shieldVisuals.Padding);
 
-        var internalPoly = new PolygonShape();
-        internalPoly.Set(roughPoly);
+            List<Vector2> roughPoly = new();
 
-        _fixtureSystem.TryCreateFixture(shield, internalPoly, "internalShield",
-            hard: true,
-            collisionLayer: (int)CollisionGroup.BulletImpassable, // Mono - Only try to block bullets
-            body: shieldPhysics);
+            var interval = chain.Count / PhysicsConstants.MaxPolygonVertices;
+
+            int i = 0;
+
+            while (i < PhysicsConstants.MaxPolygonVertices)
+            {
+                roughPoly.Add(chain.Vertices[i * interval]);
+                i++;
+            }
+
+            var internalPoly = new PolygonShape();
+            internalPoly.Set(roughPoly);
+
+            _fixtureSystem.TryCreateFixture(shield, internalPoly, "internalShield",
+                hard: true,
+                collisionLayer: (int)CollisionGroup.BulletImpassable, // Mono - Only try to block bullets
+                body: shieldPhysics);
+        }
 
         _physicsSystem.WakeBody(shield, body: shieldPhysics);
         _physicsSystem.SetSleepingAllowed(shield, shieldPhysics, false);

@@ -127,9 +127,17 @@
 
 - type: entity
   parent: CompanyTechDiskCase
+  id: CompanyTechDiskCaseDme
+  components:
+  - type: ContainerFill
+    containers:
+      storagebase:
+      - TechDiskDmePlutonium
+- type: entity
+  parent: CompanyTechDiskCase
   id: CompanyTechDiskCaseUnsa
   components:
   - type: ContainerFill
     containers:
       storagebase:
-      - TechDiskUnsaPlutonium
+      - TechDiskUnsaShield

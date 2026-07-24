@@ -239,3 +239,37 @@
     emergencyShieldFraction: 0.25
   - type: PointLight
     color: "#48C96B"
+# Universal States of America corporate shield. It protects only the forward arc selected by generator rotation.
+- type: entity
+  id: ShieldGeneratorUnsa
+  parent: ShieldGeneratorSmall
+  name: unsa-directional-shield-generator-name
+  description: unsa-directional-shield-generator-description
+  components:
+  - type: DirectionalShipShieldEmitter
+    arcDegrees: 120
+  - type: ShipShieldEmitter
+    damageLimit: 110000
+    healPerSecond: 700
+    baseDraw: 30000
+    maxDraw: 80000
+    shieldColor: "#0A5DFF"
+    collisionResistanceMultiplier: 1.0
+  - type: Transform
+    noRot: false
+  - type: Rotatable
+    rotateWhileAnchored: true
+  - type: Sprite
+    sprite: _Mono/Structures/ShuttleComponents/shield.rsi
+    snapCardinals: true
+    layers:
+    - state: control
+    - state: control_on
+      shader: unshaded
+      map: ["enum.PowerDeviceVisualLayers.Powered"]
+      visible: false
+      color: "#0A5DFF"
+  - type: PointLight
+    color: "#0A5DFF"
+  - type: Machine
+    board: ShieldGeneratorUnsaMachineCircuitboard

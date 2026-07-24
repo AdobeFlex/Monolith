@@ -15,6 +15,7 @@ public sealed class CdmShieldReserveSystem : EntitySystem
 {
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly ItemSlotsSystem _itemSlots = default!;
 
     public override void Initialize()
     {
@@ -80,16 +81,13 @@ public sealed class CdmShieldReserveSystem : EntitySystem
     private bool TryConsumeCartridge(Entity<CdmShieldReserveComponent> ent, out int remainingCartridges)
     {
         remainingCartridges = 0;
-        if (!TryComp<ItemSlotsComponent>(ent.Owner, out var itemSlots))
-            return false;
-
         var cartridgeCount = GetCartridgeCount(ent);
         if (cartridgeCount == 0)
             return false;
 
         for (var i = 0; i < CdmShieldReserveComponent.MaxCartridges; i++)
         {
-            if (!itemSlots.Slots.TryGetValue(CdmShieldReserveComponent.GetSlotId(i), out var slot)
+            if (!_itemSlots.TryGetSlot(ent.Owner, CdmShieldReserveComponent.GetSlotId(i), out var slot)
                 || slot.Item is not { } cartridge
                 || TerminatingOrDeleted(cartridge)
                 || !HasComp<CdmShieldReserveCartridgeComponent>(cartridge))
@@ -107,13 +105,10 @@ public sealed class CdmShieldReserveSystem : EntitySystem
 
     private int GetCartridgeCount(Entity<CdmShieldReserveComponent> ent)
     {
-        if (!TryComp<ItemSlotsComponent>(ent.Owner, out var itemSlots))
-            return 0;
-
         var count = 0;
         for (var i = 0; i < CdmShieldReserveComponent.MaxCartridges; i++)
         {
-            if (!itemSlots.Slots.TryGetValue(CdmShieldReserveComponent.GetSlotId(i), out var slot)
+            if (!_itemSlots.TryGetSlot(ent.Owner, CdmShieldReserveComponent.GetSlotId(i), out var slot)
                 || slot.Item is not { } cartridge
                 || TerminatingOrDeleted(cartridge)
                 || !HasComp<CdmShieldReserveCartridgeComponent>(cartridge))

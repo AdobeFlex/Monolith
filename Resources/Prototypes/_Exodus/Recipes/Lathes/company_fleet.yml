@@ -144,6 +144,12 @@
     Silver: 25
     Plutonium: 25
 
+# --- Universal States of America ---
+- type: latheRecipe
+  parent: BaseCircuitboardRecipe
+  id: ShieldGeneratorUnsaMachineCircuitboard
+  result: ShieldGeneratorUnsaMachineCircuitboard
+
 # --- The Hive ---
 - type: latheRecipe
   id: HiveSynthHeart
@@ -190,14 +196,6 @@
     Plasma: 100
     Plutonium: 5
 
-- type: latheRecipe
-  id: RCDAmmoShm
-  result: RCDAmmo
-  completetime: 4
-  materials:
-    Steel: 400
-    Plastic: 200
-
 # --- Cerberus ---
 - type: latheRecipe
   id: SyndicateBombCerberus
@@ -235,11 +233,11 @@
     Silver: 250
     UraniumFissile: 50
 
-# --- UNSA ---
+# --- Dark Matter Enterprises ---
 - type: latheRecipe
   id: UraniumCentrifugePlutoniumRecoveryMini
-  name: recipe-unsa-plutonium-recovery-name
-  description: recipe-unsa-plutonium-recovery-description
+  name: recipe-dme-plutonium-recovery-name
+  description: recipe-dme-plutonium-recovery-description
   categories:
   - Explosive
   materialResult:
@@ -247,6 +245,26 @@
   completetime: 30
   materials:
     UraniumFissile: 100
+  icon:
+    sprite: _Mono/Effects/processing.rsi
+    state: processing_3
+  materialDiscountScale: 0
+
+- type: latheRecipe
+  id: UraniumCentrifugeAmericiumSynthesisMini
+  name: recipe-dme-americium-synthesis-name
+  description: recipe-dme-americium-synthesis-description
+  categories:
+  - Explosive
+  materialResult:
+    Americium: 1
+  completetime: 180
+  materials:
+    Plutonium: 250
+    UraniumFissile: 1000
+    Gold: 1000
+    Silver: 1000
+    Plasma: 500
   icon:
     sprite: _Mono/Effects/processing.rsi
     state: processing_3
@@ -309,7 +327,6 @@
   id: CompanyShmDynamic
   recipes:
   - SheetPlasteelShm
-  - RCDAmmoShm
 
 - type: latheRecipePack
   id: CompanyCerberusDynamic
@@ -327,6 +344,12 @@
   - AetherionGunneryServerUltraCircuitboard
 
 - type: latheRecipePack
-  id: CompanyUnsaDynamic
+  id: CompanyDmeDynamic
   recipes:
   - UraniumCentrifugePlutoniumRecoveryMini
+  - UraniumCentrifugeAmericiumSynthesisMini
+
+- type: latheRecipePack
+  id: CompanyUnsaDynamic
+  recipes:
+  - ShieldGeneratorUnsaMachineCircuitboard

@@ -100,6 +100,8 @@
   description: dark-matter-enterprises-description
   color: "#BF00B9"
   image: /Textures/_Mono/Companies/dme.png #DME Logo
+  startingItems: # Exodus company-fleet
+  - CompanyTechDiskCaseDme # Exodus company-fleet
 
 - type: company
   id: AetherionDynamics
