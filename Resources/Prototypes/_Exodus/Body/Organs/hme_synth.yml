@@ -21,6 +21,18 @@
     - id: Narcotic
 
 - type: entity
+  parent: HmeSynthHeart
+  id: HmeSynthHeartFortified
+  name: hme-synth-heart-fortified-name
+  description: hme-synth-heart-fortified-description
+  components:
+  - type: Organ
+    slotId: heart
+    onAdd:
+    - type: HealthThresholdModifier
+      multiplier: 1.25
+
+- type: entity
   parent: BioSynthLungs
   id: HmeSynthLungs
   name: hme-synth-lungs-name

@@ -11,7 +11,7 @@ namespace Content.Shared._Exodus.Nebula;
 /// Dual-facing thruster-like siphon: while the grid moves through a dense nebula
 /// with clear space along its working axis, injects gas into a connected pipe node.
 /// </summary>
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentPause]
+[RegisterComponent, NetworkedComponent]
 public sealed partial class NebulaGasSiphonComponent : Component
 {
     public const string FilterSlotId = "filter";
@@ -80,7 +80,7 @@ public sealed partial class NebulaGasSiphonComponent : Component
     [DataField]
     public TimeSpan UpdateInterval = TimeSpan.FromSeconds(1);
 
-    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
     public TimeSpan NextUpdate;
 }
 

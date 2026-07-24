@@ -86,8 +86,7 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         SubscribeLocalEvent<CollisionLayerChangeEvent>(OnCollisionLayerChange);
         SubscribeLocalEvent<PhysicsBodyTypeChangedEvent>(OnBodyTypeChange);
         SubscribeLocalEvent<FixturesComponent, ComponentStartup>(OnFixturesStartup);
-        SubscribeLocalEvent<FixturesComponent, ComponentShutdown>(OnFixturesShutdown);
-        SubscribeLocalEvent<FixturesComponent, GridFixtureChangeEvent>(OnGridFixtureChange);
+        SubscribeLocalEvent<FixturesComponent, ComponentRemove>(OnFixturesRemove);
         SubscribeLocalEvent<AnchorStateChangedEvent>(OnAnchorStateChanged);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
@@ -291,15 +290,10 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         InvalidateGridEntityArea(xform.GridUid!.Value, ent.Owner, xform.Coordinates, xform.LocalRotation);
     }
 
-    private void OnFixturesShutdown(Entity<FixturesComponent> ent, ref ComponentShutdown args)
+    private void OnFixturesRemove(Entity<FixturesComponent> ent, ref ComponentRemove args)
     {
         if (IsStaticBody(ent.Owner) && TryComp<TransformComponent>(ent.Owner, out var xform))
             InvalidateGrid(xform.GridUid);
-    }
-
-    private void OnGridFixtureChange(Entity<FixturesComponent> ent, GridFixtureChangeEvent args)
-    {
-        InvalidateGrid(ent.Owner);
     }
 
     private void OnAnchorStateChanged(ref AnchorStateChangedEvent args)
@@ -550,6 +544,7 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
 
     private void OnSiphonUnpaused(Entity<NebulaGasSiphonComponent> ent, ref EntityUnpausedEvent args)
     {
+        ent.Comp.NextUpdate += args.PausedTime;
         UpdateSiphonActivity(ent.Owner);
     }
 

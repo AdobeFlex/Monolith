@@ -88,3 +88,48 @@
     containers:
       storagebase:
       - TechDiskRedSailTeleporter
+
+- type: entity
+  parent: CompanyTechDiskCase
+  id: CompanyTechDiskCaseUllman
+  components:
+  - type: ContainerFill
+    containers:
+      storagebase:
+      - TechDiskUllmanArmaments
+
+- type: entity
+  parent: CompanyTechDiskCase
+  id: CompanyTechDiskCaseCdm
+  components:
+  - type: ContainerFill
+    containers:
+      storagebase:
+      - TechDiskCdmShield
+
+- type: entity
+  parent: CompanyTechDiskCase
+  id: CompanyTechDiskCaseHive
+  components:
+  - type: ContainerFill
+    containers:
+      storagebase:
+      - TechDiskHiveSyntheticOrgans
+
+- type: entity
+  parent: CompanyTechDiskCase
+  id: CompanyTechDiskCaseAetherion
+  components:
+  - type: ContainerFill
+    containers:
+      storagebase:
+      - TechDiskAetherionGunnery
+
+- type: entity
+  parent: CompanyTechDiskCase
+  id: CompanyTechDiskCaseUnsa
+  components:
+  - type: ContainerFill
+    containers:
+      storagebase:
+      - TechDiskUnsaPlutonium

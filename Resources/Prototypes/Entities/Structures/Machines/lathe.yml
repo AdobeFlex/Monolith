@@ -275,6 +275,9 @@
     - CompanyShmDynamic
     - CompanyCerberusDynamic
     - CompanyBratvaDynamic
+    - CompanyUllmanDynamic # Exodus company-fleet
+    - CompanyCdmDynamic # Exodus company-fleet
+    - CompanyHiveDynamic # Exodus company-fleet
     # Exodus-end
     # WD EDIT START
     - VisionGoggles

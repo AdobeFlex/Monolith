@@ -42,6 +42,16 @@
   materials:
     Biomass: 14
     Plasma: 200
+    Iridite: 25
+
+- type: latheRecipe
+  id: HmeSynthHeartFortified
+  result: HmeSynthHeartFortified
+  completetime: 15
+  materials:
+    Biomass: 14
+    Plasma: 200
+    Iridite: 50
 
 - type: latheRecipe
   id: HmeSynthLungs
@@ -95,11 +105,81 @@
 
 - type: latheRecipe
   id: MagazinePistolMaco
-  result: Magazine9x19mmPistolFMJ
+  result: Magazine45_ACPPistolFMJ
   completetime: 3
   materials:
     Steel: 150
 
+# --- Ullman Industries ---
+- type: latheRecipe
+  id: WeaponTurretDravonFlatpackUllman
+  result: WeaponTurretDravonFlatpack
+  completetime: 30
+  materials:
+    Steel: 3000
+    Plasma: 1500
+    Uranium: 500
+    Silver: 400
+
+# --- Civil Defense Militia ---
+- type: latheRecipe
+  id: ShieldGeneratorCdmFlatpack
+  result: ShieldGeneratorCdmFlatpack
+  completetime: 25
+  materials:
+    Steel: 3000
+    Plasma: 1000
+    Silver: 500
+    Uranium: 250
+
+
+- type: latheRecipe
+  id: CdmShieldReserveCartridge
+  result: CdmShieldReserveCartridge
+  completetime: 5
+  materials:
+    Steel: 250
+    Glass: 100
+    Plasma: 100
+    Silver: 25
+    Plutonium: 25
+
+# --- The Hive ---
+- type: latheRecipe
+  id: HiveSynthHeart
+  result: HiveSynthHeart
+  completetime: 15
+  materials:
+    Biomass: 14
+    Plasma: 200
+    Silver: 100
+
+- type: latheRecipe
+  id: HiveSynthLungs
+  result: HiveSynthLungs
+  completetime: 15
+  materials:
+    Biomass: 14
+    Plasma: 200
+    Silver: 100
+
+- type: latheRecipe
+  id: HiveSynthLiver
+  result: HiveSynthLiver
+  completetime: 15
+  materials:
+    Biomass: 14
+    Plasma: 200
+    Silver: 100
+
+- type: latheRecipe
+  id: HiveSynthEyes
+  result: HiveSynthEyes
+  completetime: 12
+  materials:
+    Biomass: 10
+    Glass: 200
+    Silver: 100
 # --- Steel Hammer ---
 - type: latheRecipe
   id: SheetPlasteelShm
@@ -108,6 +188,7 @@
   materials:
     Steel: 100
     Plasma: 100
+    Plutonium: 5
 
 - type: latheRecipe
   id: RCDAmmoShm
@@ -126,7 +207,7 @@
     Steel: 5000
     Plasma: 3000
     Uranium: 1000
-    Plutonium: 1
+    Plutonium: 100
     Plastic: 1000
 
 # --- Bratva ---
@@ -139,6 +220,37 @@
     Plastic: 1000
     Cloth: 500
     Plasma: 300
+
+# --- Aetherion Dynamics ---
+- type: latheRecipe
+  id: AetherionGunneryServerUltraCircuitboard
+  name: aetherion-gunnery-board-recipe-name
+  description: aetherion-gunnery-board-recipe-description
+  result: MachineGCSUltraCircuitboard
+  completetime: 15
+  materials:
+    Steel: 1000
+    Glass: 500
+    Gold: 250
+    Silver: 250
+    UraniumFissile: 50
+
+# --- UNSA ---
+- type: latheRecipe
+  id: UraniumCentrifugePlutoniumRecoveryMini
+  name: recipe-unsa-plutonium-recovery-name
+  description: recipe-unsa-plutonium-recovery-description
+  categories:
+  - Explosive
+  materialResult:
+    Plutonium: 5
+  completetime: 30
+  materials:
+    UraniumFissile: 100
+  icon:
+    sprite: _Mono/Effects/processing.rsi
+    state: processing_3
+  materialDiscountScale: 0
 
 # --- Packs (dynamic unlock via tech disk) ---
 - type: latheRecipePack
@@ -161,6 +273,7 @@
   id: CompanyHmeOrgansDynamic
   recipes:
   - HmeSynthHeart
+  - HmeSynthHeartFortified
   - HmeSynthLungs
   - HmeSynthLiver
   - HmeSynthEyes
@@ -173,6 +286,25 @@
   - WeaponPistolMaco
   - MagazinePistolMaco
 
+- type: latheRecipePack
+  id: CompanyUllmanDynamic
+  recipes:
+  - WeaponTurretDravonFlatpackUllman
+
+
+- type: latheRecipePack
+  id: CompanyCdmDynamic
+  recipes:
+  - ShieldGeneratorCdmFlatpack
+  - CdmShieldReserveCartridge
+
+- type: latheRecipePack
+  id: CompanyHiveDynamic
+  recipes:
+  - HiveSynthHeart
+  - HiveSynthLungs
+  - HiveSynthLiver
+  - HiveSynthEyes
 - type: latheRecipePack
   id: CompanyShmDynamic
   recipes:
@@ -188,3 +320,13 @@
   id: CompanyBratvaDynamic
   recipes:
   - ClothingOuterHardsuitBratva
+
+- type: latheRecipePack
+  id: CompanyAetherionDynamic
+  recipes:
+  - AetherionGunneryServerUltraCircuitboard
+
+- type: latheRecipePack
+  id: CompanyUnsaDynamic
+  recipes:
+  - UraniumCentrifugePlutoniumRecoveryMini

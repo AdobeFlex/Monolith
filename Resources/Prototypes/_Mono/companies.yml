@@ -106,6 +106,8 @@
   name: aetherion-dynamics-name # Ru-Localization
   description: aetherion-dynamics-description
   color: "#7E72B2"
+  startingItems: # Exodus company-fleet
+  - CompanyTechDiskCaseAetherion # Exodus company-fleet
 
 - type: company
   id: HorizonEnergy
@@ -125,12 +127,16 @@
   description: universal-states-of-america-description
   color: "#0A3161"
   image: /Textures/_Mono/Companies/UNSA.png
+  startingItems: # Exodus company-fleet
+  - CompanyTechDiskCaseUnsa # Exodus company-fleet
 
 - type: company
   id: CivilDefenseMilita
   name: civil-defense-milita-name # Ru-Localization
   description: civil-defense-milita-description
   color: "#5e6ab3" # Exodus-Company-Recolor
+  startingItems: # Exodus company-fleet
+  - CompanyTechDiskCaseCdm # Exodus company-fleet
 
 - type: company
   id: UllmanIndustries
@@ -138,6 +144,8 @@
   description: ullman-industries-description
   color: "#52326A"
   image: /Textures/_Mono/Companies/ullman_industries.png
+  startingItems: # Exodus company-fleet
+  - CompanyTechDiskCaseUllman # Exodus company-fleet
 
 - type: company
   id: NosskeEienResearchandDevelopment
@@ -176,6 +184,8 @@
   name: The-Hive-name # Ru-Localization
   description: The-Hive-description
   color: "#5918a8"
+  startingItems: # Exodus company-fleet
+  - CompanyTechDiskCaseHive # Exodus company-fleet
 
 # Black Market Companies
 

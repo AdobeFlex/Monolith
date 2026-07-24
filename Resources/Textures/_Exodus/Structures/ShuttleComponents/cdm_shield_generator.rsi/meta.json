@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "license": "EXDS-RL",
+  "copyright": "Made for Exodus",
+  "size": { "x": 32, "y": 32 },
+  "states": [
+    { "name": "reserve_0" },
+    { "name": "reserve_1" },
+    { "name": "reserve_2" },
+    { "name": "reserve_3" },
+    { "name": "reserve_4" }
+  ]
+}

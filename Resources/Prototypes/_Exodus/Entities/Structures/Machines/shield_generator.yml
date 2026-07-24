@@ -164,3 +164,78 @@
   - type: Anchorable
     flags:
     - None
+
+# Civil Defense Militia corporate shield. Uses the reliable small shield platform with a green field.
+- type: entity
+  id: ShieldGeneratorCdm
+  parent: ShieldGeneratorSmall
+  name: cdm-shield-generator-name
+  description: cdm-shield-generator-description
+  components:
+  - type: ShipShieldEmitter
+    shieldColor: "#48C96B"
+  - type: Sprite
+    sprite: _Exodus/Structures/ShuttleComponents/cdm_shield_generator.rsi
+    snapCardinals: true
+    layers:
+    - state: control
+    - state: control_on
+      shader: unshaded
+      map: ["enum.PowerDeviceVisualLayers.Powered"]
+      visible: false
+      color: "#48C96B"
+    - sprite: _Exodus/Structures/ShuttleComponents/cdm_shield_generator.rsi
+      state: reserve_0
+      map: ["enum.CdmShieldReserveVisualLayers.Cartridges"]
+  - type: GenericVisualizer
+    snapCardinals: true
+    visuals:
+      enum.PowerDeviceVisuals.Powered:
+        enum.PowerDeviceVisualLayers.Powered:
+          True: { visible: true }
+          False: { visible: false }
+      enum.CdmShieldReserveVisuals.CartridgeCount:
+        enum.CdmShieldReserveVisualLayers.Cartridges:
+          0: { state: reserve_0 }
+          1: { state: reserve_1 }
+          2: { state: reserve_2 }
+          3: { state: reserve_3 }
+          4: { state: reserve_4 }
+  - type: ItemSlots
+    slots:
+      cdm-shield-reserve-0:
+        name: cdm-shield-reserve-slot-name
+        insertVerbText: cdm-shield-reserve-insert-verb
+        ejectVerbText: cdm-shield-reserve-eject-verb
+        swap: false
+        whitelist:
+          components:
+          - CdmShieldReserveCartridge
+      cdm-shield-reserve-1:
+        name: cdm-shield-reserve-slot-name
+        insertVerbText: cdm-shield-reserve-insert-verb
+        ejectVerbText: cdm-shield-reserve-eject-verb
+        swap: false
+        whitelist:
+          components:
+          - CdmShieldReserveCartridge
+      cdm-shield-reserve-2:
+        name: cdm-shield-reserve-slot-name
+        insertVerbText: cdm-shield-reserve-insert-verb
+        ejectVerbText: cdm-shield-reserve-eject-verb
+        swap: false
+        whitelist:
+          components:
+          - CdmShieldReserveCartridge
+      cdm-shield-reserve-3:
+        name: cdm-shield-reserve-slot-name
+        insertVerbText: cdm-shield-reserve-insert-verb
+        ejectVerbText: cdm-shield-reserve-eject-verb
+        swap: false
+        whitelist:
+          components:
+          - CdmShieldReserveCartridge
+  - type: CdmShieldReserve
+    emergencyShieldFraction: 0.25
+  - type: PointLight
+    color: "#48C96B"

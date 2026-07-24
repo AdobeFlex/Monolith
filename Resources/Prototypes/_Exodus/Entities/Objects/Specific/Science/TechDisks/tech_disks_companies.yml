@@ -35,6 +35,7 @@
   - type: TechnologyDisk
     recipes:
     - HmeSynthHeart
+    - HmeSynthHeartFortified
     - HmeSynthLungs
     - HmeSynthLiver
     - HmeSynthEyes
@@ -141,6 +142,66 @@
 
 - type: entity
   parent: TechDiskBase
+  id: TechDiskUllmanArmaments
+  name: tech-disk-ullman-armaments-name
+  description: tech-disk-ullman-armaments-description
+  components:
+  - type: Sprite
+    layers:
+    - state: icon
+      map: ["enum.DamageStateVisualLayers.Base"]
+      color: "#52326A"
+    - state: label
+    - state: protect
+    - state: holo
+      shader: unshaded
+  - type: TechnologyDisk
+    recipes:
+    - WeaponTurretDravonFlatpackUllman
+
+- type: entity
+  parent: TechDiskBase
+  id: TechDiskCdmShield
+  name: tech-disk-cdm-shield-name
+  description: tech-disk-cdm-shield-description
+  components:
+  - type: Sprite
+    layers:
+    - state: icon
+      map: ["enum.DamageStateVisualLayers.Base"]
+      color: "#48C96B"
+    - state: label
+    - state: protect
+    - state: holo
+      shader: unshaded
+  - type: TechnologyDisk
+    recipes:
+    - ShieldGeneratorCdmFlatpack
+    - CdmShieldReserveCartridge
+
+- type: entity
+  parent: TechDiskBase
+  id: TechDiskHiveSyntheticOrgans
+  name: tech-disk-hive-organs-name
+  description: tech-disk-hive-organs-description
+  components:
+  - type: Sprite
+    layers:
+    - state: icon
+      map: ["enum.DamageStateVisualLayers.Base"]
+      color: "#5918A8"
+    - state: label
+    - state: protect
+    - state: holo
+      shader: unshaded
+  - type: TechnologyDisk
+    recipes:
+    - HiveSynthHeart
+    - HiveSynthLungs
+    - HiveSynthLiver
+    - HiveSynthEyes
+- type: entity
+  parent: TechDiskBase
   id: TechDiskBratvaSuit
   name: tech-disk-bratva-suit-name
   description: tech-disk-bratva-suit-description
@@ -157,3 +218,41 @@
   - type: TechnologyDisk
     recipes:
     - ClothingOuterHardsuitBratva
+
+- type: entity
+  parent: TechDiskBase
+  id: TechDiskAetherionGunnery
+  name: tech-disk-aetherion-gunnery-name
+  description: tech-disk-aetherion-gunnery-description
+  components:
+  - type: Sprite
+    layers:
+    - state: icon
+      map: ["enum.DamageStateVisualLayers.Base"]
+      color: "#7E72B2"
+    - state: label
+    - state: protect
+    - state: holo
+      shader: unshaded
+  - type: TechnologyDisk
+    recipes:
+    - AetherionGunneryServerUltraCircuitboard
+
+- type: entity
+  parent: TechDiskBase
+  id: TechDiskUnsaPlutonium
+  name: tech-disk-unsa-plutonium-name
+  description: tech-disk-unsa-plutonium-description
+  components:
+  - type: Sprite
+    layers:
+    - state: icon
+      map: ["enum.DamageStateVisualLayers.Base"]
+      color: "#0A3161"
+    - state: label
+    - state: protect
+    - state: holo
+      shader: unshaded
+  - type: TechnologyDisk
+    recipes:
+    - UraniumCentrifugePlutoniumRecoveryMini

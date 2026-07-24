@@ -1,5 +1,6 @@
 using Content.Server.Power.Components;
 using Content.Shared._Crescent.ShipShields;
+using Content.Shared._Exodus.ShipShields; // Exodus CDM shield reserve
 using Content.Shared._Mono.SpaceArtillery;
 using Content.Shared.Physics;
 using Content.Shared.Projectiles;
@@ -92,10 +93,18 @@ public sealed partial class ShipShieldsSystem : EntitySystem
                 continue;
 
             var filter = _station.GetInOwningStation(uid);
-
+            // Exodus-begin CDM shield reserve
             if (emitter.Damage > emitter.DamageLimit)
-                emitter.OverloadAccumulator = emitter.DamageOverloadTimePunishment;
+            {
+                var overloadAttempt = new ShipShieldOverloadAttemptEvent();
+                RaiseLocalEvent(uid, ref overloadAttempt);
 
+                if (!overloadAttempt.Cancelled)
+                    emitter.OverloadAccumulator = emitter.DamageOverloadTimePunishment;
+                else
+                    AdjustEmitterLoad(uid, emitter, power);
+            }
+            // Exodus-end
             // Exodus-shield-swap-fix-start: a ship's shield downtime is grid-wide. Don't raise a shield
             // if the grid is already shielded (prevents a second generator shadowing the active shield),
             // or if any other emitter on the grid is still serving its overload lockout. The lockout is
