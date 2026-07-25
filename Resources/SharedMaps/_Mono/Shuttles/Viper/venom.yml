@@ -3177,27 +3177,6 @@ entities:
     - type: Transform
       pos: 1.5,-2.5
       parent: 1
-- proto: SpawnPointVGCommander
-  entities:
-  - uid: 392
-    components:
-    - type: Transform
-      pos: 2.5,6.5
-      parent: 1
-- proto: SpawnPointVGInfanteer
-  entities:
-  - uid: 393
-    components:
-    - type: Transform
-      pos: 0.5,6.5
-      parent: 1
-- proto: SpawnPointVGLieutenant
-  entities:
-  - uid: 394
-    components:
-    - type: Transform
-      pos: 1.5,6.5
-      parent: 1
 - proto: StairDark
   entities:
   - uid: 395
