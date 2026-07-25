@@ -110,6 +110,13 @@ nebula-gas-siphon-filter-slot = Фильтр газового сифона
 nebula-gas-siphon-filter-name = Небулярный газовый фильтр
 nebula-gas-siphon-filter-description = Сменный картридж для небулярного газового сифона. Постепенно забивается при добыче газа и требует замены после полного износа.
 nebula-gas-siphon-filter-examine = Ресурс фильтра: { $percent }%.
+nebula-gas-siphon-examine-operating = Состояние сифона: [color=green]условия добычи выполнены[/color].
+nebula-gas-siphon-examine-waiting = Состояние сифона: [color=yellow]ожидает выполнения условий[/color].
+nebula-gas-siphon-examine-unanchored = Состояние сифона: [color=red]не закреплён на шаттле[/color].
+nebula-gas-siphon-examine-axis-clear = Рабочая ось: [color=green]свободна[/color]. Требуется по { $tiles } свободных клеток с обеих сторон.
+nebula-gas-siphon-examine-axis-blocked = Рабочая ось: [color=red]заблокирована[/color]. Требуется по { $tiles } свободных клеток с обеих сторон.
+nebula-gas-siphon-examine-speed-low = Скорость шаттла: [color=red]{ $speed } / { $required } м/с[/color].
+
 ent-NebulaGasSiphonFilter = небулярный газовый фильтр
     .desc = Сменный картридж для небулярного газового сифона.
 company-tech-disk-case-name = Кейс корпоративных технологических дисков

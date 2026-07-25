@@ -110,6 +110,13 @@ nebula-gas-siphon-filter-slot = Gas siphon filter
 nebula-gas-siphon-filter-name = Nebula gas siphon filter
 nebula-gas-siphon-filter-description = A replaceable filter cartridge for a nebula gas siphon. It gradually clogs while extracting gas and must be replaced when depleted.
 nebula-gas-siphon-filter-examine = Filter integrity: { $percent }%.
+nebula-gas-siphon-examine-operating = Siphon status: [color=green]all extraction conditions are met[/color].
+nebula-gas-siphon-examine-waiting = Siphon status: [color=yellow]waiting for conditions[/color].
+nebula-gas-siphon-examine-unanchored = Siphon status: [color=red]not anchored to a shuttle[/color].
+nebula-gas-siphon-examine-axis-clear = Working axis: [color=green]clear[/color]. Requires { $tiles } clear tiles on each side.
+nebula-gas-siphon-examine-axis-blocked = Working axis: [color=red]blocked[/color]. Requires { $tiles } clear tiles on each side.
+nebula-gas-siphon-examine-speed-low = Shuttle speed: [color=red]{ $speed } / { $required } m/s[/color].
+
 ent-NebulaGasSiphonFilter = nebula gas siphon filter
     .desc = A replaceable cartridge for a nebula gas siphon.
 company-tech-disk-case-name = Corporate technology disk case

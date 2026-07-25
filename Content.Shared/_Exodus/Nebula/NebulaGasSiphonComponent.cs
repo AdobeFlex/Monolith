@@ -1,7 +1,10 @@
+using System.Numerics;
 using Content.Shared.Atmos;
 using Content.Shared.Containers.ItemSlots;
+using Robust.Shared.GameObjects;
 using Robust.Shared.GameStates;
 using Robust.Shared.Maths;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 
@@ -76,6 +79,17 @@ public sealed partial class NebulaGasSiphonComponent : Component
 
     [DataField]
     public string PipeNodeName = "pipe";
+
+    [DataField]
+    public EntProtoId PipePrototype = "NebulaGasSiphonGasPipe";
+
+    [DataField]
+    public Vector2 PipePosition = Vector2.Zero;
+
+    [DataField]
+    public Vector2 PipeArrowPosition = new(0.5f, 0f);
+
+    public EntityUid? PipeEntity;
 
     [DataField]
     public TimeSpan UpdateInterval = TimeSpan.FromSeconds(1);

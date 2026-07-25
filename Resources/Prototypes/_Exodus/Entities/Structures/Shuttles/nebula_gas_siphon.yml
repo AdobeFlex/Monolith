@@ -6,7 +6,6 @@
   components:
   - type: Sprite
     sprite: _Exodus/Structures/Shuttles/nebula_gas_siphon.rsi
-    snapCardinals: true
     layers:
     - state: base_empty
       map: [ "enum.NebulaGasSiphonVisualLayers.Base" ]
@@ -14,9 +13,6 @@
       map: [ "enum.NebulaGasSiphonVisualLayers.Emission" ]
       shader: unshaded
       visible: false
-    - sprite: Structures/Piping/Atmospherics/pipe.rsi
-      state: pipeUnaryConnectors
-      map: [ "enum.PipeVisualLayers.Pipe" ]
   - type: Appearance
   - type: GenericVisualizer
     visuals:
@@ -34,7 +30,6 @@
           Level2: { state: Emission_2 }
           Level3: { state: Emission_3 }
           Empty: { state: Emission_4 }
-  - type: PipeColorVisuals
   - type: Transform
     anchored: true
     noRot: false
@@ -52,19 +47,13 @@
     fullSpeed: 300
     molesPerSecond: 8
     targetPressure: 101.325
+    pipePosition: 0, 0
+    pipeArrowPosition: 0.5, 0
     filterSlot:
       name: nebula-gas-siphon-filter-slot
       whitelist:
         components:
         - NebulaGasSiphonFilter
-  - type: NodeContainer
-    nodes:
-      pipe:
-        !type:PipeNode
-        nodeGroupID: Pipe
-        pipeDirection: North
-  - type: PipeRestrictOverlap
-  - type: AtmosPipeColor
   - type: Fixtures
     fixtures:
       fix1:
@@ -122,9 +111,28 @@
     color: "#FFFFFFBB"
     layers:
     - state: arrow
-      offset: 0, 0.75
+      rotation: 90
+      offset: 0.5, 0
   - type: TimedDespawn
     lifetime: 2
+  - type: Tag
+    tags:
+    - HideContextMenu
+
+- type: entity
+  id: NebulaGasSiphonGasPipe
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Transform
+    anchored: true
+  - type: NodeContainer
+    nodes:
+      pipe:
+        !type:PipeNode
+        nodeGroupID: Pipe
+        pipeDirection: East
+        volume: 1000
+  - type: PipeRestrictOverlap
   - type: Tag
     tags:
     - HideContextMenu

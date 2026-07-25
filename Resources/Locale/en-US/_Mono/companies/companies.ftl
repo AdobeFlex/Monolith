@@ -55,3 +55,22 @@ viper-group-description = Formerly a Syndicate privateering company operating un
 cerberus-surplus-provisions = Cerberus Surplus Provisons, or CSP, is a conglomerate of brokers, producers, and specalists operating in different divisions that were recently uplifted by the Phaetheon Dynasty who CSP is openly backing in the Colossus invasion. It's constituents work togther for mutual profit and to bolster the Dynasty. Their MO is avoiding conflict, selling whatever they can get their hands on, and ensuring 'business interests' are represented in the sector. Anything can be bought and sold in the Colossus sector, you just need the tact to pull it off.
 
 redsail-corsairs-description = The RedSail Corsairs, or RSC, are a dangerous and influential group of pirates and brigands, who are publicly known to engage in illegal and violent activities against civilians, officials, and military personnel alike. Their source of income and specialization is hijacking, cargo theft, hostage-taking, and armed robbery. They are openly marked by Colossus Central as a criminal organization. As a whole, the Corsairs function as a union between freebooting raiders of all walks of life who have sworn loyalty to each other.
+
+# Exodus-begin - company names used by corporate territory banners
+drake-industries-name = Drake Industries
+steel-hammer-name = Steel Hammer Manufacturing
+harmony-medical-enterprises-name = Harmony Medical Enterprises
+midnight-arms-co-name = Midnight Arms Co.
+dark-matter-enterprises-name = Dark Matter Enterprises
+aetherion-dynamics-name = Aetherion Dynamics
+horizon-energy-name = Horizon Energy
+universal-states-of-america-name = Universal States of America
+civil-defense-milita-name = Colossus Civil Defense Militia
+ullman-industries-name = Ullman Industries
+nosske-eien-rnd-name = Nosske-Eien R&D
+blackhawkpmc-name = Blackhawk PMC
+The-Hive-name = The Hive
+paycheck-bratva-name = Paycheck Bratva
+cerberus-surplus-name = Cerberus Surplus Provisions
+redsail-corsairs-name = RedSail Corsairs
+# Exodus-end

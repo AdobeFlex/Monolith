@@ -78,6 +78,7 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         SubscribeLocalEvent<NebulaGasSiphonComponent, EntInsertedIntoContainerMessage>(OnFilterInserted);
         SubscribeLocalEvent<NebulaGasSiphonComponent, EntRemovedFromContainerMessage>(OnFilterRemoved);
         SubscribeLocalEvent<NebulaGasSiphonFilterComponent, ComponentStartup>(OnFilterStartup);
+        SubscribeLocalEvent<NebulaGasSiphonComponent, ExaminedEvent>(OnSiphonExamined);
         SubscribeLocalEvent<ActiveNebulaGasSiphonComponent, ComponentShutdown>(OnActiveSiphonShutdown);
         SubscribeLocalEvent<NebulaGasSiphonFilterComponent, ExaminedEvent>(OnFilterExamined);
         SubscribeLocalEvent<NebulaPresenceChangedEvent>(OnPresenceChanged);
@@ -169,8 +170,8 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
             return;
         }
 
-        if (!_nodeContainer.TryGetNode(uid, siphon.PipeNodeName, out PipeNode? pipe)
-            || pipe.NodeGroup is not PipeNet { NodeCount: > 1 } net)
+        EnsurePipeEntity(uid, siphon);
+        if (!TryGetPipeNetwork(siphon, out var net))
             return;
 
         if (!TryGetProfile(presence.Marker, out var profile))
@@ -500,6 +501,7 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
 
     private void OnSiphonStartup(Entity<NebulaGasSiphonComponent> ent, ref ComponentStartup args)
     {
+        EnsurePipeEntity(ent.Owner, ent.Comp);
         UpdateSiphonIndex(ent.Owner);
         UpdateSiphonActivity(ent.Owner);
 
@@ -520,11 +522,14 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
 
         if (args.Anchored)
         {
+            EnsurePipeEntity(ent.Owner, ent.Comp);
             UpdateSiphonIndex(ent.Owner);
             UpdateSiphonActivity(ent.Owner);
             return;
         }
 
+        QueueDel(ent.Comp.PipeEntity);
+        ent.Comp.PipeEntity = null;
         RemoveSiphonFromGrid(args.Transform.GridUid, ent.Owner);
         RemCompDeferred<ActiveNebulaGasSiphonComponent>(ent.Owner);
     }
@@ -715,11 +720,42 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
 
     private void OnSiphonRemove(Entity<NebulaGasSiphonComponent> ent, ref ComponentRemove args)
     {
+        QueueDel(ent.Comp.PipeEntity);
+        ent.Comp.PipeEntity = null;
         _itemSlots.RemoveItemSlot(ent.Owner, ent.Comp.FilterSlot);
         if (TryComp<TransformComponent>(ent.Owner, out var xform))
             RemoveSiphonFromGrid(xform.GridUid, ent.Owner);
 
         RemCompDeferred<ActiveNebulaGasSiphonComponent>(ent.Owner);
+    }
+
+    private void EnsurePipeEntity(EntityUid uid, NebulaGasSiphonComponent siphon)
+    {
+        if (siphon.PipeEntity is { } pipeEntity && !TerminatingOrDeleted(pipeEntity))
+            return;
+
+        if (!TryComp<TransformComponent>(uid, out var xform) || !xform.Anchored)
+            return;
+
+        siphon.PipeEntity = SpawnAttachedTo(
+            siphon.PipePrototype,
+            new EntityCoordinates(uid, siphon.PipePosition),
+            rotation: Angle.Zero);
+    }
+
+    private bool TryGetPipeNetwork(NebulaGasSiphonComponent siphon, out PipeNet net)
+    {
+        net = default!;
+        if (siphon.PipeEntity is not { } pipeEntity
+            || TerminatingOrDeleted(pipeEntity)
+            || !_nodeContainer.TryGetNode(pipeEntity, siphon.PipeNodeName, out PipeNode? pipe)
+            || pipe.NodeGroup is not PipeNet { NodeCount: > 1 } pipeNet)
+        {
+            return false;
+        }
+
+        net = pipeNet;
+        return true;
     }
 
     private void OnFilterStartup(Entity<NebulaGasSiphonFilterComponent> ent, ref ComponentStartup args)
@@ -737,6 +773,61 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
             UpdateSiphonEmissionAppearance(parent, ent.Comp);
             UpdateSiphonIndex(parent);
             UpdateSiphonActivity(parent);
+        }
+    }
+
+    private void OnSiphonExamined(Entity<NebulaGasSiphonComponent> ent, ref ExaminedEvent args)
+    {
+        if (!args.IsInDetailsRange)
+            return;
+
+        using (args.PushGroup(nameof(NebulaGasSiphonComponent)))
+        {
+            if (!TryComp<TransformComponent>(ent.Owner, out var xform)
+                || !xform.Anchored
+                || xform.GridUid is not { } gridUid
+                || !_gridQuery.TryGetComponent(gridUid, out var grid))
+            {
+                args.PushMarkup(Loc.GetString("nebula-gas-siphon-examine-unanchored"));
+                return;
+            }
+
+            var hasWorkingFilter = TryGetWorkingFilter(ent.Comp, out _, out _);
+            _presenceQuery.TryGetComponent(gridUid, out var presence);
+            var hasSufficientDensity = presence is not null && presence.Density > ent.Comp.MinDensity;
+            var hasProfile = presence is not null && TryGetProfile(presence.Marker, out _);
+            var powered = _powerReceiver.IsPowered(ent.Owner);
+            _physicsQuery.TryGetComponent(gridUid, out var physics);
+            var speed = physics?.LinearVelocity.Length() ?? 0f;
+            var hasSufficientSpeed = speed >= ent.Comp.MinSpeed;
+            var pipeConnected = TryGetPipeNetwork(ent.Comp, out var net);
+            var targetPressure = Math.Clamp(ent.Comp.TargetPressure, 0f, Atmospherics.MaxOutputPressure);
+            var outputHasCapacity = pipeConnected
+                && net.Air.Pressure < targetPressure
+                && (ent.Comp.MaxPipeMoles <= 0f || net.Air.TotalMoles < ent.Comp.MaxPipeMoles);
+            var axisClear = ComputeHasClearAxis(xform, gridUid, grid, ent.Comp);
+            var operating = hasWorkingFilter
+                && hasSufficientDensity
+                && hasProfile
+                && powered
+                && hasSufficientSpeed
+                && pipeConnected
+                && outputHasCapacity
+                && axisClear;
+
+            args.PushMarkup(Loc.GetString(operating
+                ? "nebula-gas-siphon-examine-operating"
+                : "nebula-gas-siphon-examine-waiting"));
+
+            args.PushMarkup(Loc.GetString(axisClear
+                ? "nebula-gas-siphon-examine-axis-clear"
+                : "nebula-gas-siphon-examine-axis-blocked",
+                ("tiles", ent.Comp.Range)));
+
+            if (!hasSufficientSpeed)
+                args.PushMarkup(Loc.GetString("nebula-gas-siphon-examine-speed-low",
+                    ("speed", MathF.Round(speed, 1)),
+                    ("required", ent.Comp.MinSpeed)));
         }
     }
 

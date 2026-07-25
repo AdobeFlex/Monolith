@@ -269,7 +269,7 @@
       shader: unshaded
       map: ["enum.PowerDeviceVisualLayers.Powered"]
       visible: false
-      color: "#0A5DFF"
+      color: "#48C96B"
     - sprite: _Exodus/Structures/ShuttleComponents/liberty_shield_generator.rsi
       state: reserve_0
       map: ["enum.CdmShieldReserveVisualLayers.Cartridges"]

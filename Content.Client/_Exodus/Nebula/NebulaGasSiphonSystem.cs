@@ -20,6 +20,6 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
 
     private void OnSiphonExamined(Entity<NebulaGasSiphonComponent> entity, ref ClientExaminedEvent args)
     {
-        Spawn(ArrowPrototype, new EntityCoordinates(entity.Owner, 0, 0));
+        Spawn(ArrowPrototype, new EntityCoordinates(entity.Owner, entity.Comp.PipeArrowPosition));
     }
 }

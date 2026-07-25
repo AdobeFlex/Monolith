@@ -53,7 +53,6 @@
   id: CompanyTerritoryBannerBase
   parent: BannerBase
   abstract: true
-  description: company-territory-banner-description
   components:
   - type: Sprite
     sprite: _NF/Structures/Decoration/banner.rsi
