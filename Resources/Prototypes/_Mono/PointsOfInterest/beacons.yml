@@ -46,14 +46,16 @@
 #     doNotCull: true
 # Exodus-end
 
-- type: gameMap
-  id: BeaconWilds
-  mapName: 'LINEAR-21 Asteroid Cluster'
-  mapPath: /Maps/_Mono/POI/beaconstation_wilds.yml
-  minPlayers: 0
-  stations:
-    BeaconWilds:
-      stationProto: RecordsFrontierOutpost
-      components:
-      - type: StationNameSetup
-        mapNameTemplate: 'LINEAR-21 Asteroid Cluster'
+# Exodus-begin: keep BeaconWilds out of map checking and normal map registration.
+# - type: gameMap
+#   id: BeaconWilds
+#   mapName: 'LINEAR-21 Asteroid Cluster'
+#   mapPath: /Maps/_Mono/POI/beaconstation_wilds.yml
+#   minPlayers: 0
+#   stations:
+#     BeaconWilds:
+#       stationProto: RecordsFrontierOutpost
+#       components:
+#       - type: StationNameSetup
+#         mapNameTemplate: 'LINEAR-21 Asteroid Cluster'
+# Exodus-end

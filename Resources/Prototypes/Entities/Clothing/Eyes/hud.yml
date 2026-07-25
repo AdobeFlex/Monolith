@@ -209,7 +209,7 @@
     sprite: Clothing/Eyes/Hud/synd.rsi
   - type: ShowSyndicateIcons
   - type: NightVision # Exodus Syndicate buffs Nebula Update
-    isEquipment: true
+    relayOverlay: true # Exodus: upstream NightVision field rename.
 
 - type: entity
   parent: [ClothingEyesBase, ShowSecurityIcons]
