@@ -16,17 +16,7 @@
 #     doNotCull: true
 # Exodus-end
 
-- type: gameMap
-  id: BeaconClusterA
-  mapName: 'INSO-357k Asteroid Cluster'
-  mapPath: /Maps/_Mono/POI/beaconstation_a.yml
-  minPlayers: 0
-  stations:
-    BeaconClusterA:
-      stationProto: RecordsFrontierOutpost
-      components:
-      - type: StationNameSetup
-        mapNameTemplate: 'INSO-357k Asteroid Cluster'
+# Exodus: BeaconClusterA map was removed; its POI remains disabled above.
 
 # Exodus-begin: keep the map for manual review without registering it as a normal POI.
 # - type: pointOfInterest
