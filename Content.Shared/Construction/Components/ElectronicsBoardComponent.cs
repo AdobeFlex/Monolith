@@ -1,5 +1,6 @@
 using Robust.Shared.Prototypes;
 
+// SS220: The shared construction graph resolves this board component.
 namespace Content.Shared.Construction.Components;
 
 /// <summary>
