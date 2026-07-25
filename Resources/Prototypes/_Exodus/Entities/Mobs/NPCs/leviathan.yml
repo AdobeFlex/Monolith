@@ -160,12 +160,15 @@
     sprite: _Exodus/Mobs/Monolith/leviathan.rsi
     state: head
     noRot: false
-  - type: NightVision # Exodus: upstream PNV Gen 3
+  - type: NightVision # Exodus: toggleable Leviathan PNV
     relayOverlay: false
     goggleEffect: true
     viewCircleRadius: 2000 # Exodus: matches the Leviathan's 4.458x view range.
     viewCircleCount: 4
     viewCircleSpacing: 1250 # Exodus: matches the Leviathan's 4.458x view range.
+    action: ActionToggleNightVision
+    phosphorColor: "#00FF00"
+    lightingColor: "#FFFFFF32"
   - type: AmbientSound
     enabled: true
     volume: 1
