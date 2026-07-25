@@ -22,8 +22,10 @@ public sealed partial class CEZLevelGhostMoverSystem : CESharedZLevelGhostMoverS
 
     private void OnMapInit(Entity<CEZLevelGhostMoverComponent> ent, ref MapInitEvent args)
     {
-        _actions.AddAction(ent, ref ent.Comp.ZLevelUpActionEntity, ent.Comp.UpActionProto);
-        _actions.AddAction(ent, ref ent.Comp.ZLevelDownActionEntity, ent.Comp.DownActionProto);
+        // Exodus-begin Temporarily disable ghost Z-level movement actions while Z-level maps are unused.
+        // _actions.AddAction(ent, ref ent.Comp.ZLevelUpActionEntity, ent.Comp.UpActionProto);
+        // _actions.AddAction(ent, ref ent.Comp.ZLevelDownActionEntity, ent.Comp.DownActionProto);
+        // Exodus-end
     }
 
     private void OnRemove(Entity<CEZLevelGhostMoverComponent> ent, ref ComponentRemove args)

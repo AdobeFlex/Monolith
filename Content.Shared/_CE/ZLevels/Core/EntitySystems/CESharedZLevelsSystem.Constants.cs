@@ -7,7 +7,8 @@ namespace Content.Shared._CE.ZLevels.Core.EntitySystems;
 
 public abstract partial class CESharedZLevelsSystem
 {
-    public static int MaxZLevelsBelowRendering = 10;
+    // Exodus: Temporarily disable rendering and PVS subscription for Z-levels below the player.
+    public static int MaxZLevelsBelowRendering = 0;
     public const float ZLevelOffset = 0.7f;
 
     /// <summary>
