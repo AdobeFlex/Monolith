@@ -65,8 +65,15 @@ public sealed partial class CEZFlightSystem : CESharedZFlightSystem
 
         SetTargetHeight(ent.Owner, zPhys.CurrentZLevel);
 
-        _actions.AddAction(ent, ref ent.Comp.ZLevelUpActionEntity, ent.Comp.UpActionProto);
-        _actions.AddAction(ent, ref ent.Comp.ZLevelDownActionEntity, ent.Comp.DownActionProto);
-        _actions.AddAction(ent, ref ent.Comp.ZLevelToggleActionEntity, ent.Comp.ToggleActionProto);
+        // Exodus-begin controllable-flight-action-flags
+        if (ent.Comp.AddUpAction)
+            _actions.AddAction(ent, ref ent.Comp.ZLevelUpActionEntity, ent.Comp.UpActionProto);
+
+        if (ent.Comp.AddDownAction)
+            _actions.AddAction(ent, ref ent.Comp.ZLevelDownActionEntity, ent.Comp.DownActionProto);
+
+        if (ent.Comp.AddToggleAction)
+            _actions.AddAction(ent, ref ent.Comp.ZLevelToggleActionEntity, ent.Comp.ToggleActionProto);
+        // Exodus-end
     }
 }

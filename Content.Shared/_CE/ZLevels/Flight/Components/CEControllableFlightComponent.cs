@@ -15,6 +15,17 @@ namespace Content.Shared._CE.ZLevels.Flight.Components;
  Access(typeof(CESharedZFlightSystem))]
 public sealed partial class CEControllableFlightComponent : Component
 {
+    // Exodus-begin controllable-flight-action-flags
+    [DataField]
+    public bool AddUpAction = true;
+
+    [DataField]
+    public bool AddDownAction = true;
+
+    [DataField]
+    public bool AddToggleAction = true;
+    // Exodus-end
+
     [DataField]
     public EntProtoId UpActionProto = "CEActionZFlightUp";
 
