@@ -145,6 +145,9 @@
     factions:
     # - Syndicate # Exodus-asakim-fix
     - AsakimDefenceForces # Exodus-asakim-fix
+  - type: NightVision # Exodus: Asakim-tinted borg PNV
+    phosphorColor: "#E8D6E1"
+    lightingColor: "#FF3DB112"
   - type: Access
     tags:
     - NuclearOperative

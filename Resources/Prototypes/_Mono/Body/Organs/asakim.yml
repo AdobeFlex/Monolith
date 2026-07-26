@@ -24,8 +24,8 @@
       viewCircleCount: 4
       viewCircleSpacing: 280
       action: ActionToggleNightVision
-      phosphorColor: "#00FF00"
-      lightingColor: "#FFFFFF32"
+      phosphorColor: "#E8D6E1" # Exodus-asakim-pnv-tint
+      lightingColor: "#FF3DB112" # Exodus-asakim-pnv-tint
 
 - type: entity
   id: OrganAsakimHeart

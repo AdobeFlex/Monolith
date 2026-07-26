@@ -146,8 +146,8 @@
     viewCircleCount: 4
     viewCircleSpacing: 280
     action: ActionToggleNightVision
-    phosphorColor: "#00FF00"
-    lightingColor: "#FFFFFF32"
+    phosphorColor: "#DDE2EA" # Exodus: near-colorless borg PNV
+    lightingColor: "#FFFFFF12" # Exodus: near-colorless borg PNV
   - type: AccessToggle
   # TODO: refactor movement to just be based on toggle like speedboots but for the boots themselves
   # TODO: or just have sentient speedboots be fast idk

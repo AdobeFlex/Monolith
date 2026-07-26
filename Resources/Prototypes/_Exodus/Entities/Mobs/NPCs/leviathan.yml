@@ -167,8 +167,8 @@
     viewCircleCount: 4
     viewCircleSpacing: 1250 # Exodus: matches the Leviathan's 4.458x view range.
     action: ActionToggleNightVision
-    phosphorColor: "#00FF00"
-    lightingColor: "#FFFFFF32"
+    phosphorColor: "#E8D8CB"
+    lightingColor: "#FFFFFF12"
   - type: AmbientSound
     enabled: true
     volume: 1
