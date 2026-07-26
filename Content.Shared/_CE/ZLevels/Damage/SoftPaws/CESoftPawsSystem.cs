@@ -1,10 +1,11 @@
-﻿/*
+/*
  * This file is sublicensed under MIT License
  * https://github.com/space-wizards/space-station-14/blob/master/LICENSE.TXT
  */
 
 using Content.Shared.Popups;
 using Content.Shared.Standing;
+using Content.Shared._CE.ZLevels.Core.EntitySystems;
 
 namespace Content.Shared._CE.ZLevels.Damage.SoftPaws;
 
@@ -16,6 +17,9 @@ public sealed partial class CESoftPawsSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
 
         SubscribeLocalEvent<CESoftPawsComponent, CEZFallingDamageCalculateEvent>(OnFallingDamageCalculate);
     }

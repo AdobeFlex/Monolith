@@ -40,6 +40,9 @@ public sealed partial class ParallaxOverlay : Overlay
         if (args.MapId == MapId.Nullspace)
             return false;
 
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return true;
+
         //CrystallEdge draw parallax only for lowest zlevel
         if (args.Viewport.Eye is ScalingViewport.ZEye zEye)
             return zEye.DrawParallax;

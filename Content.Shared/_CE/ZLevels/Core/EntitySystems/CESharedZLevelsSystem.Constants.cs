@@ -7,6 +7,9 @@ namespace Content.Shared._CE.ZLevels.Core.EntitySystems;
 
 public abstract partial class CESharedZLevelsSystem
 {
+    // Exodus: Temporarily disable unused Z-level runtime logic.
+    public static bool ZLevelsEnabled = false;
+
     // Exodus: Temporarily disable rendering and PVS subscription for Z-levels below the player.
     public static int MaxZLevelsBelowRendering = 0;
     public const float ZLevelOffset = 0.7f;

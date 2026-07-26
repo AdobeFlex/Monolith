@@ -4,6 +4,7 @@
  */
 
 using Content.Shared._CE.ZLevels.Roof;
+using Content.Shared._CE.ZLevels.Core.EntitySystems;
 
 namespace Content.Server._CE.ZLevels.Roof;
 
@@ -14,6 +15,9 @@ public sealed partial class CEZLevelsRoofSystem : CESharedZLevelsRoofSystem
     public override void Initialize()
     {
         base.Initialize();
+
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
 
         InitMaps();
         InitGrids();

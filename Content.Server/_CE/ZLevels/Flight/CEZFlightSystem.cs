@@ -4,6 +4,7 @@
  */
 
 using Content.Server.Actions;
+using Content.Shared._CE.ZLevels.Core.EntitySystems;
 using Content.Shared._CE.ZLevels.Flight;
 using Content.Shared._CE.ZLevels.Flight.Components;
 using Content.Shared.Damage.Components;
@@ -24,12 +25,18 @@ public sealed partial class CEZFlightSystem : CESharedZFlightSystem
     {
         base.Initialize();
 
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
+
         SubscribeLocalEvent<CEControllableFlightComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<CEControllableFlightComponent, ComponentRemove>(OnRemove);
     }
 
     public override void Update(float frameTime)
     {
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
+
         base.Update(frameTime);
 
         var now = _timing.CurTime;

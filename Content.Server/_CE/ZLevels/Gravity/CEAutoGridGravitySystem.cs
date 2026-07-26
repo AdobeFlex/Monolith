@@ -1,6 +1,7 @@
 using Content.Shared.Gravity;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
+using Content.Shared._CE.ZLevels.Core.EntitySystems;
 
 namespace Content.Server._CE.ZLevels.Gravity;
 
@@ -12,6 +13,10 @@ public sealed partial class CEAutoGridGravitySystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
+
         SubscribeLocalEvent<CEAutoGridGravityComponent, MapInitEvent>(OnComponentInit);
         SubscribeLocalEvent<GridInitializeEvent>(OnGridInit);
     }

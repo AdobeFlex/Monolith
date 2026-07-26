@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is sublicensed under MIT License
  * https://github.com/space-wizards/space-station-14/blob/master/LICENSE.TXT
  */
@@ -30,6 +30,9 @@ public sealed partial class CEZLevelsSpeakingSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
 
         _mapQuery = GetEntityQuery<MapComponent>();
 

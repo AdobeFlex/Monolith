@@ -11,6 +11,10 @@ public sealed partial class CEZLevelThrowingSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
+
         SubscribeLocalEvent<CEZPhysicsComponent, ThrownEvent>(OnThrown);
     }
 

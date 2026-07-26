@@ -1,10 +1,11 @@
-﻿/*
+/*
  * This file is sublicensed under MIT License
  * https://github.com/space-wizards/space-station-14/blob/master/LICENSE.TXT
  */
 
 using Content.Shared._CE.ZLevels.Ghost;
 using Content.Shared.Actions;
+using Content.Shared._CE.ZLevels.Core.EntitySystems;
 
 namespace Content.Server._CE.ZLevels.Ghost;
 
@@ -15,6 +16,9 @@ public sealed partial class CEZLevelGhostMoverSystem : CESharedZLevelGhostMoverS
     public override void Initialize()
     {
         base.Initialize();
+
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
 
         SubscribeLocalEvent<CEZLevelGhostMoverComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<CEZLevelGhostMoverComponent, ComponentRemove>(OnRemove);

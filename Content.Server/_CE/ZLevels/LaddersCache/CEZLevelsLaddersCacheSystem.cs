@@ -1,7 +1,8 @@
-﻿using System.Numerics;
+using System.Numerics;
 using Content.Shared._CE.ZLevels.Core.Components;
 using JetBrains.Annotations;
 using Robust.Shared.Map.Components;
+using Content.Shared._CE.ZLevels.Core.EntitySystems;
 
 namespace Content.Server._CE.ZLevels.LaddersCache;
 
@@ -17,6 +18,9 @@ public sealed partial class CEZLevelsLaddersCacheSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
 
         SubscribeLocalEvent<CEZLevelHighGroundComponent, MapInitEvent>(OnLadderInit);
         SubscribeLocalEvent<CEZLevelHighGroundComponent, ComponentShutdown>(OnLadderShutdown);

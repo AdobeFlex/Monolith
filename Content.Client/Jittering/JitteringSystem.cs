@@ -1,5 +1,6 @@
 using System.Numerics;
 using Content.Shared._CE.ZLevels.Core.Components; // Mono
+using Content.Shared._CE.ZLevels.Core.EntitySystems; // Exodus-disable-z-levels
 using Content.Shared.Jittering;
 using Robust.Client.Animations;
 using Robust.Client.GameObjects;
@@ -31,9 +32,11 @@ namespace Content.Client.Jittering
 
             var animationPlayer = EnsureComp<AnimationPlayerComponent>(uid);
 
-            jittering.StartOffset = TryComp(uid, out CEZPhysicsComponent? zPhys)
+            // Exodus-begin disable-z-levels
+            jittering.StartOffset = CESharedZLevelsSystem.ZLevelsEnabled && TryComp(uid, out CEZPhysicsComponent? zPhys)
                 ? zPhys.SpriteOffsetDefault
                 : sprite.Offset;
+            // Exodus-end
             _animationPlayer.Play(uid, animationPlayer, GetAnimation(jittering, sprite), _jitterAnimationKey);
         }
 

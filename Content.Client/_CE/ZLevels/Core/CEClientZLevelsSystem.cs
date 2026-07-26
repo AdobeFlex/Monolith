@@ -28,6 +28,10 @@ public sealed partial class CEClientZLevelsSystem : CESharedZLevelsSystem
     public override void Initialize()
     {
         base.Initialize();
+
+        if (!ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
+
         _overlay.AddOverlay(new CEZLevelBlurOverlay());
 
         SubscribeLocalEvent<CEZPhysicsComponent, ComponentStartup>(OnStartup);
@@ -57,6 +61,10 @@ public sealed partial class CEClientZLevelsSystem : CESharedZLevelsSystem
     public override void Shutdown()
     {
         base.Shutdown();
+
+        if (!ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
+
         _overlay.RemoveOverlay<CEZLevelBlurOverlay>();
     }
 }
@@ -77,11 +85,18 @@ internal sealed partial class CEClientZLevelsPreAnimSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
+
         UpdatesBefore.Add(typeof(AnimationPlayerSystem));
     }
 
     public override void FrameUpdate(float frameTime)
     {
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
+
         // Phase 1 (per render frame): strip any Z left from last frame so the animation player
         // always starts from a Z-free base, and Phase 2 can add exactly one Z contribution.
         var query = EntityQueryEnumerator<CEZPhysicsComponent, SpriteComponent>();
@@ -122,11 +137,18 @@ internal sealed partial class CEClientZLevelsPostAnimSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
+
         UpdatesAfter.Add(typeof(AnimationPlayerSystem));
     }
 
     public override void FrameUpdate(float frameTime)
     {
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
+
         // Phase 2: add the Z-height contribution on top of the animation-player's output.
         // At this point sprite.Offset == animationValue (or SpriteOffsetDefault if no anim ran).
         // The offset is counter-rotated by the entity's world angle so it always points world-up,

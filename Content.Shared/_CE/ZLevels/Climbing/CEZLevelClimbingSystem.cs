@@ -3,6 +3,7 @@ using Content.Shared.Climbing.Components;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Events;
+using Content.Shared._CE.ZLevels.Core.EntitySystems;
 
 namespace Content.Shared._CE.ZLevels.Climbing;
 
@@ -14,6 +15,10 @@ public sealed class CEZLevelClimbingSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
+
         SubscribeLocalEvent<CEZPhysicsComponent, PreventCollideEvent>(OnPreventCollide);
     }
 

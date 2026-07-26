@@ -52,6 +52,9 @@ public abstract partial class CESharedZLevelsSystem : EntitySystem
     {
         base.Initialize();
 
+        if (!ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
+
         _config.OnValueChanged(CCVars.ZLevelsPhysicsClientSimulation, i => _clientSimulation = i, true);
 
         InitializeActivation();

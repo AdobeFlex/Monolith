@@ -29,6 +29,9 @@ public sealed partial class CEZLevelsSystem : CESharedZLevelsSystem
     {
         base.Initialize();
 
+        if (!ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
+
         InitView();
         InitializeTransit();
 
@@ -133,6 +136,9 @@ public sealed partial class CEZLevelsSystem : CESharedZLevelsSystem
 
     public override void Update(float frameTime)
     {
+        if (!ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
+
         base.Update(frameTime);
 
         UpdateGridGravity(frameTime);

@@ -48,6 +48,9 @@ public sealed partial class CEZGridSyncSystem : VirtualController
     {
         base.Initialize();
 
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
+
         SubscribeLocalEvent<CEZGridComponent, CEGridAddedIntoZNetworkEvent>(OnGridLinked);
         SubscribeLocalEvent<CEZGridComponent, CEGridRemovedFromZNetworkEvent>(OnGridUnlinked);
 
@@ -380,6 +383,9 @@ public sealed partial class CEZGridSyncSystem : VirtualController
 
     public override void UpdateBeforeSolve(bool prediction, float frameTime)
     {
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
+
         _inPhysicsTick = true;
 
         if (prediction)
@@ -412,6 +418,9 @@ public sealed partial class CEZGridSyncSystem : VirtualController
 
     public override void UpdateAfterSolve(bool prediction, float frameTime)
     {
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
+
         _inPhysicsTick = false;
 
         if (prediction)

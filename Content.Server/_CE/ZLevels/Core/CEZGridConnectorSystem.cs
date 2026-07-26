@@ -62,6 +62,9 @@ public sealed partial class CEZGridConnectorSystem : EntitySystem
     {
         base.Initialize();
 
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
+
         SubscribeLocalEvent<CEZGridConnectorComponent, MapInitEvent>(OnConnectorMapInit);
         SubscribeLocalEvent<CEZGridConnectorComponent, AnchorStateChangedEvent>(OnConnectorAnchorChanged);
         SubscribeLocalEvent<CEZGridConnectorComponent, EntityTerminatingEvent>(OnConnectorTerminating);
@@ -115,6 +118,9 @@ public sealed partial class CEZGridConnectorSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
+
         if (!_dirty)
             return;
 

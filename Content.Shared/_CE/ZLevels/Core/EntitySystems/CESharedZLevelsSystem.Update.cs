@@ -19,6 +19,9 @@ public abstract partial class CESharedZLevelsSystem
 
         UpdateCalls = 0;
 
+        if (!ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
+
         if (_net.IsClient && !_clientSimulation)
             return;
 

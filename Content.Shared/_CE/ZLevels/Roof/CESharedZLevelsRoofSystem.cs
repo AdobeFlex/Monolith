@@ -32,6 +32,9 @@ public abstract partial class CESharedZLevelsRoofSystem : EntitySystem
     {
         base.Initialize();
 
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
+
         SubscribeLocalEvent<CEZLevelRoofComponent, TileChangedEvent>(OnTileChanged);
     }
 

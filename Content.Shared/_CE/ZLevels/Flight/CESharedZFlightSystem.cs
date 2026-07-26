@@ -39,9 +39,13 @@ public abstract partial class CESharedZFlightSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-        InitializeControllable();
 
         ZPhyzQuery = GetEntityQuery<CEZPhysicsComponent>();
+
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
+
+        InitializeControllable();
 
         SubscribeLocalEvent<CEZPhysicsComponent, CEFlightStartedEvent>(OnStartFlight);
         SubscribeLocalEvent<CEZPhysicsComponent, CEFlightStoppedEvent>(OnStopFlight);
@@ -176,6 +180,9 @@ public abstract partial class CESharedZFlightSystem : EntitySystem
     [PublicAPI]
     public bool TryActivateFlight(Entity<CEZFlyerComponent?> ent, CEZPhysicsComponent? zPhys = null)
     {
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return false;
+
         if (!Resolve(ent, ref ent.Comp, false))
             return false;
 

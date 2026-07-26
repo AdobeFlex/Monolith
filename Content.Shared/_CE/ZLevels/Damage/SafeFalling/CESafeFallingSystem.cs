@@ -3,6 +3,8 @@
  * https://github.com/space-wizards/space-station-14/blob/master/LICENSE.TXT
  */
 
+using Content.Shared._CE.ZLevels.Core.EntitySystems;
+
 namespace Content.Shared._CE.ZLevels.Damage.SafeFalling;
 
 public sealed class CESafeFallingSystem : EntitySystem
@@ -10,6 +12,9 @@ public sealed class CESafeFallingSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+
+        if (!CESharedZLevelsSystem.ZLevelsEnabled) // Exodus-disable-z-levels
+            return;
 
         SubscribeLocalEvent<CESafeFallingComponent, CEZFallingDamageCalculateEvent>(OnFallingDamageCalculate);
     }
