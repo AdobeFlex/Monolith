@@ -139,15 +139,15 @@
     activated: false # gets activated when a mind is added
     onUse: false # no item-borg toggling sorry
   #- type: ItemTogglePointLight # Mono - Light removal PR: Borg Adjustments
-  - type: NightVision # Gen 3 wide-quadtube
+  - type: NightVision # Gen 4 wide-quadtube # Exodus PNV tint
     relayOverlay: false
     goggleEffect: true
     viewCircleRadius: 450
     viewCircleCount: 4
     viewCircleSpacing: 280
     action: ActionToggleNightVision
-    phosphorColor: "#DDE2EA" # Exodus: near-colorless borg PNV
-    lightingColor: "#FFFFFF12" # Exodus: near-colorless borg PNV
+    phosphorColor: "#E6E6E6" # Exodus: colorless borg PNV
+    lightingColor: "#FFFFFF32" # Exodus: colorless borg PNV
   - type: AccessToggle
   # TODO: refactor movement to just be based on toggle like speedboots but for the boots themselves
   # TODO: or just have sentient speedboots be fast idk

@@ -146,8 +146,8 @@
     # - Syndicate # Exodus-asakim-fix
     - AsakimDefenceForces # Exodus-asakim-fix
   - type: NightVision # Exodus: Asakim-tinted borg PNV
-    phosphorColor: "#E8D6E1"
-    lightingColor: "#FF3DB112"
+    phosphorColor: "#FF3DB1"
+    lightingColor: "#FFFFFF32"
   - type: Access
     tags:
     - NuclearOperative
