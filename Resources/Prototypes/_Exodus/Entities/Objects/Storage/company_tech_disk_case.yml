@@ -73,21 +73,21 @@
 
 - type: entity
   parent: CompanyTechDiskCase
-  id: CompanyTechDiskCaseCerberus
+  id: CompanyTechDiskCaseDrake
   components:
   - type: ContainerFill
     containers:
       storagebase:
-      - TechDiskCerberusBomb
+      - TechDiskDrakeOrdnance
 
 - type: entity
   parent: CompanyTechDiskCase
-  id: CompanyTechDiskCaseRedSail
+  id: CompanyTechDiskCaseNosske
   components:
   - type: ContainerFill
     containers:
       storagebase:
-      - TechDiskRedSailTeleporter
+      - TechDiskNosskeTeleporter
 
 - type: entity
   parent: CompanyTechDiskCase

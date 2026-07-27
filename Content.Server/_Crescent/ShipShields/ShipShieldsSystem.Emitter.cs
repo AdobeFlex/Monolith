@@ -41,18 +41,29 @@ public partial class ShipShieldsSystem
 
     private void OnShieldDeflected(EntityUid uid, ShipShieldEmitterComponent component, ShieldDeflectedEvent args)
     {
+        // Exodus-begin layered shield recovery
+        if (component.ActiveVisualLayerCount < Math.Max(1, component.VisualLayerCount))
+            component.LayerRecoveryAccumulator = TimeSpan.Zero;
+        // Exodus-end
+
+        var addedDamage = 0f;
+
         if (TryComp<EmpOnTriggerComponent>(args.Deflected, out var emp))
         {
-            component.Damage += Math.Clamp(emp.EnergyConsumption, 0f, MAX_EMP_DAMAGE);
+            addedDamage += Math.Clamp(emp.EnergyConsumption, 0f, MAX_EMP_DAMAGE);
             _trigger.Trigger(args.Deflected);
         }
 
         if (TryComp<ExplosiveComponent>(args.Deflected, out var exp) && _prototypeManager.TryIndex(exp.ExplosionType, out var type))
         {
-            component.Damage += exp.TotalIntensity * (float)type.DamagePerIntensity.GetTotal();
+            addedDamage += exp.TotalIntensity * (float)type.DamagePerIntensity.GetTotal();
         }
 
-        component.Damage += (float)args.Projectile.Damage.GetTotal();
+        addedDamage += (float)args.Projectile.Damage.GetTotal();
+        // Exodus-begin layered shield deflection tuning
+        var deflectionModifier = GetDeflectionDamageModifier(component);
+        component.Damage += addedDamage * deflectionModifier;
+        // Exodus-end
         args.Projectile.ProjectileSpent = true;
 
         QueueDel(args.Deflected);

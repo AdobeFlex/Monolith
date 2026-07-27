@@ -12,160 +12,140 @@
       steps:
       - material: Steel
         amount: 2
-        doAfter: 30
+        doAfter: 15
       - material: Cloth
         amount: 2
-        doAfter: 30
+        doAfter: 15
     - to: CompanyTerritoryBannerSteelHammerNode
       completed:
       - !type:SnapToGrid {}
       steps:
       - material: Steel
         amount: 2
-        doAfter: 30
+        doAfter: 15
       - material: Cloth
         amount: 2
-        doAfter: 30
+        doAfter: 15
     - to: CompanyTerritoryBannerHmeNode
       completed:
       - !type:SnapToGrid {}
       steps:
       - material: Steel
         amount: 2
-        doAfter: 30
+        doAfter: 15
       - material: Cloth
         amount: 2
-        doAfter: 30
+        doAfter: 15
     - to: CompanyTerritoryBannerMacoNode
       completed:
       - !type:SnapToGrid {}
       steps:
       - material: Steel
         amount: 2
-        doAfter: 30
+        doAfter: 15
       - material: Cloth
         amount: 2
-        doAfter: 30
+        doAfter: 15
     - to: CompanyTerritoryBannerDmeNode
       completed:
       - !type:SnapToGrid {}
       steps:
       - material: Steel
         amount: 2
-        doAfter: 30
+        doAfter: 15
       - material: Cloth
         amount: 2
-        doAfter: 30
+        doAfter: 15
     - to: CompanyTerritoryBannerAetherionNode
       completed:
       - !type:SnapToGrid {}
       steps:
       - material: Steel
         amount: 2
-        doAfter: 30
+        doAfter: 15
       - material: Cloth
         amount: 2
-        doAfter: 30
+        doAfter: 15
     - to: CompanyTerritoryBannerHorizonNode
       completed:
       - !type:SnapToGrid {}
       steps:
       - material: Steel
         amount: 2
-        doAfter: 30
+        doAfter: 15
       - material: Cloth
         amount: 2
-        doAfter: 30
+        doAfter: 15
     - to: CompanyTerritoryBannerUnsaNode
       completed:
       - !type:SnapToGrid {}
       steps:
       - material: Steel
         amount: 2
-        doAfter: 30
+        doAfter: 15
       - material: Cloth
         amount: 2
-        doAfter: 30
+        doAfter: 15
     - to: CompanyTerritoryBannerCdmNode
       completed:
       - !type:SnapToGrid {}
       steps:
       - material: Steel
         amount: 2
-        doAfter: 30
+        doAfter: 15
       - material: Cloth
         amount: 2
-        doAfter: 30
+        doAfter: 15
     - to: CompanyTerritoryBannerUllmanNode
       completed:
       - !type:SnapToGrid {}
       steps:
       - material: Steel
         amount: 2
-        doAfter: 30
+        doAfter: 15
       - material: Cloth
         amount: 2
-        doAfter: 30
+        doAfter: 15
     - to: CompanyTerritoryBannerNosskeNode
       completed:
       - !type:SnapToGrid {}
       steps:
       - material: Steel
         amount: 2
-        doAfter: 30
+        doAfter: 15
       - material: Cloth
         amount: 2
-        doAfter: 30
+        doAfter: 15
     - to: CompanyTerritoryBannerBlackhawkNode
       completed:
       - !type:SnapToGrid {}
       steps:
       - material: Steel
         amount: 2
-        doAfter: 30
+        doAfter: 15
       - material: Cloth
         amount: 2
-        doAfter: 30
+        doAfter: 15
     - to: CompanyTerritoryBannerHiveNode
       completed:
       - !type:SnapToGrid {}
       steps:
       - material: Steel
         amount: 2
-        doAfter: 30
+        doAfter: 15
       - material: Cloth
         amount: 2
-        doAfter: 30
+        doAfter: 15
     - to: CompanyTerritoryBannerBratvaNode
       completed:
       - !type:SnapToGrid {}
       steps:
       - material: Steel
         amount: 2
-        doAfter: 30
+        doAfter: 15
       - material: Cloth
         amount: 2
-        doAfter: 30
-    - to: CompanyTerritoryBannerCerberusNode
-      completed:
-      - !type:SnapToGrid {}
-      steps:
-      - material: Steel
-        amount: 2
-        doAfter: 30
-      - material: Cloth
-        amount: 2
-        doAfter: 30
-    - to: CompanyTerritoryBannerRedSailNode
-      completed:
-      - !type:SnapToGrid {}
-      steps:
-      - material: Steel
-        amount: 2
-        doAfter: 30
-      - material: Cloth
-        amount: 2
-        doAfter: 30
+        doAfter: 15
 
   - node: CompanyTerritoryBannerDrakeNode
     entity: CompanyTerritoryBannerDrake
@@ -364,36 +344,6 @@
 
   - node: CompanyTerritoryBannerBratvaNode
     entity: CompanyTerritoryBannerBratva
-    edges:
-    - to: start
-      completed:
-      - !type:SpawnPrototype
-        prototype: SheetSteel1
-        amount: 2
-      - !type:SpawnPrototype
-        prototype: MaterialCloth1
-        amount: 2
-      steps:
-      - tool: Screwing
-        doAfter: 30
-
-  - node: CompanyTerritoryBannerCerberusNode
-    entity: CompanyTerritoryBannerCerberus
-    edges:
-    - to: start
-      completed:
-      - !type:SpawnPrototype
-        prototype: SheetSteel1
-        amount: 2
-      - !type:SpawnPrototype
-        prototype: MaterialCloth1
-        amount: 2
-      steps:
-      - tool: Screwing
-        doAfter: 30
-
-  - node: CompanyTerritoryBannerRedSailNode
-    entity: CompanyTerritoryBannerRedSail
     edges:
     - to: start
       completed:

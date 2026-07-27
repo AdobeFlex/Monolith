@@ -28,7 +28,7 @@
     Glass: 150
     Cloth: 100
 
-# --- Red Sail ---
+# --- Nosske-Eien R&D ---
 - type: latheRecipe
   id: NearestShuttleTeleporterMachineCircuitboard
   parent: BaseCircuitboardRecipe
@@ -196,7 +196,7 @@
     Plasma: 100
     Plutonium: 5
 
-# --- Cerberus ---
+# --- Drake Industries ---
 - type: latheRecipe
   id: SyndicateBombCerberus
   result: SyndicateBomb
@@ -283,7 +283,7 @@
   - NebulaGasSiphonFilter
 
 - type: latheRecipePack
-  id: CompanyRedSailDynamic
+  id: CompanyNosskeDynamic
   recipes:
   - NearestShuttleTeleporterMachineCircuitboard
 
@@ -329,7 +329,7 @@
   - SheetPlasteelShm
 
 - type: latheRecipePack
-  id: CompanyCerberusDynamic
+  id: CompanyDrakeDynamic
   recipes:
   - SyndicateBombCerberus
 

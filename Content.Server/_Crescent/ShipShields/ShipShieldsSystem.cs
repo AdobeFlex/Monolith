@@ -94,8 +94,10 @@ public sealed partial class ShipShieldsSystem : EntitySystem
                 continue;
 
             var filter = _station.GetInOwningStation(uid);
-            // Exodus-begin CDM shield reserve
-            if (emitter.Damage > emitter.DamageLimit)
+            // Exodus-begin shield overload event handling
+            var overloadTriggered = CalculateLoadDamage(emitter) >= emitter.MaxDraw ||
+                                    emitter.Damage > emitter.DamageLimit;
+            if (overloadTriggered)
             {
                 var overloadAttempt = new ShipShieldOverloadAttemptEvent();
                 RaiseLocalEvent(uid, ref overloadAttempt);
@@ -287,6 +289,14 @@ public sealed partial class ShipShieldsSystem : EntitySystem
         if (source != null && TryComp<ShipShieldEmitterComponent>(source.Value, out var emitter))
         {
             shieldVisuals.ShieldColor = emitter.ShieldColor;
+            // Exodus-begin layered ship shield visuals
+            var maximumLayers = Math.Max(1, emitter.VisualLayerCount);
+            shieldVisuals.LayerCount = emitter.ActiveVisualLayerCount <= 0
+                ? maximumLayers
+                : Math.Clamp(emitter.ActiveVisualLayerCount, 1, maximumLayers);
+            shieldVisuals.LayerThickness = emitter.VisualLayerThickness;
+            shieldVisuals.LayerGap = emitter.VisualLayerGap;
+            // Exodus-end
             Dirty(shield, shieldVisuals);
         }
 

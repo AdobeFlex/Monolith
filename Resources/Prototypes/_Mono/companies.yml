@@ -55,6 +55,8 @@
   description: drake-industries-description
   color: "#C97D7D"
   image: /Textures/_Mono/Companies/drake_industries.png
+  startingItems: # Exodus company-fleet
+  - CompanyTechDiskCaseDrake # Exodus company-fleet
 
 - type: company
   id: SteelHammerManufacturing
@@ -155,6 +157,8 @@
   description: nosske-eien-rnd-description
   color: "#9573AF"
   image: /Textures/_Mono/Companies/ne_rd.png
+  startingItems: # Exodus company-fleet
+  - CompanyTechDiskCaseNosske # Exodus company-fleet
 
 - type: company
   id: blackhawkpmc
@@ -206,8 +210,6 @@
   color: "#aa1010"
   image: /Textures/_Mono/Companies/CSP.png
   whitelisted: true
-  startingItems: # Exodus company-fleet
-  - CompanyTechDiskCaseCerberus # Exodus company-fleet
 
 # Exodus disable-viper-group — prototype kept for job refs; hidden from lobby
 - type: company
@@ -226,5 +228,3 @@
   color: "#930000"
   image: /Textures/_Mono/Companies/redsailcorsairs.png
   whitelisted: true
-  startingItems: # Exodus company-fleet
-  - CompanyTechDiskCaseRedSail # Exodus company-fleet

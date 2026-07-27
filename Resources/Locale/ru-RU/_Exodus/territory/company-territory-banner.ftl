@@ -29,10 +29,6 @@ ent-CompanyTerritoryBannerHive = Знамя «{ The-Hive-name }»
     .desc = { company-territory-banner-description }
 ent-CompanyTerritoryBannerBratva = Знамя «{ paycheck-bratva-name }»
     .desc = { company-territory-banner-description }
-ent-CompanyTerritoryBannerCerberus = Знамя «{ cerberus-surplus-name }»
-    .desc = { company-territory-banner-description }
-ent-CompanyTerritoryBannerRedSail = Знамя «{ redsail-corsairs-name }»
-    .desc = { company-territory-banner-description }
 
 company-territory-banner-description = Знамя корпорации, закрепляющее её присутствие на территории выбранной фракции.
 

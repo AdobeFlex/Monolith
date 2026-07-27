@@ -202,6 +202,9 @@ public sealed partial class ShipShieldsSystem
         emitter.Damage = Math.Max(emitter.Damage, DamageForLoad(emitter, targetLoad));
         // Avoid the regular shield recovery tick immediately eating the same strike.
         emitter.Accumulator = 0f;
+        // Exodus-begin layered shield recovery
+        emitter.LayerRecoveryAccumulator = TimeSpan.Zero;
+        // Exodus-end
 
         if (_apcPowerReceiverQuery.TryGetComponent(source, out var receiver))
             AdjustEmitterLoad(source, emitter, receiver);
@@ -218,6 +221,20 @@ public sealed partial class ShipShieldsSystem
             return emitter.Damage;
 
         return MathF.Pow(loadWatts / emitter.PowerModifier, 1f / emitter.DamageExp);
+    }
+
+    // Exodus-begin layered shield load scaling
+    private static float GetDeflectionDamageModifier(ShipShieldEmitterComponent emitter)
+    {
+        var maximumLayers = Math.Max(1, emitter.VisualLayerCount);
+        var activeLayers = emitter.ActiveVisualLayerCount <= 0
+            ? maximumLayers
+            : Math.Clamp(emitter.ActiveVisualLayerCount, 1, maximumLayers);
+        var collapsedLayers = maximumLayers - activeLayers;
+
+        return Math.Max(
+            0f,
+            emitter.DeflectionDamageModifier + collapsedLayers * emitter.LayerDeflectionDamageModifierStep);
     }
     // Exodus-end
 }

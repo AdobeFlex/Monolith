@@ -59,6 +59,9 @@ public sealed class CdmShieldReserveSystem : EntitySystem
 
     private void OnOverloadAttempt(Entity<CdmShieldReserveComponent> ent, ref ShipShieldOverloadAttemptEvent args)
     {
+        if (args.Cancelled)
+            return;
+
         if (!TryComp<ShipShieldEmitterComponent>(ent.Owner, out var emitter)
             || emitter.Shield is null
             || !TryComp<ApcPowerReceiverComponent>(ent.Owner, out var power)

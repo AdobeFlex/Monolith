@@ -1,12 +1,16 @@
+using Content.Server._Mono.Radar;
 using Content.Server.Popups;
 using Content.Shared._Exodus.Territory;
 using Content.Shared._Mono.Company;
+using Content.Shared._Mono.Radar;
 using Content.Shared.Access.Systems;
 using Content.Shared.Construction.Components;
 using Content.Shared.Examine;
 using Content.Shared.GameTicking;
 using Content.Shared.Maps;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Maths;
+using Robust.Shared.Physics.Components;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server._Exodus.Territory;
@@ -17,6 +21,9 @@ namespace Content.Server._Exodus.Territory;
 /// </summary>
 public sealed class CompanyTerritoryBannerSystem : EntitySystem
 {
+    private const float ActiveCompanyBannerRadarBlipHalfSize = 1.5f;
+    private const float ActiveCompanyBannerRadarEdgeVisibilityPadding = 10_000f;
+
     [Dependency] private readonly SharedIdCardSystem _idCard = default!;
     [Dependency] private readonly GridTerritorySystem _territory = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
@@ -191,6 +198,7 @@ public sealed class CompanyTerritoryBannerSystem : EntitySystem
 
     private void OnShutdown(Entity<CompanyTerritoryBannerComponent> ent, ref ComponentShutdown args)
     {
+        ClearActiveBannerBlip(ent.Owner);
         TryUnclaim(ent);
     }
 
@@ -232,7 +240,8 @@ public sealed class CompanyTerritoryBannerSystem : EntitySystem
             if (banner.Comp.Company is { } activeCompany &&
                 banner.Comp.TerritoryFaction is not null)
             {
-                _territory.TrySetCorporateController(grid, activeCompany, banner.Owner, actor);
+                if (_territory.TrySetCorporateController(grid, activeCompany, banner.Owner, actor))
+                    ConfigureActiveBannerBlip(banner, (grid, territory));
             }
 
             return;
@@ -277,6 +286,8 @@ public sealed class CompanyTerritoryBannerSystem : EntitySystem
         if (!_territory.TrySetCorporateController(grid, company, banner.Owner, actor))
             return;
 
+        ConfigureActiveBannerBlip(banner, (grid, territory));
+
         if (showPopup)
         {
             if (actor is { } actorUid)
@@ -303,8 +314,54 @@ public sealed class CompanyTerritoryBannerSystem : EntitySystem
             return;
         }
 
+        ClearActiveBannerBlip(banner.Owner);
         _territory.ClearCorporateController(grid);
         _popup.PopupEntity(Loc.GetString("company-territory-banner-unclaimed"), banner.Owner);
+    }
+
+    private void ConfigureActiveBannerBlip(
+        Entity<CompanyTerritoryBannerComponent> banner,
+        Entity<GridTerritoryComponent> territory)
+    {
+        EnsureComp<PhysicsComponent>(banner);
+
+        var marker = EnsureComp<ActiveTerritoryBannerRadarBlipComponent>(banner);
+        marker.Grid = territory.Owner;
+        marker.Removing = false;
+
+        var blip = EnsureComp<RadarBlipComponent>(banner);
+        blip.Enabled = true;
+        blip.RequireNoGrid = false;
+        blip.VisibleFromOtherGrids = true;
+        blip.MaxDistance = territory.Comp.Radius + ActiveCompanyBannerRadarEdgeVisibilityPadding;
+        blip.GridConfig = null;
+        blip.Config = new BlipConfig
+        {
+            Bounds = new Box2(
+                -ActiveCompanyBannerRadarBlipHalfSize,
+                -ActiveCompanyBannerRadarBlipHalfSize,
+                ActiveCompanyBannerRadarBlipHalfSize,
+                ActiveCompanyBannerRadarBlipHalfSize),
+            Color = Color.White,
+            Shape = RadarBlipShape.Square,
+            RespectZoom = true,
+            Rotate = false,
+        };
+    }
+
+    private void ClearActiveBannerBlip(EntityUid banner)
+    {
+        if (!TryComp<ActiveTerritoryBannerRadarBlipComponent>(banner, out var marker) ||
+            marker.Removing)
+        {
+            return;
+        }
+
+        marker.Removing = true;
+        RemCompDeferred<ActiveTerritoryBannerRadarBlipComponent>(banner);
+
+        if (HasComp<RadarBlipComponent>(banner))
+            RemCompDeferred<RadarBlipComponent>(banner);
     }
 
     private bool TryGetBoundFaction(

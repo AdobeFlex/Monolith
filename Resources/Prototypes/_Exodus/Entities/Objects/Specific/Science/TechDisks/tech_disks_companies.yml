@@ -103,15 +103,15 @@
 
 - type: entity
   parent: TechDiskBase
-  id: TechDiskCerberusBomb
-  name: tech-disk-cerberus-bomb-name
-  description: tech-disk-cerberus-bomb-description
+  id: TechDiskDrakeOrdnance
+  name: tech-disk-drake-ordnance-name
+  description: tech-disk-drake-ordnance-description
   components:
   - type: Sprite
     layers:
     - state: icon
       map: ["enum.DamageStateVisualLayers.Base"]
-      color: "#aa1010"
+      color: "#C97D7D"
     - state: label
     - state: protect
     - state: holo
@@ -122,15 +122,15 @@
 
 - type: entity
   parent: TechDiskBase
-  id: TechDiskRedSailTeleporter
-  name: tech-disk-red-sail-teleporter-name
-  description: tech-disk-red-sail-teleporter-description
+  id: TechDiskNosskeTeleporter
+  name: tech-disk-nosske-teleporter-name
+  description: tech-disk-nosske-teleporter-description
   components:
   - type: Sprite
     layers:
     - state: icon
       map: ["enum.DamageStateVisualLayers.Base"]
-      color: "#930000"
+      color: "#9573AF"
     - state: label
     - state: protect
     - state: holo

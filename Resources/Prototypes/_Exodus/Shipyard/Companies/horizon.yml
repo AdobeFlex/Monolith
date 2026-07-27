@@ -8,17 +8,17 @@
   group: Shipyard
   requiredCompanies:
   - HorizonEnergy
-  shuttlePath: /SharedMaps/_Mono/Shuttles/vaquita.yml
+  shuttlePath: /SharedMaps/_Exodus/Shuttles/Companies/horizont/siphon.yml
   class:
-  - Atmospherics
+  - Mercenary
   engine:
-  - Plasma
+  - Uranium
   limit: 3
 
 - type: gameMap
   id: HorizonSiphon
   mapName: 'Горизонт Сифон'
-  mapPath: /SharedMaps/_Mono/Shuttles/vaquita.yml
+  mapPath: /SharedMaps/_Exodus/Shuttles/Companies/horizont/siphon.yml
   minPlayers: 0
   stations:
     HorizonSiphon:
@@ -26,44 +26,6 @@
       components:
       - type: StationNameSetup
         mapNameTemplate: 'Сифон{1}'
-        nameGenerator:
-          !type:NanotrasenNameGenerator
-          prefixCreator: '14'
-      - type: StationJobs
-        availableJobs:
-          Contractor: [ 0, 0 ]
-          Pilot: [ 0, 0 ]
-          Mercenary: [ 0, 0 ]
-
-- type: vessel
-  id: HorizonStill
-  parent: BaseVessel
-  name: company-vessel-horizon-still-name
-  description: company-vessel-horizon-still-description
-  price: 105000
-  category: Medium
-  group: Shipyard
-  requiredCompanies:
-  - HorizonEnergy
-  shuttlePath: /SharedMaps/_Mono/Shuttles/olympus.yml
-  class:
-  - Atmospherics
-  - Engineering
-  engine:
-  - AME
-  limit: 2
-
-- type: gameMap
-  id: HorizonStill
-  mapName: 'Горизонт Дистиллятор'
-  mapPath: /SharedMaps/_Mono/Shuttles/olympus.yml
-  minPlayers: 0
-  stations:
-    HorizonStill:
-      stationProto: StandardFrontierVessel
-      components:
-      - type: StationNameSetup
-        mapNameTemplate: 'Дистиллятор{1}'
         nameGenerator:
           !type:NanotrasenNameGenerator
           prefixCreator: '14'

@@ -29,6 +29,14 @@ public sealed partial class ExplodeOnShieldOverloadSystem : EntitySystem
                                      && (ShipShieldsSystem.CalculateLoadDamage(emitter) >= emitter.MaxDraw
                                          || emitter.Damage > emitter.DamageLimit);
 
+            // A layered shield resolves its first critical overload by collapsing a phase.
+            // Leave the explosion latch clear so the final phase can still fail catastrophically later.
+            if (overloadedByDamage && CanCollapseShieldPhase(emitter))
+            {
+                explode.WasOverloadedByDamage = false;
+                continue;
+            }
+
             if (overloadedByDamage && !explode.WasOverloadedByDamage)
             {
                 explode.Triggered = true;
@@ -45,4 +53,16 @@ public sealed partial class ExplodeOnShieldOverloadSystem : EntitySystem
         }
     }
 
+    private bool CanCollapseShieldPhase(ShipShieldEmitterComponent emitter)
+    {
+        if (emitter.Shield is not { } shield || Deleted(shield))
+            return false;
+
+        var maximumLayers = Math.Max(1, emitter.VisualLayerCount);
+        var activeLayers = emitter.ActiveVisualLayerCount <= 0
+            ? maximumLayers
+            : Math.Clamp(emitter.ActiveVisualLayerCount, 1, maximumLayers);
+
+        return maximumLayers > 1 && activeLayers > 1;
+    }
 }

@@ -29,10 +29,6 @@ ent-CompanyTerritoryBannerHive = { The-Hive-name } Banner
     .desc = { company-territory-banner-description }
 ent-CompanyTerritoryBannerBratva = { paycheck-bratva-name } Banner
     .desc = { company-territory-banner-description }
-ent-CompanyTerritoryBannerCerberus = { cerberus-surplus-name } Banner
-    .desc = { company-territory-banner-description }
-ent-CompanyTerritoryBannerRedSail = { redsail-corsairs-name } Banner
-    .desc = { company-territory-banner-description }
 
 company-territory-banner-description = A corporate banner that establishes the company's presence inside a faction's territory.
 

@@ -130,6 +130,18 @@
   suffix: AI Remote
   categories: [ HideSpawnMenu ]
   components:
+  - type: Sprite
+    sprite: _Exodus/Mobs/Silicon/ai_remote_borg_redacted.rsi
+    layers:
+    - state: synd_engi
+    - state: synd_engi_e
+      map: ["enum.BorgVisualLayers.Light"]
+      shader: unshaded
+      visible: false
+    - state: synd_engi_l
+      shader: unshaded
+      map: ["light"]
+      visible: false
   - type: ContainerFill
     containers:
       borg_brain:

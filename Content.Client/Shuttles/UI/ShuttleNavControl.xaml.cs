@@ -1606,6 +1606,9 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
 
             var count = chain.Count;
             var verticies = chain.Vertices;
+            // Exodus-begin layered ship shield scanner visuals
+            var layerCount = Math.Max(1, visuals.LayerCount);
+            var layerSpacing = MathF.Max(2.5f, (visuals.LayerThickness + visuals.LayerGap) * 6f);
 
             var center = _transform.WithEntityId(xform.Coordinates, xform.GridUid.Value).Position;
 
@@ -1621,11 +1624,33 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                 v2 = Vector2.Transform(v2, matrix);
                 v2.Y = -v2.Y;
                 v2 = ScalePosition(v2);
-                handle.DrawLine(v1, v2, visuals.ShieldColor);
+
+                var line = v2 - v1;
+                if (line.LengthSquared() <= float.Epsilon)
+                    continue;
+
+                var normal = Vector2.Normalize(new Vector2(-line.Y, line.X));
+                var centerOffset = (layerCount - 1) * 0.5f;
+
+                for (var layer = 0; layer < layerCount; layer++)
+                {
+                    var offset = normal * ((layer - centerOffset) * layerSpacing);
+                    handle.DrawLine(v1 + offset, v2 + offset, GetShieldLayerColor(visuals.ShieldColor, layer, layerCount));
+                }
             }
         }
     }
 
+    private static Color GetShieldLayerColor(Color color, int layer, int layerCount)
+    {
+        if (layerCount == 1)
+            return color;
+
+        var progress = (float) layer / Math.Max(1, layerCount - 1);
+        var alpha = 0.85f - progress * 0.35f;
+        return color.WithAlpha(color.A * alpha);
+    }
+    // Exodus-end
     // Exodus - ShuttleHooks - Start
     private void DrawGrapLinks(DrawingHandleScreen handle, Matrix3x2 worldToView, Box2 monoViewBounds)
     {

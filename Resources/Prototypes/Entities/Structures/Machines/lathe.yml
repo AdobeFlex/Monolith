@@ -270,10 +270,10 @@
     # Exodus-begin company-fleet
     - CompanyBlackhawkDynamic
     - CompanyHorizonDynamic
-    - CompanyRedSailDynamic
+    - CompanyNosskeDynamic
     - CompanyMacoDynamic
     - CompanyShmDynamic
-    - CompanyCerberusDynamic
+    - CompanyDrakeDynamic
     - CompanyBratvaDynamic
     - CompanyUllmanDynamic # Exodus company-fleet
     - CompanyCdmDynamic # Exodus company-fleet

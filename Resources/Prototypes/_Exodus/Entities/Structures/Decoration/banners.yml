@@ -58,7 +58,7 @@
     sprite: _NF/Structures/Decoration/banner.rsi
     state: banner
   - type: Anchorable
-    delay: 60
+    delay: 30 # Exodus - corporate banners anchor in half the faction time
 
 - type: entity
   id: CompanyTerritoryBannerDrake
@@ -255,31 +255,3 @@
     node: CompanyTerritoryBannerBratvaNode
   - type: CompanyTerritoryBanner
     company: paycheckbratva
-
-- type: entity
-  id: CompanyTerritoryBannerCerberus
-  parent: CompanyTerritoryBannerBase
-  name: company-territory-banner-cerberus-name
-  components:
-  - type: Sprite
-    sprite: _Exodus/Structures/Decoration/company-banner.rsi
-    state: cerberus-banner
-  - type: Construction
-    graph: CompanyTerritoryBannersGraph
-    node: CompanyTerritoryBannerCerberusNode
-  - type: CompanyTerritoryBanner
-    company: CerberusSurplusProvisions
-
-- type: entity
-  id: CompanyTerritoryBannerRedSail
-  parent: CompanyTerritoryBannerBase
-  name: company-territory-banner-red-sail-name
-  components:
-  - type: Sprite
-    sprite: _Exodus/Structures/Decoration/company-banner.rsi
-    state: redsail-banner
-  - type: Construction
-    graph: CompanyTerritoryBannersGraph
-    node: CompanyTerritoryBannerRedSailNode
-  - type: CompanyTerritoryBanner
-    company: RedSailCorsairs

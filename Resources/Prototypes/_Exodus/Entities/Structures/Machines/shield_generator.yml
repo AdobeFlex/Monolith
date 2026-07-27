@@ -86,6 +86,46 @@
       tags:
       - ADSRepairTool
 
+- type: entity
+  id: ShieldGeneratorMS1000
+  parent: ShieldGeneratorMS750
+  name: MS-1000 "Triptych" Shield Generator
+  description: A white resonant shield generator that projects three nested field layers. A critical overload collapses one layer and vents part of the stored load before the core is exposed.
+  suffix: ADS ONLY
+  components:
+  - type: ShipShieldEmitter
+    damageLimit: 1250000
+    healPerSecond: 1300
+    baseDraw: 110000
+    maxDraw: 240000
+    damageOverloadTimePunishment: 35
+    shieldColor: "#FFFFFF"
+    deflectionDamageModifier: 0.65
+    visualLayerCount: 3
+    visualLayerThickness: 0.35
+    visualLayerGap: 0.9
+    layerCollapseDamageFraction: 0.55
+    layerRecoveryDamageThreshold: 0.55
+    layerRecoveryInterval: 15 # seconds
+    layerDeflectionDamageModifierStep: 0.2
+  - type: RadarBlip
+    radarColor: "#FFFFFF"
+    gridConfig:
+      color: "#FFFFFF"
+  - type: Sprite
+    sprite: _Mono/Structures/ShuttleComponents/shield.rsi
+    snapCardinals: true
+    layers:
+    - state: control
+    - state: control_on
+      shader: unshaded
+      map: ["enum.PowerDeviceVisualLayers.Powered"]
+      visible: false
+      color: "#FFFFFF"
+  - type: PointLight
+    color: "#FFFFFF"
+  - type: ApcPowerReceiver
+    powerLoad: 110000
 # POI Low-End — mechanically a Sentinel (MS-100) but ram-immune and POI-only.
 # Lives only on hand-built POI stations; cannot be constructed or deconstructed.
 - type: entity
