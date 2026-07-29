@@ -15,8 +15,10 @@ public sealed partial class AlertLevelInterceptionRule : StationEventSystem<Aler
         if (!TryGetRandomStation(out var chosenStation))
             return;
         // Frontier - note: levels are globally set/gotten, regardless of arg
-        if (_alertLevelSystem.GetLevel(chosenStation.Value) != "green")
+        // Exodus-begin
+        if (!component.OverrideAlert && _alertLevelSystem.GetLevel(chosenStation.Value) != "green")
             return;
+        // Exodus-end
 
         _alertLevelSystem.SetLevel(chosenStation.Value, component.AlertLevel, true, true, true, component.Locked); // Goobstation
     }

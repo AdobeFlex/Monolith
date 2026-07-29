@@ -37,11 +37,11 @@ ent-ADSShuttleEmergencyBeaconConcordX = ADS Concord X summoning beacon
 ent-ADSShuttleEmergencyBeaconMantaray = ADS Mantaray summoning beacon
     .desc = A single-use emergency beacon keyed to call the ADS Mantaray.
 
-ent-ADSShuttleEmergencyBeaconAzimuth = Asakim Azimuth summoning beacon
-    .desc = A single-use emergency beacon keyed to call the Asakim ship Azimuth.
+ent-ADSShuttleEmergencyBeaconAzimuth = ASZ Azimuth summoning beacon
+    .desc = A single-use emergency beacon keyed to call the ASZ ship Azimuth.
 
-ent-AsakimShuttleEmergencyBeaconHorizont = Asakim Horizont summoning beacon
-    .desc = A single-use emergency beacon keyed to call the Asakim ship Horizont.
+ent-AsakimShuttleEmergencyBeaconHorizont = VEF Horizont summoning beacon
+    .desc = A single-use emergency beacon keyed to call the VEF ship Horizont.
 
 ent-AsakimShuttleEmergencyBeaconSmall = small Asakim vessel summoning beacon
     .desc = A single-use emergency beacon keyed to call a small Asakim vessel.
@@ -49,5 +49,5 @@ ent-AsakimShuttleEmergencyBeaconSmall = small Asakim vessel summoning beacon
 ent-AsakimShuttleEmergencyBeaconMedium = medium Asakim vessel summoning beacon
     .desc = A single-use emergency beacon keyed to call a medium Asakim vessel.
 
-ent-AsakimShuttleEmergencyBeaconStratostar = Asakim Stratostar summoning beacon
-    .desc = A single-use emergency beacon keyed to call the Asakim ship Stratostar.
+ent-AsakimShuttleEmergencyBeaconStratostar = VEF Stratostar summoning beacon
+    .desc = A single-use emergency beacon keyed to call the VEF ship Stratostar.
