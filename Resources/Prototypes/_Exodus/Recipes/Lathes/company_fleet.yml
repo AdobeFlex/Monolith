@@ -34,6 +34,44 @@
   parent: BaseCircuitboardRecipe
   result: NearestShuttleTeleporterMachineCircuitboard
 
+- type: latheRecipe
+  id: LifeInsuranceConsoleComputerCircuitboard
+  parent: BaseGoldCircuitboardRecipe
+  result: LifeInsuranceConsoleComputerCircuitboard
+  materials:
+    Steel: 100
+    Glass: 500
+    Gold: 100
+    Silver: 100
+    Plutonium: 40
+    Americium: 1
+
+- type: latheRecipe
+  id: LifeInsuranceScannerMachineCircuitboard
+  parent: BaseGoldCircuitboardRecipe
+  result: LifeInsuranceScannerMachineCircuitboard
+  materials:
+    Steel: 100
+    Glass: 500
+    Gold: 100
+    Silver: 100
+    Plasma: 150
+    Plutonium: 60
+    Americium: 1
+
+- type: latheRecipe
+  id: LifeInsuranceClonerMachineCircuitboard
+  parent: BaseGoldCircuitboardRecipe
+  result: LifeInsuranceClonerMachineCircuitboard
+  materials:
+    Steel: 100
+    Glass: 500
+    Gold: 100
+    Silver: 150
+    Plasma: 250
+    Plutonium: 90
+    Americium: 2
+
 # --- HME organs ---
 - type: latheRecipe
   id: HmeSynthHeart
@@ -286,6 +324,9 @@
   id: CompanyNosskeDynamic
   recipes:
   - NearestShuttleTeleporterMachineCircuitboard
+  - LifeInsuranceConsoleComputerCircuitboard
+  - LifeInsuranceScannerMachineCircuitboard
+  - LifeInsuranceClonerMachineCircuitboard
 
 - type: latheRecipePack
   id: CompanyHmeOrgansDynamic

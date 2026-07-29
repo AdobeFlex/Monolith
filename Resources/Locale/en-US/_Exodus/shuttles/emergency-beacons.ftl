@@ -40,6 +40,9 @@ ent-ADSShuttleEmergencyBeaconMantaray = ADS Mantaray summoning beacon
 ent-ADSShuttleEmergencyBeaconAzimuth = Asakim Azimuth summoning beacon
     .desc = A single-use emergency beacon keyed to call the Asakim ship Azimuth.
 
+ent-AsakimShuttleEmergencyBeaconHorizont = Asakim Horizont summoning beacon
+    .desc = A single-use emergency beacon keyed to call the Asakim ship Horizont.
+
 ent-AsakimShuttleEmergencyBeaconSmall = small Asakim vessel summoning beacon
     .desc = A single-use emergency beacon keyed to call a small Asakim vessel.
 

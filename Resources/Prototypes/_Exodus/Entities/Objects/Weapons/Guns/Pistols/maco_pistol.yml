@@ -5,10 +5,11 @@
   description: maco-licensed-pistol-description
   components:
   - type: Sprite
-    sprite: Objects/Weapons/Guns/Pistols/mk58.rsi
+    sprite: _Exodus/Objects/Weapons/Guns/Pistols/maco.rsi
     layers:
     - state: base
       map: ["enum.GunVisualLayers.Base"]
-      color: "#FF2E2E"
     - state: mag-0
       map: ["enum.GunVisualLayers.Mag"]
+  - type: Clothing
+    sprite: _Exodus/Objects/Weapons/Guns/Pistols/maco.rsi

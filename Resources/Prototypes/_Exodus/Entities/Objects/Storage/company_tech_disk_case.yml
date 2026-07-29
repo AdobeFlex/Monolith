@@ -21,6 +21,9 @@
   parent: CompanyTechDiskCase
   id: CompanyTechDiskCaseSteelHammer
   components:
+  - type: CompanyAccessReader
+    requiredCompanies:
+    - SteelHammerManufacturing
   - type: ContainerFill
     containers:
       storagebase:
@@ -30,6 +33,9 @@
   parent: CompanyTechDiskCase
   id: CompanyTechDiskCaseHme
   components:
+  - type: CompanyAccessReader
+    requiredCompanies:
+    - HarmonyMedicalEnterprises
   - type: ContainerFill
     containers:
       storagebase:
@@ -39,6 +45,9 @@
   parent: CompanyTechDiskCase
   id: CompanyTechDiskCaseMaco
   components:
+  - type: CompanyAccessReader
+    requiredCompanies:
+    - MidnightArmsCo
   - type: ContainerFill
     containers:
       storagebase:
@@ -48,6 +57,9 @@
   parent: CompanyTechDiskCase
   id: CompanyTechDiskCaseHorizon
   components:
+  - type: CompanyAccessReader
+    requiredCompanies:
+    - HorizonEnergy
   - type: ContainerFill
     containers:
       storagebase:
@@ -57,6 +69,9 @@
   parent: CompanyTechDiskCase
   id: CompanyTechDiskCaseBlackhawk
   components:
+  - type: CompanyAccessReader
+    requiredCompanies:
+    - blackhawkpmc
   - type: ContainerFill
     containers:
       storagebase:
@@ -66,6 +81,9 @@
   parent: CompanyTechDiskCase
   id: CompanyTechDiskCaseBratva
   components:
+  - type: CompanyAccessReader
+    requiredCompanies:
+    - paycheckbratva
   - type: ContainerFill
     containers:
       storagebase:
@@ -75,6 +93,9 @@
   parent: CompanyTechDiskCase
   id: CompanyTechDiskCaseDrake
   components:
+  - type: CompanyAccessReader
+    requiredCompanies:
+    - DrakeIndustries
   - type: ContainerFill
     containers:
       storagebase:
@@ -84,6 +105,9 @@
   parent: CompanyTechDiskCase
   id: CompanyTechDiskCaseNosske
   components:
+  - type: CompanyAccessReader
+    requiredCompanies:
+    - NosskeEienResearchandDevelopment
   - type: ContainerFill
     containers:
       storagebase:
@@ -93,6 +117,9 @@
   parent: CompanyTechDiskCase
   id: CompanyTechDiskCaseUllman
   components:
+  - type: CompanyAccessReader
+    requiredCompanies:
+    - UllmanIndustries
   - type: ContainerFill
     containers:
       storagebase:
@@ -102,6 +129,9 @@
   parent: CompanyTechDiskCase
   id: CompanyTechDiskCaseCdm
   components:
+  - type: CompanyAccessReader
+    requiredCompanies:
+    - CivilDefenseMilita
   - type: ContainerFill
     containers:
       storagebase:
@@ -111,6 +141,9 @@
   parent: CompanyTechDiskCase
   id: CompanyTechDiskCaseHive
   components:
+  - type: CompanyAccessReader
+    requiredCompanies:
+    - TheHive
   - type: ContainerFill
     containers:
       storagebase:
@@ -120,6 +153,9 @@
   parent: CompanyTechDiskCase
   id: CompanyTechDiskCaseAetherion
   components:
+  - type: CompanyAccessReader
+    requiredCompanies:
+    - AetherionDynamics
   - type: ContainerFill
     containers:
       storagebase:
@@ -129,14 +165,21 @@
   parent: CompanyTechDiskCase
   id: CompanyTechDiskCaseDme
   components:
+  - type: CompanyAccessReader
+    requiredCompanies:
+    - DarkMatterEnterprises
   - type: ContainerFill
     containers:
       storagebase:
       - TechDiskDmePlutonium
+
 - type: entity
   parent: CompanyTechDiskCase
   id: CompanyTechDiskCaseUnsa
   components:
+  - type: CompanyAccessReader
+    requiredCompanies:
+    - UniversalStatesOfAmerica
   - type: ContainerFill
     containers:
       storagebase:

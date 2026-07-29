@@ -7,9 +7,9 @@
   description: paycheck-bratva-combat-suit-description
   components:
   - type: Sprite
-    sprite: Clothing/OuterClothing/Hardsuits/basic.rsi
+    sprite: _Exodus/Clothing/OuterClothing/Hardsuits/bratva.rsi
   - type: Clothing
-    sprite: Clothing/OuterClothing/Hardsuits/basic.rsi
+    sprite: _Exodus/Clothing/OuterClothing/Hardsuits/bratva.rsi
   - type: PressureProtection
     highPressureMultiplier: 0.3
     lowPressureMultiplier: 1000
@@ -41,4 +41,4 @@
       Quantity: 5
   - type: ToggleableClothing
     clothingPrototypes:
-      head: ClothingHeadHelmetHardsuitBasic
+      head: ClothingHeadHelmetHardsuitBratva

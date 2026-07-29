@@ -40,6 +40,9 @@ ent-ADSShuttleEmergencyBeaconMantaray = маячок вызова АСЗ "Ман
 ent-ADSShuttleEmergencyBeaconAzimuth = маячок вызова азакимов "Азимут"
     .desc = Одноразовый аварийный маячок вызова корабля азакимов Азимута.
 
+ent-AsakimShuttleEmergencyBeaconHorizont = маячок вызова азакимов "Горизонт"
+    .desc = Одноразовый аварийный маячок вызова корабля азакимов Горизонта.
+
 ent-AsakimShuttleEmergencyBeaconSmall = маячок вызова азакимов "Малое судно"
     .desc = Одноразовый аварийный маячок вызова малого корабля азакимов.
 
