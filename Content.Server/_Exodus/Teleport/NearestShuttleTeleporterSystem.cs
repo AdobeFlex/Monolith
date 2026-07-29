@@ -48,7 +48,7 @@ public sealed class NearestShuttleTeleporterSystem : EntitySystem
         if (userXform.GridUid != padXform.GridUid
             || userXform.Coordinates.GetGridUid(EntityManager) != padXform.GridUid)
         {
-            _popup.PopupEntity(Loc.GetString(ent.Comp.PopupFail), user, user);
+            _popup.PopupEntity(Loc.GetString(ent.Comp.PopupStandOnPad), user, user);
             args.Handled = true;
             return;
         }
@@ -66,7 +66,7 @@ public sealed class NearestShuttleTeleporterSystem : EntitySystem
         var userTile = _map.TileIndicesFor(currentGrid, grid, userXform.Coordinates);
         if (padTile != userTile)
         {
-            _popup.PopupEntity(Loc.GetString(ent.Comp.PopupFail), user, user);
+            _popup.PopupEntity(Loc.GetString(ent.Comp.PopupStandOnPad), user, user);
             args.Handled = true;
             return;
         }
@@ -87,15 +87,7 @@ public sealed class NearestShuttleTeleporterSystem : EntitySystem
         }
 
         var origin = _transform.GetWorldPosition(padXform);
-        if (!TryFindNearestShuttle(mapUid, currentGrid, origin, ent.Comp.MaxRange, out var targetGrid)
-            || !_gridQuery.TryGetComponent(targetGrid, out var targetGridComp))
-        {
-            _popup.PopupEntity(Loc.GetString(ent.Comp.PopupFail), user, user);
-            args.Handled = true;
-            return;
-        }
-
-        if (!TryFindSafeTile(targetGrid, targetGridComp, out var destCoords))
+        if (!TryFindDestination(mapUid, currentGrid, origin, ent.Comp.MaxRange, out var destCoords))
         {
             _popup.PopupEntity(Loc.GetString(ent.Comp.PopupFail), user, user);
             args.Handled = true;
@@ -105,7 +97,9 @@ public sealed class NearestShuttleTeleporterSystem : EntitySystem
         if (TryComp<PullerComponent>(user, out var puller)
             && puller.Pulling is { } pulled
             && TryComp<PullableComponent>(pulled, out var pullable))
+        {
             _pulling.TryStopPull(pulled, pullable, user);
+        }
 
         _transform.SetCoordinates(user, destCoords);
         ent.Comp.NextUse = curTime + ent.Comp.Cooldown;
@@ -115,24 +109,21 @@ public sealed class NearestShuttleTeleporterSystem : EntitySystem
         args.Handled = true;
     }
 
-    private bool TryFindNearestShuttle(
+    private bool TryFindDestination(
         EntityUid mapUid,
         EntityUid excludeGrid,
         Vector2 origin,
         float maxRange,
-        out EntityUid nearest)
+        out EntityCoordinates destCoords)
     {
-        nearest = default;
+        destCoords = default;
         var bestDist = maxRange > 0f ? maxRange * maxRange : float.MaxValue;
         var found = false;
 
-        var query = EntityQueryEnumerator<ShuttleComponent, TransformComponent>();
-        while (query.MoveNext(out var gridUid, out _, out var xform))
+        var query = EntityQueryEnumerator<ShuttleComponent, TransformComponent, MapGridComponent>();
+        while (query.MoveNext(out var gridUid, out _, out var xform, out var grid))
         {
-            if (gridUid == excludeGrid)
-                continue;
-
-            if (xform.MapUid != mapUid)
+            if (gridUid == excludeGrid || xform.MapUid != mapUid)
                 continue;
 
             var delta = _transform.GetWorldPosition(xform) - origin;
@@ -140,8 +131,11 @@ public sealed class NearestShuttleTeleporterSystem : EntitySystem
             if (distSq >= bestDist)
                 continue;
 
+            if (!TryFindSafeTile(gridUid, grid, out var candidateCoords))
+                continue;
+
             bestDist = distSq;
-            nearest = gridUid;
+            destCoords = candidateCoords;
             found = true;
         }
 

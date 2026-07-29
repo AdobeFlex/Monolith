@@ -11,17 +11,16 @@
     anchored: true
   - type: Physics
     bodyType: Static
+    canCollide: false
   - type: Fixtures
     fixtures:
       fix1:
         shape:
           !type:PhysShapeAabb
-          bounds: "-0.45,-0.45,0.45,0.45"
-        density: 60
+          bounds: "-0.45,-0.45,0.45,0.00"
+        density: 190
         mask:
         - MachineMask
-        layer:
-        - MachineLayer
   - type: InteractionOutline
   - type: Clickable
   - type: NearestShuttleTeleporter
@@ -44,6 +43,7 @@
     price: 4000
   placement:
     mode: SnapgridCenter
+
 - type: entity
   id: NearestShuttleTeleporterMachineCircuitboard
   parent: BaseMachineCircuitboard

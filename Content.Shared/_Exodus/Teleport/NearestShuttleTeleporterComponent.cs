@@ -25,6 +25,9 @@ public sealed partial class NearestShuttleTeleporterComponent : Component
     public string PopupSuccess = "company-teleporter-success";
 
     [DataField]
+    public string PopupStandOnPad = "company-teleporter-stand-on-pad";
+
+    [DataField]
     public string PopupFail = "company-teleporter-fail";
 
     [DataField]

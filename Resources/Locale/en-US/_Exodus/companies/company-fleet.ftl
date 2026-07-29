@@ -1,4 +1,5 @@
 company-teleporter-success = You are teleported to the nearest ship.
+company-teleporter-stand-on-pad = You need to stand on the pad to use it.
 company-teleporter-fail = Could not find a suitable ship.
 company-teleporter-cooldown = The pad is still recharging.
 ship-armor-module-name = Dynamic armor module

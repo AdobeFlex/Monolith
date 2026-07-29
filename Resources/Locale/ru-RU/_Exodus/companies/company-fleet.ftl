@@ -1,4 +1,5 @@
 company-teleporter-success = Вы телепортированы на ближайший корабль.
+company-teleporter-stand-on-pad = Нужно встать на плиту, чтобы её использовать.
 company-teleporter-fail = Не удалось найти подходящий корабль.
 company-teleporter-cooldown = Плита ещё перезаряжается.
 ship-armor-module-name = Модуль динамической защиты
