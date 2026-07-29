@@ -1,8 +1,8 @@
 using System.Numerics;
 using Content.Shared._Mono.Radar;
 using Robust.Shared.Map;
+using Robust.Shared.Localization; // Exodus bluespace-map-blips
 using Robust.Shared.Timing;
-using System.Linq;
 
 namespace Content.Client._Mono.Radar;
 
@@ -26,11 +26,13 @@ public sealed partial class RadarBlipsSystem : EntitySystem
     private readonly List<BlipData> _cachedNebulaMapBlipData = new();
     // Exodus-end
     private List<BlipNetData> _blips = new();
+    private List<MissileVectorNetData> _missiles = new();
     private List<HitscanNetData> _hitscans = new();
     private List<BlipConfig> _configPalette = new();
 
     // cached results to avoid allocating on every draw/frame
     private readonly List<BlipData> _cachedBlipData = new();
+    private readonly List<MissileVectorData> _cachedMissileData = new();
 
     public override void Initialize()
     {
@@ -53,14 +55,22 @@ public sealed partial class RadarBlipsSystem : EntitySystem
 
         _configPalette = ev.ConfigPalette;
         _blips = ev.Blips;
+        _missiles = ev.Missiles;
         _hitscans = ev.HitscanLines;
         _lastUpdatedTime = _timing.CurTime;
     }
 
     private void RemoveBlip(BlipRemovalEvent args)
     {
-        var blipid = _blips.FirstOrDefault(x => x.Uid == args.NetBlipUid);
-        _blips.Remove(blipid);
+        // SS220: avoid LINQ for this lookup and tolerate a duplicate removal event.
+        for (var i = 0; i < _blips.Count; i++)
+        {
+            if (_blips[i].Uid != args.NetBlipUid)
+                continue;
+
+            _blips.RemoveAt(i);
+            return;
+        }
     }
 
     public void RequestBlips(EntityUid console)
@@ -138,7 +148,7 @@ public sealed partial class RadarBlipsSystem : EntitySystem
                 maybeGrid = grid != EntityUid.Invalid ? grid : null;
             }
 
-            _cachedBlipData.Add(new(blip.Uid, predictedPos, rotation, maybeGrid, config));
+            _cachedBlipData.Add(new(blip.Uid, predictedPos, rotation, maybeGrid, config, blip.Label));
         }
 
         return _cachedBlipData;
@@ -188,10 +198,65 @@ public sealed partial class RadarBlipsSystem : EntitySystem
                 maybeGrid = grid != EntityUid.Invalid ? grid : null;
             }
 
-            target.Add(new(blip.Uid, predictedPos, rotation, maybeGrid, config));
+            target.Add(new(blip.Uid, predictedPos, rotation, maybeGrid, config, blip.Label));
         }
     }
     // Exodus-end
+
+    /// <summary>
+    /// Gets the missile vectors to be rendered on the radar
+    /// </summary>
+    public List<MissileVectorData> GetMissileLines()
+    {
+        // clear the cache and bail early if the data is stale
+        _cachedMissileData.Clear();
+        if (_timing.CurTime.TotalSeconds - _lastUpdatedTime.TotalSeconds > BlipStaleSeconds)
+            return _cachedMissileData;
+
+        // populate the cached list instead of allocating a new one each frame
+        foreach (var missile in _missiles)
+        {
+            // Exodus: tolerate a stale missile-vector packet after its blip is removed.
+            BlipNetData tiedBlip = default;
+            var foundBlip = false;
+            for (var i = 0; i < _blips.Count; i++)
+            {
+                if (_blips[i].Uid != missile.Uid)
+                    continue;
+                tiedBlip = _blips[i];
+                foundBlip = true;
+                break;
+            }
+            if (!foundBlip)
+                continue;
+            var coord = tiedBlip.Position;
+            var color = Color.FromHex("#00AACC");
+            var colorArcs = Color.FromHex("#FF0040");
+
+            var predictedPosStart = new NetCoordinates(missile.Uid, coord.Position + tiedBlip.Vel * (float)(_timing.CurTime - _lastUpdatedTime).TotalSeconds);
+            var posEnd = Vector2.Create(
+                predictedPosStart.X + (missile.Range / 2) * (float)Math.Cos(tiedBlip.Rotation + Math.PI * -0.5),
+                predictedPosStart.Y + (missile.Range / 2) * (float)Math.Sin(tiedBlip.Rotation + Math.PI * -0.5));
+            var predictedPosEnd = new NetCoordinates(missile.Uid, posEnd);
+
+            _cachedMissileData.Add(new(missile.Uid, predictedPosStart, predictedPosEnd, color));
+            if (missile.ScanArc > 0)
+            {
+                var posEndLeft = Vector2.Create(
+                    predictedPosStart.X + (missile.Range) * (float)Math.Cos(tiedBlip.Rotation + Math.PI * -0.5 - (missile.ScanArc * 0.5)),
+                    predictedPosStart.Y + (missile.Range) * (float)Math.Sin(tiedBlip.Rotation + Math.PI * -0.5 - (missile.ScanArc * 0.5)));
+                var posEndRight = Vector2.Create(
+                    predictedPosStart.X + (missile.Range) * (float)Math.Cos(tiedBlip.Rotation + Math.PI * -0.5 + (missile.ScanArc * 0.5)),
+                    predictedPosStart.Y + (missile.Range) * (float)Math.Sin(tiedBlip.Rotation + Math.PI * -0.5+ (missile.ScanArc * 0.5)));
+                var predictedPosLeft = new NetCoordinates(missile.Uid, posEndLeft);
+                var predictedPosRight = new NetCoordinates(missile.Uid, posEndRight);
+                _cachedMissileData.Add(new(missile.Uid, predictedPosStart, predictedPosLeft, colorArcs));
+                _cachedMissileData.Add(new(missile.Uid, predictedPosStart, predictedPosRight, colorArcs));
+            }
+        }
+
+        return _cachedMissileData;
+    }
 
     /// <summary>
     /// Gets the hitscan lines to be rendered on the radar
@@ -211,5 +276,14 @@ public record struct BlipData
     EntityCoordinates Position,
     Angle Rotation,
     EntityUid? GridUid,
-    BlipConfig Config
+    BlipConfig Config,
+    LocId? Label
+);
+
+public record struct MissileVectorData
+(
+    NetEntity NetUid,
+    NetCoordinates PositionStart,
+    NetCoordinates PositionEnd,
+    Color Color
 );

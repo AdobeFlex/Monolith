@@ -1,5 +1,8 @@
 using System.Numerics;
+using Content.Server._Mono.Projectiles.TargetGuided; // Exodus upstream-missile-radar-vectors
+using Content.Server._Mono.Projectiles.TargetSeeking; // Exodus upstream-missile-radar-vectors
 using Content.Shared._Exodus.Nebula.Components; // Exodus nebula-ftl-map
+using Content.Shared._Exodus.Shuttles; // Exodus bluespace-map-blips
 using Content.Shared._Mono.Radar;
 using Content.Shared.Projectiles;
 using Content.Shared.Shuttles.Components;
@@ -17,10 +20,12 @@ public sealed partial class RadarBlipSystem : EntitySystem
 
     // Pooled collections to avoid per-request heap churn
     private readonly List<BlipNetData> _tempBlipsCache = new();
+    private readonly List<MissileVectorNetData> _tempMissileCache = new(); // Exodus upstream-missile-radar-vectors
     private readonly List<HitscanNetData> _tempHitscansCache = new();
     private readonly List<EntityUid> _tempSourcesCache = new();
     private readonly List<BlipConfig> _tempPaletteCache = new();
     private readonly Dictionary<BlipConfig, ushort> _paletteIndex = new();
+    private readonly HashSet<EntityUid> _tempVisibleBlipsCache = new(); // Exodus upstream-missile-radar-vectors
 
     public override void Initialize()
     {
@@ -40,7 +45,7 @@ public sealed partial class RadarBlipSystem : EntitySystem
         if (ev.NebulaOnly && ev.RequestedMapId is { } nebulaMapId)
         {
             AssembleNebulaBlipsReport(new MapId(nebulaMapId));
-            RaiseNetworkEvent(new GiveBlipsEvent(_tempPaletteCache, _tempBlipsCache, _tempHitscansCache, ev.RequestedMapId, true), args.SenderSession);
+            RaiseNetworkEvent(new GiveBlipsEvent(_tempPaletteCache, _tempBlipsCache, _tempMissileCache, _tempHitscansCache, ev.RequestedMapId, true), args.SenderSession);
             ClearReportCaches();
             return;
         }
@@ -62,15 +67,11 @@ public sealed partial class RadarBlipSystem : EntitySystem
             AssembleHitscanReport((EntityUid)radarUid, _tempSourcesCache, radar);
 
         // Combine the blips and hitscan lines
-        var giveEv = new GiveBlipsEvent(_tempPaletteCache, _tempBlipsCache, _tempHitscansCache, ev.RequestedMapId, ev.NebulaOnly);
+        var giveEv = new GiveBlipsEvent(_tempPaletteCache, _tempBlipsCache, _tempMissileCache, _tempHitscansCache, ev.RequestedMapId, ev.NebulaOnly);
         // Exodus-end
         RaiseNetworkEvent(giveEv, args.SenderSession);
 
-        _tempBlipsCache.Clear();
-        _tempHitscansCache.Clear();
-        _tempSourcesCache.Clear();
-        _tempPaletteCache.Clear();
-        _paletteIndex.Clear();
+        ClearReportCaches();
     }
 
     // Exodus-begin nebula-ftl-map
@@ -80,35 +81,67 @@ public sealed partial class RadarBlipSystem : EntitySystem
             return;
 
         var mapUid = _mapManager.GetMapEntityId(mapId);
-        if (!TryComp<NebulaMapDataComponent>(mapUid, out var nebulaData))
-            return;
-
-        var netMap = GetNetEntity(mapUid);
-        for (var i = 0; i < nebulaData.RadarBlips.Count; i++)
+        if (TryComp<NebulaMapDataComponent>(mapUid, out var nebulaData))
         {
-            var blip = nebulaData.RadarBlips[i];
-            if (blip.Config.Shape != RadarBlipShape.NebulaPolygon)
+            var netMap = GetNetEntity(mapUid);
+            for (var i = 0; i < nebulaData.RadarBlips.Count; i++)
+            {
+                var blip = nebulaData.RadarBlips[i];
+                if (blip.Config.Shape != RadarBlipShape.NebulaPolygon)
+                    continue;
+
+                var configIndex = GetOrAddConfig(blip.Config);
+                var coordinates = new EntityCoordinates(mapUid, blip.Position);
+                _tempBlipsCache.Add(new BlipNetData(
+                    netMap,
+                    GetNetCoordinates(coordinates),
+                    Vector2.Zero,
+                    Angle.Zero,
+                    configIndex,
+                    null));
+            }
+        }
+
+        // Exodus-begin bluespace-map-blips
+        var blipQuery = EntityQueryEnumerator<BluespaceMapBlipComponent, TransformComponent>();
+        while (blipQuery.MoveNext(out var blipUid, out var blip, out var xform))
+        {
+            if (xform.MapID != mapId)
                 continue;
 
-            var configIndex = GetOrAddConfig(blip.Config);
-            var coordinates = new EntityCoordinates(mapUid, blip.Position);
+            var configIndex = GetOrAddConfig(new BlipConfig
+            {
+                Color = blip.Color,
+                Shape = blip.Shape,
+                Bounds = new Box2(-blip.Scale, -blip.Scale, blip.Scale, blip.Scale),
+            });
+
+            var coordinates = xform.Coordinates;
+            var gridUid = xform.GridUid;
+            if (xform.ParentUid != xform.MapUid && xform.ParentUid != gridUid)
+                coordinates = _xform.WithEntityId(coordinates, gridUid ?? xform.MapUid!.Value);
+
             _tempBlipsCache.Add(new BlipNetData(
-                netMap,
+                GetNetEntity(blipUid),
                 GetNetCoordinates(coordinates),
                 Vector2.Zero,
                 Angle.Zero,
                 configIndex,
-                null));
+                null,
+                blip.Label));
         }
+        // Exodus-end
     }
 
     private void ClearReportCaches()
     {
         _tempBlipsCache.Clear();
+        _tempMissileCache.Clear();
         _tempHitscansCache.Clear();
         _tempSourcesCache.Clear();
         _tempPaletteCache.Clear();
         _paletteIndex.Clear();
+        _tempVisibleBlipsCache.Clear();
     }
     // Exodus-end
 
@@ -186,7 +219,34 @@ public sealed partial class RadarBlipSystem : EntitySystem
                             rotation,
                             configIdx,
                             gridConfigIdx));
+            _tempVisibleBlipsCache.Add(blipUid);
         }
+
+        // Exodus-begin upstream-missile-radar-vectors
+        if (nebulaOnly)
+            return;
+
+        var seekingQuery = EntityQueryEnumerator<TargetSeekingComponent, RadarBlipComponent, TransformComponent>();
+        while (seekingQuery.MoveNext(out var missileUid, out var seeker, out _, out _))
+        {
+            if (!seeker.ArcLines || !_tempVisibleBlipsCache.Contains(missileUid))
+                continue;
+
+            _tempMissileCache.Add(new MissileVectorNetData(
+                GetNetEntity(missileUid),
+                seeker.MaxSpeed * 0.2f,
+                MathHelper.DegreesToRadians(seeker.ScanArc)));
+        }
+
+        var guidedQuery = EntityQueryEnumerator<TargetGuidedComponent, RadarBlipComponent, TransformComponent>();
+        while (guidedQuery.MoveNext(out var missileUid, out var guided, out _, out _))
+        {
+            if (!guided.RadarLines || !_tempVisibleBlipsCache.Contains(missileUid))
+                continue;
+
+            _tempMissileCache.Add(new MissileVectorNetData(GetNetEntity(missileUid), guided.CurrentSpeed * 0.2f, Angle.Zero));
+        }
+        // Exodus-end
     }
     // Exodus-end
 

@@ -1,5 +1,6 @@
 using System.Numerics;
 using Robust.Shared.Map;
+using Robust.Shared.Localization; // Exodus bluespace-map-blips
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._Mono.Radar;
@@ -33,6 +34,13 @@ public sealed class GiveBlipsEvent : EntityEventArgs
     /// </summary>
     public readonly List<BlipNetData> Blips;
 
+    // Exodus-begin upstream-missile-radar-vectors
+    /// <summary>
+    /// Vectors for missile guidance and seeker arcs.
+    /// </summary>
+    public readonly List<MissileVectorNetData> Missiles;
+    // Exodus-end
+
     /// <summary>
     /// Hitscan lines to display on the radar as (start position, end position, thickness, color).
     /// </summary>
@@ -44,12 +52,14 @@ public sealed class GiveBlipsEvent : EntityEventArgs
     public GiveBlipsEvent(
         List<BlipConfig> configPalette,
         List<BlipNetData> blips,
+        List<MissileVectorNetData> missiles,
         List<HitscanNetData> hitscans,
         int? requestedMapId = null,
         bool nebulaOnly = false)
     {
         ConfigPalette = configPalette;
         Blips = blips;
+        Missiles = missiles;
         HitscanLines = hitscans;
         RequestedMapId = requestedMapId; // Exodus nebula-ftl-map
         NebulaOnly = nebulaOnly; // Exodus nebula-ftl-map
@@ -90,8 +100,13 @@ public record struct BlipNetData
     Vector2 Vel,
     Angle Rotation,
     ushort ConfigIndex,
-    ushort? OnGridConfigIndex
+    ushort? OnGridConfigIndex,
+    LocId? Label = null // Exodus bluespace-map-blips
 );
+
+// Exodus upstream-missile-radar-vectors
+[Serializable, NetSerializable]
+public record struct MissileVectorNetData(NetEntity Uid, float Range, Angle ScanArc);
 
 [Serializable, NetSerializable]
 public record struct HitscanNetData(Vector2 Start, Vector2 End, float Thickness, Color Color);

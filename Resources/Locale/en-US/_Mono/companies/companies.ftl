@@ -74,3 +74,5 @@ paycheck-bratva-name = Paycheck Bratva
 cerberus-surplus-name = Cerberus Surplus Provisions
 redsail-corsairs-name = RedSail Corsairs
 # Exodus-end
+
+plxcor-description = PLXCOR is a notable terrorist organization operating within the Colossus Sector. Members of PLXCOR, aka PLEX units, are known for their extreme views towards organic life aswell as their proclivity for violence. They are classed by all organizations operating within the Colossus Sector as a terrorist organization, wanted for crimes consisting of: mass murder; mass kidnapping; widespread terrorism; bioterrorism; bioterrorism with letoferol; torture; bodily mutilation; trafficking of sentient lifeforms; forced borging of sentient lifeforms; etc. They are to be considered armed and extremely dangerous.

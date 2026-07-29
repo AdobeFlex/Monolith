@@ -51,3 +51,6 @@ ent-AsakimShuttleEmergencyBeaconMedium = маячок ВЭФ "Среднее с�
 
 ent-AsakimShuttleEmergencyBeaconStratostar = маячок ВЭФ "Стратостар"
     .desc = Одноразовый аварийный маячок вызова ВЭФ Стратостар.
+
+ent-SpaceLeviathanEmergencyBeacon = маячок вызова космического левиафана
+    .desc = Одноразовый блюспейс-маячок, приманивающий космического левиафана во внешний сектор и передающий его координаты всему сектору.
