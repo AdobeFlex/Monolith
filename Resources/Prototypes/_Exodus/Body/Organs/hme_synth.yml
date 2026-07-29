@@ -1,4 +1,4 @@
-# Harmony Medical — advanced surgical synth organs.
+# Harmony Medical - advanced surgical synth organs.
 # Buffs via existing Organ.OnAdd / OrganEffectSystem and organ-local Metabolizer
 # (same pattern as asakim / cybernetic organs). No corp-named EntitySystems.
 
@@ -27,7 +27,6 @@
   description: hme-synth-heart-fortified-description
   components:
   - type: Organ
-    slotId: heart
     onAdd:
     - type: HealthThresholdModifier
       multiplier: 1.25
@@ -39,7 +38,6 @@
   description: hme-synth-lungs-description
   components:
   - type: Organ
-    slotId: lungs
     onAdd:
     - type: StaminaModifier
       modifier: 1.2
@@ -59,7 +57,6 @@
   description: hme-synth-liver-description
   components:
   - type: Organ
-    slotId: liver
     onAdd:
     - type: DamageProtectionBuff
       modifiers:
@@ -83,7 +80,6 @@
   description: hme-synth-eyes-description
   components:
   - type: Organ
-    slotId: eyes
     onAdd:
     - type: FlashImmunity
     - type: EyeProtection
