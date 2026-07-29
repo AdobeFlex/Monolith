@@ -275,6 +275,14 @@
         whitelist:
           components:
           - CdmShieldReserveCartridge
+  - type: ContainerContainer
+    containers:
+      machine_board: !type:Container
+      machine_parts: !type:Container
+      cdm-shield-reserve-0: !type:ContainerSlot
+      cdm-shield-reserve-1: !type:ContainerSlot
+      cdm-shield-reserve-2: !type:ContainerSlot
+      cdm-shield-reserve-3: !type:ContainerSlot
   - type: CdmShieldReserve
     maxCartridges: 4
     emergencyShieldFraction: 0.25
@@ -336,6 +344,11 @@
         whitelist:
           components:
           - CdmShieldReserveCartridge
+  - type: ContainerContainer
+    containers:
+      machine_board: !type:Container
+      machine_parts: !type:Container
+      cdm-shield-reserve-0: !type:ContainerSlot
   - type: CdmShieldReserve
     maxCartridges: 1
   - type: Machine

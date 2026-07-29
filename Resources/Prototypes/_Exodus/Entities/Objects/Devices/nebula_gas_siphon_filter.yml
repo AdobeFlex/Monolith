@@ -18,6 +18,7 @@
           Depleted: { state: depleted }
   - type: NebulaGasSiphonFilter
     capacity: 2500
+    remaining: 2500
     consumptionPerMole: 0.25
   - type: StaticPrice
     price: 350

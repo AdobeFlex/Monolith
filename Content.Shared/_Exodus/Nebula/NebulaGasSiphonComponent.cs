@@ -1,6 +1,5 @@
 using System.Numerics;
 using Content.Shared.Atmos;
-using Content.Shared.Containers.ItemSlots;
 using Robust.Shared.GameObjects;
 using Robust.Shared.GameStates;
 using Robust.Shared.Maths;
@@ -73,9 +72,6 @@ public sealed partial class NebulaGasSiphonComponent : Component
     /// </summary>
     [DataField]
     public float TargetPressure = Atmospherics.OneAtmosphere;
-
-    [DataField(required: true)]
-    public ItemSlot FilterSlot = new();
 
     [DataField]
     public string PipeNodeName = "pipe";

@@ -38,6 +38,18 @@
   - type: ApcPowerReceiver
     powerLoad: 500
   - type: ExtensionCableReceiver
+  - type: ItemSlots
+    slots:
+      filter:
+        name: nebula-gas-siphon-filter-slot
+        whitelist:
+          components:
+          - NebulaGasSiphonFilter
+  - type: ContainerContainer
+    containers:
+      machine_board: !type:Container
+      machine_parts: !type:Container
+      filter: !type:ContainerSlot
   - type: NebulaGasSiphon
     range: 3
     footprintLength: 3
@@ -49,11 +61,6 @@
     targetPressure: 101.325
     pipePosition: 0, 0
     pipeArrowPosition: 0.5, 0
-    filterSlot:
-      name: nebula-gas-siphon-filter-slot
-      whitelist:
-        components:
-        - NebulaGasSiphonFilter
   - type: Fixtures
     fixtures:
       fix1:

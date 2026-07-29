@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseItem
+  parent: MaterialBase
   id: MaterialAmericium
   name: americium cube
   description: A dense, highly valuable golden metal cube.

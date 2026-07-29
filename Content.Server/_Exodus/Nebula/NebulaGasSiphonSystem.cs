@@ -68,8 +68,8 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         _gridQuery = GetEntityQuery<MapGridComponent>();
         _siphonGridQuery = GetEntityQuery<NebulaGasSiphonGridComponent>();
 
-        SubscribeLocalEvent<NebulaGasSiphonComponent, ComponentInit>(OnSiphonInit);
         SubscribeLocalEvent<NebulaGasSiphonComponent, ComponentStartup>(OnSiphonStartup);
+        SubscribeLocalEvent<NebulaGasSiphonComponent, MapInitEvent>(OnSiphonMapInit);
         SubscribeLocalEvent<NebulaGasSiphonComponent, ComponentRemove>(OnSiphonRemove);
         SubscribeLocalEvent<NebulaGasSiphonComponent, EntityUnpausedEvent>(OnSiphonUnpaused);
         SubscribeLocalEvent<NebulaGasSiphonComponent, AnchorStateChangedEvent>(OnSiphonAnchorChanged);
@@ -164,7 +164,7 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         if (!_gridQuery.TryGetComponent(gridUid, out var grid))
             return;
 
-        if (!TryGetWorkingFilter(siphon, out var filterUid, out var filter))
+        if (!TryGetWorkingFilter(uid, out var filterUid, out var filter))
         {
             RemCompDeferred<ActiveNebulaGasSiphonComponent>(uid);
             return;
@@ -494,26 +494,22 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         _siphonQueue.Clear();
     }
 
-    private void OnSiphonInit(Entity<NebulaGasSiphonComponent> ent, ref ComponentInit args)
-    {
-        _itemSlots.AddItemSlot(ent.Owner, NebulaGasSiphonComponent.FilterSlotId, ent.Comp.FilterSlot);
-    }
-
     private void OnSiphonStartup(Entity<NebulaGasSiphonComponent> ent, ref ComponentStartup args)
     {
-        EnsurePipeEntity(ent.Owner, ent.Comp);
-        UpdateSiphonIndex(ent.Owner);
-        UpdateSiphonActivity(ent.Owner);
+        RefreshSiphonAppearance(ent.Owner);
 
-        if (ent.Comp.FilterSlot.Item is { } filterUid
-            && TryComp<NebulaGasSiphonFilterComponent>(filterUid, out var filter))
+        if (!TryComp<TransformComponent>(ent.Owner, out var xform)
+            || !IsMapInitialized(xform))
         {
-            UpdateSiphonAppearance(ent.Owner, true);
-            UpdateSiphonEmissionAppearance(ent.Owner, filter);
             return;
         }
 
-        UpdateSiphonAppearance(ent.Owner, false);
+        InitializeSiphon(ent);
+    }
+
+    private void OnSiphonMapInit(Entity<NebulaGasSiphonComponent> ent, ref MapInitEvent args)
+    {
+        InitializeSiphon(ent);
     }
 
     private void OnSiphonAnchorChanged(Entity<NebulaGasSiphonComponent> ent, ref AnchorStateChangedEvent args)
@@ -522,14 +518,16 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
 
         if (args.Anchored)
         {
+            if (!IsMapInitialized(args.Transform))
+                return;
+
             EnsurePipeEntity(ent.Owner, ent.Comp);
             UpdateSiphonIndex(ent.Owner);
             UpdateSiphonActivity(ent.Owner);
             return;
         }
 
-        QueueDel(ent.Comp.PipeEntity);
-        ent.Comp.PipeEntity = null;
+        DeletePipeEntity(ent.Comp);
         RemoveSiphonFromGrid(args.Transform.GridUid, ent.Owner);
         RemCompDeferred<ActiveNebulaGasSiphonComponent>(ent.Owner);
     }
@@ -573,7 +571,7 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
 
     private void UpdateSiphonIndex(EntityUid uid)
     {
-        if (!TryComp<NebulaGasSiphonComponent>(uid, out var siphon)
+        if (!TryComp<NebulaGasSiphonComponent>(uid, out _)
             || !TryComp<TransformComponent>(uid, out var xform))
         {
             return;
@@ -582,7 +580,7 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         if (!xform.Anchored
             || xform.GridUid is not { } gridUid
             || !_gridQuery.HasComp(gridUid)
-            || !TryGetWorkingFilter(siphon, out _, out _))
+            || !TryGetWorkingFilter(uid, out _, out _))
         {
             RemoveSiphonFromGrid(xform.GridUid, uid);
             return;
@@ -643,7 +641,7 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         if (!active
             || !xform.Anchored
             || xform.GridUid is null
-            || !TryGetWorkingFilter(siphon, out _, out _))
+            || !TryGetWorkingFilter(uid, out _, out _))
         {
             RemCompDeferred<ActiveNebulaGasSiphonComponent>(uid);
             return;
@@ -671,14 +669,14 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
     }
 
     private bool TryGetWorkingFilter(
-        NebulaGasSiphonComponent siphon,
+        EntityUid uid,
         out EntityUid filterUid,
         out NebulaGasSiphonFilterComponent filter)
     {
         filterUid = default;
         filter = default!;
 
-        if (siphon.FilterSlot.Item is not { } itemUid
+        if (!TryGetFilterItem(uid, out var itemUid)
             || !TryComp<NebulaGasSiphonFilterComponent>(itemUid, out var filterComp)
             || filterComp.Remaining < Atmospherics.GasMinMoles
             || filterComp.ConsumptionPerMole <= 0f)
@@ -720,9 +718,7 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
 
     private void OnSiphonRemove(Entity<NebulaGasSiphonComponent> ent, ref ComponentRemove args)
     {
-        QueueDel(ent.Comp.PipeEntity);
-        ent.Comp.PipeEntity = null;
-        _itemSlots.RemoveItemSlot(ent.Owner, ent.Comp.FilterSlot);
+        DeletePipeEntity(ent.Comp);
         if (TryComp<TransformComponent>(ent.Owner, out var xform))
             RemoveSiphonFromGrid(xform.GridUid, ent.Owner);
 
@@ -766,14 +762,64 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         UpdateFilterAppearance(ent.Owner, ent.Comp);
 
         if (Transform(ent.Owner).ParentUid is { } parent
-            && TryComp<NebulaGasSiphonComponent>(parent, out var siphon)
-            && siphon.FilterSlot.Item == ent.Owner)
+            && HasComp<NebulaGasSiphonComponent>(parent)
+            && TryGetFilterItem(parent, out var filterUid)
+            && filterUid == ent.Owner)
         {
             UpdateSiphonAppearance(parent, true);
             UpdateSiphonEmissionAppearance(parent, ent.Comp);
             UpdateSiphonIndex(parent);
             UpdateSiphonActivity(parent);
         }
+    }
+
+    private void InitializeSiphon(Entity<NebulaGasSiphonComponent> ent)
+    {
+        EnsurePipeEntity(ent.Owner, ent.Comp);
+        UpdateSiphonIndex(ent.Owner);
+        UpdateSiphonActivity(ent.Owner);
+    }
+
+    private void RefreshSiphonAppearance(EntityUid uid)
+    {
+        if (TryGetFilterItem(uid, out var filterUid)
+            && TryComp<NebulaGasSiphonFilterComponent>(filterUid, out var filter))
+        {
+            UpdateSiphonAppearance(uid, true);
+            UpdateSiphonEmissionAppearance(uid, filter);
+            return;
+        }
+
+        UpdateSiphonAppearance(uid, false);
+    }
+
+    private bool TryGetFilterItem(EntityUid uid, out EntityUid itemUid)
+    {
+        itemUid = default;
+
+        if (!_itemSlots.TryGetSlot(uid, NebulaGasSiphonComponent.FilterSlotId, out var slot)
+            || slot.Item is not { } filterUid)
+        {
+            return false;
+        }
+
+        itemUid = filterUid;
+        return true;
+    }
+
+    private void DeletePipeEntity(NebulaGasSiphonComponent siphon)
+    {
+        if (siphon.PipeEntity is not { } pipeEntity)
+            return;
+
+        siphon.PipeEntity = null;
+        if (!TerminatingOrDeleted(pipeEntity))
+            Del(pipeEntity);
+    }
+
+    private bool IsMapInitialized(TransformComponent xform)
+    {
+        return xform.MapID != MapId.Nullspace && _map.IsInitialized(xform.MapID);
     }
 
     private void OnSiphonExamined(Entity<NebulaGasSiphonComponent> ent, ref ExaminedEvent args)
@@ -792,7 +838,7 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
                 return;
             }
 
-            var hasWorkingFilter = TryGetWorkingFilter(ent.Comp, out _, out _);
+            var hasWorkingFilter = TryGetWorkingFilter(ent.Owner, out _, out _);
             _presenceQuery.TryGetComponent(gridUid, out var presence);
             var hasSufficientDensity = presence is not null && presence.Density > ent.Comp.MinDensity;
             var hasProfile = presence is not null && TryGetProfile(presence.Marker, out _);
