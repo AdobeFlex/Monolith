@@ -14,6 +14,10 @@
     {
       "name": "azakim_fighter_e",
       "directions": 4
-    }
+    },
+    {
+      "name": "azakim_fighter_e_r",
+      "directions": 4
+    },
   ]
 }
