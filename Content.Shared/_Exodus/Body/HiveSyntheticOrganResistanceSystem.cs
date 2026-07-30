@@ -1,11 +1,14 @@
 using Content.Shared._Shitmed.Body.Organ;
 using Content.Shared.Damage.Components;
+using Robust.Shared.Network;
 
 namespace Content.Shared._Exodus.Body;
 
 public sealed class HiveSyntheticOrganResistanceSystem : EntitySystem
 {
     private const string ModifierKeyPrefix = "hive-organ-";
+
+    [Dependency] private readonly INetManager _net = default!;
 
     public override void Initialize()
     {
@@ -18,6 +21,9 @@ public sealed class HiveSyntheticOrganResistanceSystem : EntitySystem
         Entity<HiveSyntheticOrganResistanceComponent> organ,
         ref OrganComponentsModifyEvent args)
     {
+        if (!_net.IsServer)
+            return;
+
         if (!TryComp<DamageProtectionBuffComponent>(args.Body, out var protection))
         {
             if (!args.Add)

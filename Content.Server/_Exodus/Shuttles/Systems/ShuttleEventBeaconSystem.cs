@@ -1,7 +1,7 @@
-using Content.Server.AlertLevel;
 using Content.Server.GameTicking;
 using Content.Server.Station.Systems;
 using Content.Server.StationEvents.Components;
+using Content.Server.StationEvents.Events;
 using Content.Shared._Exodus.Shuttles.Components;
 using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
@@ -11,10 +11,10 @@ namespace Content.Server._Exodus.Shuttles.Systems;
 
 public sealed partial class ShuttleEventBeaconSystem : EntitySystem
 {
-    [Dependency] private AlertLevelSystem _alertLevel = default!;
     [Dependency] private GameTicker _gameTicker = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private StationSystem _station = default!;
+    [Dependency] private AlertLevelInterceptionRule _alertLevelInterceptionRule = default!;
 
     public override void Initialize()
     {
@@ -54,34 +54,42 @@ public sealed partial class ShuttleEventBeaconSystem : EntitySystem
             return;
         }
 
-        var successPopup = ent.Comp.SuccessPopup;
-        var consumeOnSuccess = ent.Comp.ConsumeOnSuccess;
-
-        var rule = _gameTicker.ForceAddGameRule(ent.Comp.Rule);
-        if (!rule.IsValid() || !_gameTicker.StartGameRule(rule))
+        var ruleUid = _gameTicker.ForceAddGameRule(ent.Comp.Rule);
+        if (!ruleUid.IsValid())
         {
             _popup.PopupEntity(Loc.GetString(ent.Comp.FailurePopup), user, user);
             return;
         }
 
-        SyncAlertLevel(user, rule);
-        _popup.PopupEntity(Loc.GetString(successPopup), user, user);
+        if (HasComp<AlertLevelInterceptionRuleComponent>(ruleUid))
+        {
+            if (!TryResolveAlertTargetStation(user, out var targetStation) ||
+                !_alertLevelInterceptionRule.TrySetTargetStation(ruleUid, targetStation))
+            {
+                QueueDel(ruleUid);
+                _popup.PopupEntity(Loc.GetString(ent.Comp.FailurePopup), user, user);
+                return;
+            }
+        }
+
+        if (!_gameTicker.StartGameRule(ruleUid))
+        {
+            QueueDel(ruleUid);
+            _popup.PopupEntity(Loc.GetString(ent.Comp.FailurePopup), user, user);
+            return;
+        }
+
+        _popup.PopupEntity(Loc.GetString(ent.Comp.SuccessPopup), user, user);
 
         RemComp<ShuttleEventBeaconComponent>(ent.Owner);
 
-        if (consumeOnSuccess)
+        if (ent.Comp.ConsumeOnSuccess)
             QueueDel(ent.Owner);
     }
 
-    private void SyncAlertLevel(EntityUid user, EntityUid rule)
+    private bool TryResolveAlertTargetStation(EntityUid user, out EntityUid? station)
     {
-        if (!_gameTicker.IsGameRuleActive(rule))
-            return;
-
-        if (!TryComp<AlertLevelInterceptionRuleComponent>(rule, out var alertRule))
-            return;
-
-        var station = _station.GetOwningStation(user);
+        station = _station.GetOwningStation(user);
         if (station == null)
         {
             foreach (var stationUid in _station.GetStationsSet())
@@ -91,15 +99,6 @@ public sealed partial class ShuttleEventBeaconSystem : EntitySystem
             }
         }
 
-        if (station == null)
-            return;
-
-        _alertLevel.SetLevel(
-            station.Value,
-            alertRule.AlertLevel,
-            true,
-            true,
-            true,
-            alertRule.Locked);
+        return station != null;
     }
 }

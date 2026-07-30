@@ -75,13 +75,41 @@ public sealed class CompanyTerritoryBannerSystem : EntitySystem
 
     private void OnTerritoryControllerChanged(ref GridTerritoryControllerChangedEvent args)
     {
-        if (args.NewFaction is null ||
-            !TryComp<GridTerritoryComponent>(args.Grid, out var territory))
+        if (!TryComp<GridTerritoryComponent>(args.Grid, out var territory))
         {
             return;
         }
 
+        if (ShouldClearCorporateController((args.Grid, territory), args.NewFaction))
+            _territory.ClearCorporateController(args.Grid, args.Actor);
+
+        if (args.NewFaction is null)
+            return;
+
         TryClaimFromAnchoredBannersOnGrid((args.Grid, territory));
+    }
+
+    private bool ShouldClearCorporateController(
+        Entity<GridTerritoryComponent> territory,
+        ProtoId<TerritoryFactionPrototype>? newFaction)
+    {
+        if (territory.Comp.ActiveCorporateBanner is not { } activeBanner)
+            return false;
+
+        if (newFaction is null)
+        {
+            ClearActiveBannerBlip(activeBanner);
+            return true;
+        }
+
+        if (!TryComp<CompanyTerritoryBannerComponent>(activeBanner, out var banner) ||
+            banner.TerritoryFaction != newFaction)
+        {
+            ClearActiveBannerBlip(activeBanner);
+            return true;
+        }
+
+        return false;
     }
 
     internal void TryClaimFromAnchoredBannersOnGrid(Entity<GridTerritoryComponent> territory)
@@ -238,10 +266,16 @@ public sealed class CompanyTerritoryBannerSystem : EntitySystem
         if (territory.ActiveCorporateBanner == banner.Owner)
         {
             if (banner.Comp.Company is { } activeCompany &&
-                banner.Comp.TerritoryFaction is not null)
+                banner.Comp.TerritoryFaction is { } bannerFaction &&
+                currentFaction == bannerFaction)
             {
                 if (_territory.TrySetCorporateController(grid, activeCompany, banner.Owner, actor))
                     ConfigureActiveBannerBlip(banner, (grid, territory));
+            }
+            else
+            {
+                ClearActiveBannerBlip(banner.Owner);
+                _territory.ClearCorporateController(grid);
             }
 
             return;
@@ -257,7 +291,12 @@ public sealed class CompanyTerritoryBannerSystem : EntitySystem
 
         var territoryFaction = currentFaction;
         if (actor is null && banner.Comp.TerritoryFaction is { } storedFaction)
+        {
+            if (currentFaction != storedFaction)
+                return;
+
             territoryFaction = storedFaction;
+        }
 
         if (territoryFaction is not { } claimFaction)
             return;
@@ -471,3 +510,4 @@ public sealed class CompanyTerritoryBannerSystem : EntitySystem
         RemCompDeferred<PendingTerritoryClaimActorComponent>(banner);
     }
 }
+

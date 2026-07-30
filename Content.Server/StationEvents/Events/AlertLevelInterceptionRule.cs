@@ -1,6 +1,6 @@
-using Content.Server.StationEvents.Components;
 using Content.Server.AlertLevel;
-﻿using Content.Shared.GameTicking.Components;
+using Content.Server.StationEvents.Components;
+using Content.Shared.GameTicking.Components;
 
 namespace Content.Server.StationEvents.Events;
 
@@ -12,8 +12,17 @@ public sealed partial class AlertLevelInterceptionRule : StationEventSystem<Aler
     {
         base.Started(uid, component, gameRule, args);
 
-        if (!TryGetRandomStation(out var chosenStation))
-            return;
+        // Exodus-begin alert-level-interception-target-station
+        EntityUid? chosenStation = component.TargetStation;
+        if (chosenStation == null || Deleted(chosenStation.Value))
+        {
+            if (!TryGetRandomStation(out chosenStation))
+                return;
+
+            component.TargetStation = chosenStation.Value;
+        }
+        // Exodus-end
+
         // Frontier - note: levels are globally set/gotten, regardless of arg
         // Exodus-begin
         if (!component.OverrideAlert && _alertLevelSystem.GetLevel(chosenStation.Value) != "green")

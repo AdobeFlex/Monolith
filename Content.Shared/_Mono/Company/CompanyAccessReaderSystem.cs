@@ -1,5 +1,8 @@
+using Content.Shared.Access.Components; // Exodus-company-card-access
 using Content.Shared.Access.Systems; // Exodus-company-card-access
+using Content.Shared.Hands.EntitySystems; // Exodus-company-card-access
 using Content.Shared.Interaction; // Exodus-company-card-access
+using Content.Shared.Inventory; // Exodus-company-card-access
 using Content.Shared.Popups;
 using Content.Shared.Storage.Components; // Exodus-company-card-access
 using Content.Shared.Storage.EntitySystems; // Exodus-company-card-access
@@ -17,7 +20,9 @@ public sealed partial class CompanyAccessReaderSystem : EntitySystem
 {
     [Dependency] private SharedPopupSystem _popup = default!;
     // Exodus-begin company-card-access
+    [Dependency] private SharedHandsSystem _hands = default!; // Exodus-company-card-access
     [Dependency] private SharedIdCardSystem _idCard = default!; // Exodus-company-card-access
+    [Dependency] private InventorySystem _inventory = default!; // Exodus-company-card-access
     [Dependency] private SharedUserInterfaceSystem _ui = default!; // Exodus-company-card-access
 
     public override void Initialize()
@@ -79,10 +84,10 @@ public sealed partial class CompanyAccessReaderSystem : EntitySystem
     {
         if (component.RequireCompanyCard)
         {
-            if (!_idCard.TryFindIdCard(user, out var idCard)
+            if (!TryFindAccessibleCompanyCard(user, out var idCard)
                 || idCard.Comp.CompanyName.Id == "None")
             {
-                return component.Inverted;
+                return false;
             }
 
             return component.RequiredCompanies.Count == 0
@@ -94,6 +99,30 @@ public sealed partial class CompanyAccessReaderSystem : EntitySystem
             return component.Inverted;
 
         return component.RequiredCompanies.Contains(userCompany.CompanyName) != component.Inverted;
+    }
+
+    private bool TryFindAccessibleCompanyCard(EntityUid user, out Entity<IdCardComponent> idCard)
+    {
+        if (_idCard.TryGetIdCard(user, out idCard))
+            return true;
+
+        foreach (var item in _hands.EnumerateHeld(user))
+        {
+            if (_idCard.TryGetIdCard(item, out idCard))
+                return true;
+        }
+
+        if (_inventory.TryGetContainerSlotEnumerator(user, out var enumerator))
+        {
+            while (enumerator.NextItem(out var item))
+            {
+                if (_idCard.TryGetIdCard(item, out idCard))
+                    return true;
+            }
+        }
+
+        idCard = default;
+        return false;
     }
 
     private void ShowDeniedPopup(Entity<CompanyAccessReaderComponent> entity, EntityUid user)

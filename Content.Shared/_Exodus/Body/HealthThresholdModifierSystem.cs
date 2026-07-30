@@ -2,12 +2,14 @@ using Content.Shared.FixedPoint;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
+using Robust.Shared.Network;
 
 namespace Content.Shared._Exodus.Body;
 
 public sealed class HealthThresholdModifierSystem : EntitySystem
 {
     [Dependency] private readonly MobThresholdSystem _mobThreshold = default!;
+    [Dependency] private readonly INetManager _net = default!;
 
     public override void Initialize()
     {
@@ -19,11 +21,17 @@ public sealed class HealthThresholdModifierSystem : EntitySystem
 
     private void OnStartup(Entity<HealthThresholdModifierComponent> entity, ref ComponentStartup args)
     {
+        if (!_net.IsServer)
+            return;
+
         ApplyModifier(entity.Owner, entity.Comp.Multiplier);
     }
 
     private void OnShutdown(Entity<HealthThresholdModifierComponent> entity, ref ComponentShutdown args)
     {
+        if (!_net.IsServer)
+            return;
+
         if (!float.IsFinite(entity.Comp.Multiplier) || entity.Comp.Multiplier <= 0f)
             return;
 
