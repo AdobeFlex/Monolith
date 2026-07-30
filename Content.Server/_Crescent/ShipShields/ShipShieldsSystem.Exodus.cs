@@ -6,9 +6,9 @@ using Content.Shared.Physics; // Exodus directional shields
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Maths; // Exodus directional shields
-using Robust.Shared.Physics;
-using Robust.Shared.Physics.Collision.Shapes;
-using Robust.Shared.Physics.Components;
+using Robust.Shared.Physics; // Exodus directional shields
+using Robust.Shared.Physics.Collision.Shapes; // Exodus directional shields
+using Robust.Shared.Physics.Components; // Exodus directional shields
 
 namespace Content.Server._Crescent.ShipShields;
 

@@ -61,6 +61,9 @@
           collection: MetalBreak
   - type: Repairable
     doAfterDelay: 8
+  - type: ShipRepairable
+    repairTime: 10
+    repairCost: 60
 
 # Compact Blackhawk PMC dynamic armor — weaker / smaller than PDV module.
 - type: entity

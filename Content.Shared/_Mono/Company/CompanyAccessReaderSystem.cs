@@ -16,6 +16,7 @@ namespace Content.Shared._Mono.Company;
 public sealed partial class CompanyAccessReaderSystem : EntitySystem
 {
     [Dependency] private SharedPopupSystem _popup = default!;
+    // Exodus-begin company-card-access
     [Dependency] private SharedIdCardSystem _idCard = default!; // Exodus-company-card-access
     [Dependency] private SharedUserInterfaceSystem _ui = default!; // Exodus-company-card-access
 
@@ -100,4 +101,5 @@ public sealed partial class CompanyAccessReaderSystem : EntitySystem
         if (entity.Comp.PopupMessage != null)
             _popup.PopupClient(Loc.GetString(entity.Comp.PopupMessage), entity, user);
     }
+    // Exodus-end company-card-access
 }

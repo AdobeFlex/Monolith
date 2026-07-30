@@ -68,10 +68,11 @@ public sealed class ShipShieldOverlay : Overlay
             if (!args.WorldAABB.Intersects(worldBounds))
                 continue;
 
-            DrawShield(handle, chain, transform, _shieldTexture, visuals, _verts);
+            DrawShield(handle, chain, transform, _shieldTexture, visuals, _verts); // Exodus layered ship shield visuals
         }
     }
 
+    // Exodus-begin layered ship shield visuals
     private void DrawShield(
         DrawingHandleWorld handle,
         ChainShape chain,
@@ -84,7 +85,6 @@ public sealed class ShipShieldOverlay : Overlay
         var layerThickness = Math.Max(0.05f, visuals.LayerThickness);
         var layerGap = Math.Max(0f, visuals.LayerGap);
 
-        // Exodus-begin layered ship shield visuals
         for (var layer = 0; layer < layerCount; layer++)
         {
             var outerOffset = layer * (layerThickness + layerGap);
@@ -94,7 +94,6 @@ public sealed class ShipShieldOverlay : Overlay
             DrawShieldLayer(handle, chain, transform, tex, layerColor, outerOffset, innerOffset, verts);
             verts.Clear();
         }
-        // Exodus-end
     }
 
     private void DrawShieldLayer(
@@ -162,4 +161,5 @@ public sealed class ShipShieldOverlay : Overlay
         cornerPos = Vector2.Normalize(cornerPos) * offset;
         return Vector2.Subtract(vertexPos, cornerPos);
     }
+    // Exodus-end layered ship shield visuals
 }
