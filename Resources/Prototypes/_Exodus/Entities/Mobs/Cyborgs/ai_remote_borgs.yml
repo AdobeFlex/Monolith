@@ -223,7 +223,6 @@
         startingItem: PowerCellAntiqueProtoEmpProof
   - type: RandomMetadata
     nameSegments:
-    - MonoRemnantBorgTitle
     - MonoRemnantAdjective
     - MonoRemnantNoun
 
