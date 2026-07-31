@@ -112,6 +112,10 @@
     radarColor: "#FFFFFF"
     gridConfig:
       color: "#FFFFFF"
+      shape: Square
+      respectZoom: true
+      rotate: true
+      bounds: "-1.5,-1.5,1.5,1.5"
   - type: Sprite
     sprite: _Mono/Structures/ShuttleComponents/shield.rsi
     snapCardinals: true
