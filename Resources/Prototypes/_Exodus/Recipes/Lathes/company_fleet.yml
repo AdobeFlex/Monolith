@@ -317,8 +317,12 @@
 - type: latheRecipePack
   id: CompanyHorizonDynamic
   recipes:
-  - NebulaGasSiphonMachineCircuitboard
   - NebulaGasSiphonFilter
+
+- type: latheRecipePack
+  id: CompanyHorizonBoardsDynamic
+  recipes:
+  - NebulaGasSiphonMachineCircuitboard
 
 - type: latheRecipePack
   id: CompanyNosskeDynamic
