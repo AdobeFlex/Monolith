@@ -36,6 +36,15 @@
   color: "#279659"
   disabled: true
 
+# Exodus-begin asakim-company
+- type: company
+  id: AsakimDefenceForces
+  name: npc-faction-name-asakim-defence-forces
+  color: "#ff3db1"
+  disabled: true
+  npcFaction: AsakimDefenceForces
+# Exodus-end asakim-company
+
 - type: company
   id: TSFHighComm
   name: winter-solstice-name # Ru-Localization

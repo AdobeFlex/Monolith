@@ -44,6 +44,7 @@ public sealed partial class ShipShieldsSystem : EntitySystem
     // Exodus-end
     // Exodus-begin shield deflection queue
     private readonly List<QueuedShieldDeflection> _queuedShieldDeflections = new();
+    private readonly HashSet<EntityUid> _queuedShieldDeflectionSources = new();
 
     private readonly record struct QueuedShieldDeflection(EntityUid Source, EntityUid Deflected);
     // Exodus-end
@@ -62,15 +63,22 @@ public sealed partial class ShipShieldsSystem : EntitySystem
             if (emitter.Accumulator < EmitterUpdateRate)
                 continue;
 
+            // Exodus: capture this before a new shield load can change the receiver state.
+            var poweredBeforeLoad = power.Powered;
+
             if (CalculateLoadDamage(emitter) >= emitter.MaxDraw)
                 emitter.Recharging = true;
-            if (!power.Powered)
+            if (!poweredBeforeLoad)
                 emitter.Recharging = true;
 
             emitter.Accumulator -= EmitterUpdateRate;
             if (emitter.OverloadAccumulator > 0)
             {
-                emitter.OverloadAccumulator -= EmitterUpdateRate;
+                if (emitter.DamageOverloadStartedTick != _timing.CurTick)
+                    emitter.OverloadAccumulator -= EmitterUpdateRate;
+
+                if (emitter.OverloadAccumulator <= 0)
+                    emitter.DamageOverloadStartedTick = null;
             }
 
             float healed = emitter.HealPerSecond * EmitterUpdateRate;
@@ -83,32 +91,23 @@ public sealed partial class ShipShieldsSystem : EntitySystem
             if (emitter.Damage < 0)
             {
                 emitter.Damage = 0;
-                if (power.Powered)
+                if (poweredBeforeLoad)
                     emitter.Recharging = false;
             }
-
-            AdjustEmitterLoad(uid, emitter, power);
 
             var parent = Transform(uid).GridUid;
 
             if (parent == null)
+            {
+                AdjustEmitterLoad(uid, emitter, power);
                 continue;
+            }
 
             var filter = _station.GetInOwningStation(uid);
             // Exodus-begin shield overload event handling
-            var overloadTriggered = CalculateLoadDamage(emitter) >= emitter.MaxDraw ||
-                                    emitter.Damage > emitter.DamageLimit;
-            if (overloadTriggered)
-            {
-                var overloadAttempt = new ShipShieldOverloadAttemptEvent();
-                RaiseLocalEvent(uid, ref overloadAttempt);
-
-                if (!overloadAttempt.Cancelled)
-                    emitter.OverloadAccumulator = emitter.DamageOverloadTimePunishment;
-                else
-                    AdjustEmitterLoad(uid, emitter, power);
-            }
+            HandleDamageOverload((uid, emitter), poweredBeforeLoad, IsDamageOverloaded(emitter));
             // Exodus-end
+            AdjustEmitterLoad(uid, emitter, power);
             // Exodus-shield-swap-fix-start: a ship's shield downtime is grid-wide. Don't raise a shield
             // if the grid is already shielded (prevents a second generator shadowing the active shield),
             // or if any other emitter on the grid is still serving its overload lockout. The lockout is
@@ -136,6 +135,38 @@ public sealed partial class ShipShieldsSystem : EntitySystem
             }
         }
     }
+
+    // Exodus-begin shield damage-overload handling
+    private void HandleDamageOverload(
+        Entity<ShipShieldEmitterComponent> ent,
+        bool poweredBeforeLoad,
+        bool overloadTriggered)
+    {
+        if (!overloadTriggered ||
+            ent.Comp.OverloadAccumulator > 0f ||
+            ent.Comp.DamageOverloadStartedTick == _timing.CurTick)
+        {
+            return;
+        }
+
+        var overloadAttempt = new ShipShieldOverloadAttemptEvent(
+            ShipShieldOverloadCause.Damage,
+            poweredBeforeLoad);
+        RaiseLocalEvent(ent.Owner, ref overloadAttempt);
+
+        if (overloadAttempt.Cancelled)
+            return;
+
+        ent.Comp.OverloadAccumulator = ent.Comp.DamageOverloadTimePunishment;
+        ent.Comp.DamageOverloadStartedTick = _timing.CurTick;
+    }
+
+    private static bool IsDamageOverloaded(ShipShieldEmitterComponent emitter)
+    {
+        return CalculateLoadDamage(emitter) >= emitter.MaxDraw ||
+               emitter.Damage > emitter.DamageLimit;
+    }
+    // Exodus-end
 
     // Exodus-shield-swap-fix-start
     /// <summary>
@@ -230,6 +261,7 @@ public sealed partial class ShipShieldsSystem : EntitySystem
         if (_queuedShieldDeflections.Count == 0)
             return;
 
+        _queuedShieldDeflectionSources.Clear();
         var count = _queuedShieldDeflections.Count;
         for (var i = 0; i < count; i++)
         {
@@ -243,7 +275,23 @@ public sealed partial class ShipShieldsSystem : EntitySystem
 
             var ev = new ShieldDeflectedEvent(queued.Deflected, projectile);
             RaiseLocalEvent(queued.Source, ref ev);
+            _queuedShieldDeflectionSources.Add(queued.Source);
         }
+
+        foreach (var source in _queuedShieldDeflectionSources)
+        {
+            if (TerminatingOrDeleted(source) ||
+                EntityManager.IsQueuedForDeletion(source) ||
+                !_shieldEmitterQuery.TryGetComponent(source, out var emitter))
+            {
+                continue;
+            }
+
+            var poweredBeforeLoad = _apcPowerReceiverQuery.TryGetComponent(source, out var power) && power.Powered;
+            HandleDamageOverload((source, emitter), poweredBeforeLoad, IsDamageOverloaded(emitter));
+        }
+
+        _queuedShieldDeflectionSources.Clear();
 
         if (_queuedShieldDeflections.Count == count)
             _queuedShieldDeflections.Clear();

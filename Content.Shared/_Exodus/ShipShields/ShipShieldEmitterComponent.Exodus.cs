@@ -1,3 +1,5 @@
+using Robust.Shared.Timing;
+
 namespace Content.Shared._Crescent.ShipShields;
 
 public sealed partial class ShipShieldEmitterComponent
@@ -61,4 +63,22 @@ public sealed partial class ShipShieldEmitterComponent
     /// </summary>
     [ViewVariables]
     public TimeSpan LayerRecoveryAccumulator;
+
+    /// <summary>
+    /// Server tick in which the current damage overload lockout began.
+    /// </summary>
+    [ViewVariables]
+    public GameTick? DamageOverloadStartedTick;
+
+    /// <summary>
+    /// Server tick in which a phase layer most recently collapsed.
+    /// </summary>
+    [ViewVariables]
+    public GameTick? LastLayerCollapseTick;
+
+    /// <summary>
+    /// Prevents repeated power-loss notifications until external power returns.
+    /// </summary>
+    [ViewVariables]
+    public bool PowerLossReported;
 }

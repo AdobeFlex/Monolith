@@ -1,6 +1,8 @@
 using Content.Server.Power.Components;
+using Content.Server._Crescent.ShipShields;
 using Content.Shared._Crescent.ShipShields;
 using Content.Shared._Exodus.ShipShields;
+using Robust.Shared.Timing;
 
 namespace Content.Server._Exodus.ShipShields;
 
@@ -9,6 +11,8 @@ namespace Content.Server._Exodus.ShipShields;
 /// </summary>
 public sealed class TriptychShieldSystem : EntitySystem
 {
+    [Dependency] private readonly IGameTiming _timing = default!;
+
     private EntityQuery<ApcPowerReceiverComponent> _powerQuery;
 
     public override void Initialize()
@@ -82,8 +86,10 @@ public sealed class TriptychShieldSystem : EntitySystem
         Entity<ShipShieldEmitterComponent> ent,
         ref ShipShieldOverloadAttemptEvent args)
     {
-        if (args.Cancelled || ent.Comp.Shield is not { } shield || Deleted(shield) ||
-            !_powerQuery.TryGetComponent(ent.Owner, out var power) || !power.Powered)
+        if (args.Cancelled ||
+            args.Cause != ShipShieldOverloadCause.Damage ||
+            !args.PoweredBeforeLoad ||
+            ent.Comp.Shield is not { } shield || Deleted(shield))
         {
             return;
         }
@@ -96,15 +102,19 @@ public sealed class TriptychShieldSystem : EntitySystem
         if (activeLayers <= 0)
             activeLayers = maximumLayers;
 
+        if (ent.Comp.LastLayerCollapseTick == _timing.CurTick)
+        {
+            StabilizeAfterLayerCollapse(ent.Comp);
+            args.Cancelled = true;
+            return;
+        }
+
         if (activeLayers <= 1)
             return;
 
         ent.Comp.ActiveVisualLayerCount = activeLayers - 1;
-        var collapseDamage = GetCollapseDamage(ent.Comp);
-        ent.Comp.Damage = Math.Min(ent.Comp.Damage, collapseDamage);
-        ent.Comp.Recharging = false;
-        ent.Comp.OverloadAccumulator = 0f;
-        ent.Comp.LayerRecoveryAccumulator = TimeSpan.Zero;
+        ent.Comp.LastLayerCollapseTick = _timing.CurTick;
+        StabilizeAfterLayerCollapse(ent.Comp);
         args.Cancelled = true;
 
         UpdateShieldVisuals(ent.Comp);
@@ -113,15 +123,16 @@ public sealed class TriptychShieldSystem : EntitySystem
     private static float GetCollapseDamage(ShipShieldEmitterComponent emitter)
     {
         var retainedDamage = Math.Clamp(emitter.LayerCollapseDamageFraction, 0.05f, 0.95f);
-        var collapseDamage = Math.Max(0f, emitter.DamageLimit * retainedDamage);
+        return ShipShieldsSystem.CalculateSafeDamageAfterOverload(emitter, retainedDamage);
+    }
 
-        if (emitter.MaxDraw <= 0f || emitter.PowerModifier <= 0f || emitter.DamageExp <= 0f)
-            return collapseDamage;
-
-        // Leave headroom below the load threshold so one collapse cannot immediately trigger the next one.
-        var safeLoad = emitter.MaxDraw * 0.9f;
-        var safeDamage = MathF.Pow(safeLoad / emitter.PowerModifier, 1f / emitter.DamageExp);
-        return Math.Min(collapseDamage, safeDamage);
+    private static void StabilizeAfterLayerCollapse(ShipShieldEmitterComponent emitter)
+    {
+        emitter.Damage = Math.Min(emitter.Damage, GetCollapseDamage(emitter));
+        emitter.Recharging = false;
+        emitter.OverloadAccumulator = 0f;
+        emitter.DamageOverloadStartedTick = null;
+        emitter.LayerRecoveryAccumulator = TimeSpan.Zero;
     }
 
     private void RestoreLayer(Entity<ShipShieldEmitterComponent> ent, int maximumLayers)

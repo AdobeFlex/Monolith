@@ -1,4 +1,4 @@
-using Content.Server.Power.Components;
+using Content.Server._Crescent.ShipShields;
 using Content.Shared._Crescent.ShipShields;
 using Content.Shared._Exodus.ShipShields;
 using Content.Shared.Containers.ItemSlots;
@@ -59,22 +59,26 @@ public sealed class CdmShieldReserveSystem : EntitySystem
 
     private void OnOverloadAttempt(Entity<CdmShieldReserveComponent> ent, ref ShipShieldOverloadAttemptEvent args)
     {
-        if (args.Cancelled)
+        if (args.Cancelled ||
+            args.Cause != ShipShieldOverloadCause.Damage ||
+            !args.PoweredBeforeLoad)
             return;
 
         if (!TryComp<ShipShieldEmitterComponent>(ent.Owner, out var emitter)
-            || emitter.Shield is null
-            || !TryComp<ApcPowerReceiverComponent>(ent.Owner, out var power)
-            || !power.Powered
+            || emitter.Shield is not { } shield
+            || TerminatingOrDeleted(shield)
+            || EntityManager.IsQueuedForDeletion(shield)
             || !TryConsumeCartridge(ent, out var remainingCartridges))
         {
             return;
         }
 
         var reserveFraction = Math.Clamp(ent.Comp.EmergencyShieldFraction, 0.01f, 1f);
-        emitter.Damage = MathF.Max(0f, emitter.DamageLimit * (1f - reserveFraction));
+        var safeDamage = ShipShieldsSystem.CalculateSafeDamageAfterOverload(emitter, 1f - reserveFraction);
+        emitter.Damage = Math.Min(emitter.Damage, safeDamage);
         emitter.Recharging = false;
         emitter.OverloadAccumulator = 0f;
+        emitter.DamageOverloadStartedTick = null;
         args.Cancelled = true;
 
         UpdateAppearance(ent, remainingCartridges);
@@ -93,13 +97,16 @@ public sealed class CdmShieldReserveSystem : EntitySystem
             if (!_itemSlots.TryGetSlot(ent.Owner, CdmShieldReserveComponent.GetSlotId(i), out var slot)
                 || slot.Item is not { } cartridge
                 || TerminatingOrDeleted(cartridge)
+                || EntityManager.IsQueuedForDeletion(cartridge)
                 || !HasComp<CdmShieldReserveCartridgeComponent>(cartridge))
             {
                 continue;
             }
 
+            if (!TryQueueDel(cartridge))
+                continue;
+
             remainingCartridges = cartridgeCount - 1;
-            QueueDel(cartridge);
             return true;
         }
 
@@ -114,6 +121,7 @@ public sealed class CdmShieldReserveSystem : EntitySystem
             if (!_itemSlots.TryGetSlot(ent.Owner, CdmShieldReserveComponent.GetSlotId(i), out var slot)
                 || slot.Item is not { } cartridge
                 || TerminatingOrDeleted(cartridge)
+                || EntityManager.IsQueuedForDeletion(cartridge)
                 || !HasComp<CdmShieldReserveCartridgeComponent>(cartridge))
             {
                 continue;

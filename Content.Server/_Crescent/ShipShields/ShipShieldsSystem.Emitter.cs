@@ -40,11 +40,12 @@ public partial class ShipShieldsSystem
         UnshieldEntity(parent.Value, null);
     }
 
-    private void OnShieldDeflected(EntityUid uid, ShipShieldEmitterComponent component, ShieldDeflectedEvent args)
+    // Exodus-begin shield deflection damage handling
+    private void OnShieldDeflected(Entity<ShipShieldEmitterComponent> ent, ref ShieldDeflectedEvent args)
     {
         // Exodus-begin layered shield recovery
-        if (component.ActiveVisualLayerCount < Math.Max(1, component.VisualLayerCount))
-            component.LayerRecoveryAccumulator = TimeSpan.Zero;
+        if (ent.Comp.ActiveVisualLayerCount < Math.Max(1, ent.Comp.VisualLayerCount))
+            ent.Comp.LayerRecoveryAccumulator = TimeSpan.Zero;
         // Exodus-end
 
         var addedDamage = 0f;
@@ -62,13 +63,14 @@ public partial class ShipShieldsSystem
 
         addedDamage += (float)args.Projectile.Damage.GetTotal();
         // Exodus-begin layered shield deflection tuning
-        var deflectionModifier = GetDeflectionDamageModifier(component);
-        component.Damage += addedDamage * deflectionModifier;
+        var deflectionModifier = GetDeflectionDamageModifier(ent.Comp);
+        ent.Comp.Damage += addedDamage * deflectionModifier;
         // Exodus-end
         args.Projectile.ProjectileSpent = true;
 
         QueueDel(args.Deflected);
     }
+    // Exodus-end
 
     private void OnExamined(EntityUid uid, ShipShieldEmitterComponent component, ExaminedEvent args)
     {

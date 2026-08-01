@@ -23,12 +23,24 @@ public sealed partial class AlertLevelInterceptionRule : StationEventSystem<Aler
         }
         // Exodus-end
 
+        // Exodus-begin alert-level-interception-announcement-sender
+        string? announcementSender = null;
+        if (TryComp<StationEventComponent>(uid, out var stationEvent) &&
+            stationEvent.AnnounceSender is { } sender)
+        {
+            announcementSender = Loc.GetString(sender);
+        }
+        // Exodus-end
+
         // Frontier - note: levels are globally set/gotten, regardless of arg
         // Exodus-begin
         if (!component.OverrideAlert && _alertLevelSystem.GetLevel(chosenStation.Value) != "green")
             return;
         // Exodus-end
 
-        _alertLevelSystem.SetLevel(chosenStation.Value, component.AlertLevel, true, true, true, component.Locked); // Goobstation
+        // Exodus-begin alert-level-interception-announcement-sender
+        _alertLevelSystem.SetLevel(chosenStation.Value, component.AlertLevel, true, true, true, component.Locked,
+            announcementSender: announcementSender); // Goobstation
+        // Exodus-end
     }
 }

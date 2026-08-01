@@ -3,23 +3,49 @@ using Content.Server.Power.Components;
 using Content.Shared._Crescent.ShipShields;
 using Content.Shared._Exodus.ShipShields; // Exodus directional shields
 using Content.Shared.Physics; // Exodus directional shields
+using Content.Shared.Power; // Exodus shield overload causes
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Maths; // Exodus directional shields
 using Robust.Shared.Physics; // Exodus directional shields
 using Robust.Shared.Physics.Collision.Shapes; // Exodus directional shields
 using Robust.Shared.Physics.Components; // Exodus directional shields
+using Robust.Shared.Timing; // Exodus shield overload handling
 
 namespace Content.Server._Crescent.ShipShields;
 
 public sealed partial class ShipShieldsSystem
 {
     private const int DirectionalShieldCollisionChainCount = 4; // Exodus directional shields
-    // Exodus-begin | shield hit absorption and directional shield rotation
+    [Dependency] private readonly IGameTiming _timing = default!; // Exodus shield overload handling
+
+    // Exodus-begin | shield hit absorption, overload causes and directional shield rotation
     private void InitializeShieldHitAbsorption()
     {
         SubscribeLocalEvent<ShipShieldedComponent, ShipShieldHitAttemptEvent>(OnShipShieldHitAttempt);
         SubscribeLocalEvent<DirectionalShipShieldEmitterComponent, MoveEvent>(OnDirectionalShieldEmitterMoved);
+        SubscribeLocalEvent<ShipShieldEmitterComponent, PowerChangedEvent>(OnShieldEmitterPowerChanged);
+    }
+
+    private void OnShieldEmitterPowerChanged(Entity<ShipShieldEmitterComponent> ent, ref PowerChangedEvent args)
+    {
+        if (args.Powered)
+        {
+            ent.Comp.PowerLossReported = false;
+            return;
+        }
+
+        if (ent.Comp.PowerLossReported)
+            return;
+
+        ent.Comp.PowerLossReported = true;
+        if (ent.Comp.Shield is null)
+            return;
+
+        var overloadAttempt = new ShipShieldOverloadAttemptEvent(
+            ShipShieldOverloadCause.PowerLoss,
+            false);
+        RaiseLocalEvent(ent.Owner, ref overloadAttempt);
     }
 
     private void OnShipShieldHitAttempt(EntityUid grid, ShipShieldedComponent shielded, ref ShipShieldHitAttemptEvent args)
@@ -195,6 +221,9 @@ public sealed partial class ShipShieldsSystem
             return false;
         }
 
+        // Exodus-begin shield damage-overload handling
+        var poweredBeforeLoad = _apcPowerReceiverQuery.TryGetComponent(source, out var receiver) && receiver.Powered;
+
         // Convert added watt load into the emitter's existing Damage accumulator so it shares
         // the same recovery/overload logic as projectile deflection.
         var currentLoad = CalculateLoadDamage(emitter);
@@ -205,9 +234,12 @@ public sealed partial class ShipShieldsSystem
         // Exodus-begin layered shield recovery
         emitter.LayerRecoveryAccumulator = TimeSpan.Zero;
         // Exodus-end
+        var overloadTriggered = targetLoad >= emitter.MaxDraw || IsDamageOverloaded(emitter);
+        HandleDamageOverload((source, emitter), poweredBeforeLoad, overloadTriggered);
 
-        if (_apcPowerReceiverQuery.TryGetComponent(source, out var receiver))
+        if (receiver is not null)
             AdjustEmitterLoad(source, emitter, receiver);
+        // Exodus-end
 
         return true;
     }
@@ -222,6 +254,28 @@ public sealed partial class ShipShieldsSystem
 
         return MathF.Pow(loadWatts / emitter.PowerModifier, 1f / emitter.DamageExp);
     }
+
+    // Exodus-begin shield overload recovery math
+    /// <summary>
+    /// Calculates damage retained after an overload safety system activates while keeping both the
+    /// hard damage limit and the power-draw limit below their overload thresholds.
+    /// </summary>
+    public static float CalculateSafeDamageAfterOverload(
+        ShipShieldEmitterComponent emitter,
+        float retainedDamageFraction)
+    {
+        var retainedFraction = Math.Clamp(retainedDamageFraction, 0f, 0.99f);
+        var safeDamage = Math.Max(0f, emitter.DamageLimit * retainedFraction);
+
+        if (emitter.MaxDraw <= 0f || emitter.PowerModifier <= 0f || emitter.DamageExp <= 0f)
+            return safeDamage;
+
+        const float safeLoadFraction = 0.9f;
+        var safeLoad = emitter.MaxDraw * safeLoadFraction;
+        var safeLoadDamage = DamageForLoad(emitter, safeLoad);
+        return Math.Min(safeDamage, safeLoadDamage);
+    }
+    // Exodus-end
 
     // Exodus-begin layered shield load scaling
     private static float GetDeflectionDamageModifier(ShipShieldEmitterComponent emitter)
