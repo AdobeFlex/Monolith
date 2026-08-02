@@ -177,7 +177,7 @@
       shader: unshaded
   - type: TechnologyDisk
     recipes:
-    - ShieldGeneratorCdmFlatpack
+    - ShieldGeneratorCdmMachineCircuitboard
     - CdmShieldReserveCartridge
 
 - type: entity

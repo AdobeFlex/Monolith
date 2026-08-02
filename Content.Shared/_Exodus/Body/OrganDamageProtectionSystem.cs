@@ -4,9 +4,13 @@ using Robust.Shared.Network;
 
 namespace Content.Shared._Exodus.Body;
 
-public sealed class HiveSyntheticOrganResistanceSystem : EntitySystem
+/// <summary>
+/// Aggregates damage protection from installed organs without letting one organ
+/// overwrite or remove modifiers owned by another source.
+/// </summary>
+public sealed class OrganDamageProtectionSystem : EntitySystem
 {
-    private const string ModifierKeyPrefix = "hive-organ-";
+    private const string ModifierKeyPrefix = "organ-damage-protection-";
 
     [Dependency] private readonly INetManager _net = default!;
 
@@ -14,11 +18,11 @@ public sealed class HiveSyntheticOrganResistanceSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<HiveSyntheticOrganResistanceComponent, OrganComponentsModifyEvent>(OnOrganComponentsModify);
+        SubscribeLocalEvent<OrganDamageProtectionComponent, OrganComponentsModifyEvent>(OnOrganComponentsModify);
     }
 
     private void OnOrganComponentsModify(
-        Entity<HiveSyntheticOrganResistanceComponent> organ,
+        Entity<OrganDamageProtectionComponent> organ,
         ref OrganComponentsModifyEvent args)
     {
         if (!_net.IsServer)

@@ -52,6 +52,10 @@ public sealed class BankATMMenuBoundUserInterface : BoundUserInterface
 
         _menu?.SetEnabled(bankState.Enabled);
         _menu?.SetBalance(bankState.Balance, bankState.Savings);
-        _menu?.SetDeposit(bankState.Deposit);
+        _menu?.SetDeposit(bankState.Deposit,
+            bankState.SectorDeposit,
+            bankState.SavingsDeposit,
+            bankState.AtmFee,
+            bankState.CompanyCommission); // Exodus corporate ATM commission display
     }
 }

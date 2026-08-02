@@ -34,6 +34,8 @@ public sealed partial class CompanyAccessReaderSystem : EntitySystem
         SubscribeLocalEvent<CompanyAccessReaderComponent, GetVerbsEvent<ActivationVerb>>(OnGetActivationVerbs, after: [typeof(SharedStorageSystem)]); // Exodus-company-card-access
         SubscribeLocalEvent<CompanyAccessReaderComponent, BoundUIOpenedEvent>(OnBoundUIOpened); // Exodus-company-card-access
         SubscribeLocalEvent<CompanyAccessReaderComponent, StorageOpenAttemptEvent>(OnStorageOpenAttempt); // Exodus-company-card-access
+        SubscribeLocalEvent<CompanyAccessReaderComponent, DumpableDoAfterEvent>(OnDump,
+            before: [typeof(DumpableSystem)]); // Exodus-company-card-access
     }
 
     private void OnActivate(Entity<CompanyAccessReaderComponent> entity, ref ActivateInWorldEvent args) // Exodus-company-card-access
@@ -68,6 +70,15 @@ public sealed partial class CompanyAccessReaderSystem : EntitySystem
             return;
 
         args.Cancelled = true;
+        ShowDeniedPopup(entity, args.User);
+    }
+
+    private void OnDump(Entity<CompanyAccessReaderComponent> entity, ref DumpableDoAfterEvent args) // Exodus-company-card-access
+    {
+        if (args.Handled || args.Cancelled || !entity.Comp.RequireCompanyCard || IsAllowed(entity.Comp, args.User))
+            return;
+
+        args.Handled = true;
         ShowDeniedPopup(entity, args.User);
     }
 

@@ -161,15 +161,9 @@
 
 # --- Civil Defense Militia ---
 - type: latheRecipe
-  id: ShieldGeneratorCdmFlatpack
-  result: ShieldGeneratorCdmFlatpack
-  completetime: 25
-  materials:
-    Steel: 3000
-    Plasma: 1000
-    Silver: 500
-    Uranium: 250
-
+  parent: BaseCircuitboardRecipe
+  id: ShieldGeneratorCdmMachineCircuitboard
+  result: ShieldGeneratorCdmMachineCircuitboard
 
 - type: latheRecipe
   id: CdmShieldReserveCartridge
@@ -358,7 +352,7 @@
 - type: latheRecipePack
   id: CompanyCdmDynamic
   recipes:
-  - ShieldGeneratorCdmFlatpack
+  - ShieldGeneratorCdmMachineCircuitboard
   - CdmShieldReserveCartridge
 
 - type: latheRecipePack

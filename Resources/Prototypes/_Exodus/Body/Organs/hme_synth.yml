@@ -1,6 +1,5 @@
 # Harmony Medical - advanced surgical synth organs.
-# Buffs via existing Organ.OnAdd / OrganEffectSystem and organ-local Metabolizer
-# (same pattern as asakim / cybernetic organs). No corp-named EntitySystems.
+# Buffs use the existing organ effects plus a source-aware damage protection aggregator.
 
 - type: entity
   parent: BioSynthHeart
@@ -56,14 +55,12 @@
   name: hme-synth-liver-name
   description: hme-synth-liver-description
   components:
-  - type: Organ
-    onAdd:
-    - type: DamageProtectionBuff
-      modifiers:
-        hmeLiver:
-          id: HmeLiverProtection
-          coefficients:
-            Poison: 0.8
+  - type: OrganDamageProtection
+    modifiers:
+      poison:
+        id: HmeLiverProtection
+        coefficients:
+          Poison: 0.8
   - type: Metabolizer
     maxReagents: 3
     metabolizerTypes: [ Human ]

@@ -216,6 +216,8 @@
   name: cdm-shield-generator-name
   description: cdm-shield-generator-description
   components:
+  - type: Machine
+    board: ShieldGeneratorCdmMachineCircuitboard
   - type: ShipShieldEmitter
     shieldColor: "#48C96B"
   - type: Sprite

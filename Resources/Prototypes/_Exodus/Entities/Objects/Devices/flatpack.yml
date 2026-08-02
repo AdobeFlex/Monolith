@@ -1,13 +1,5 @@
 - type: entity
   parent: BaseFlatpack
-  id: ShieldGeneratorCdmFlatpack
-  name: cdm-shield-generator-flatpack-name
-  description: cdm-shield-generator-flatpack-description
-  components:
-  - type: Flatpack
-    entity: ShieldGeneratorCdm
-- type: entity
-  parent: BaseFlatpack
   id: WeaponTurretDravonFlatpack
   name: weapon-turret-dravon-flatpack-name
   description: weapon-turret-dravon-flatpack-description
