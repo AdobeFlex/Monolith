@@ -16,7 +16,10 @@ namespace Content.Server._Crescent.ShipShields;
 
 public sealed partial class ShipShieldsSystem
 {
-    private const int DirectionalShieldCollisionChainCount = 4; // Exodus directional shields
+    private const float DirectionalShieldCollisionSegmentLength = 4f; // Exodus directional shields
+    private const float DirectionalShieldCollisionThickness = 1f; // Exodus directional shields
+    private const int DirectionalShieldMinimumCollisionSegments = 8; // Exodus directional shields
+    private const int DirectionalShieldMaximumCollisionSegments = 64; // Exodus directional shields
     [Dependency] private readonly IGameTiming _timing = default!; // Exodus shield overload handling
 
     // Exodus-begin | shield hit absorption, overload causes and directional shield rotation
@@ -78,7 +81,11 @@ public sealed partial class ShipShieldsSystem
 
         _fixtureSystem.DestroyFixture(shield, "shield", updates: false, body: shieldPhysics);
 
-        for (var i = 0; i < DirectionalShieldCollisionChainCount; i++)
+        var collisionFixtureCount = _directionalShieldFieldQuery.TryGetComponent(shield, out var field)
+            ? field.CollisionFixtureCount
+            : 0;
+
+        for (var i = 0; i < collisionFixtureCount; i++)
         {
             _fixtureSystem.DestroyFixture(shield, $"internalShield{i}", updates: false, body: shieldPhysics);
         }
@@ -145,12 +152,15 @@ public sealed partial class ShipShieldsSystem
         var arcRadians = Math.Clamp(directional.ArcDegrees, 1f, 359f) * MathF.PI / 180f;
         var segments = Math.Max(16, (int)MathF.Ceiling(radius * 16f * arcRadians / MathF.Tau));
         var step = arcRadians / segments;
-        var start = (float) direction.Theta - arcRadians * 0.5f;
-        var vertices = new Vector2[segments + 1];
+        var directionVector = direction.ToWorldVec();
+        var directionRadians = MathF.Atan2(directionVector.Y, directionVector.X);
+        var start = directionRadians - arcRadians * 0.5f;
+        // ChainShape reserves its final vertex as adjacency data instead of creating an edge for it.
+        var vertices = new Vector2[segments + 2];
 
-        Vector2 GetArcPoint(float angle)
+        Vector2 GetArcPoint(float angle, float pointRadius)
         {
-            var point = new Vector2(MathF.Cos(angle) * radius, MathF.Sin(angle) * radius);
+            var point = new Vector2(MathF.Cos(angle) * pointRadius, MathF.Sin(angle) * pointRadius);
             if (scaleX)
                 point.X *= scale;
             else
@@ -159,42 +169,58 @@ public sealed partial class ShipShieldsSystem
             return point;
         }
 
-        for (var i = 0; i <= segments; i++)
+        for (var i = 0; i <= segments + 1; i++)
         {
-            vertices[i] = GetArcPoint(start + step * i);
+            vertices[i] = GetArcPoint(start + step * i, radius);
         }
 
-        var previous = GetArcPoint(start - step);
-        var next = GetArcPoint(start + arcRadians + step);
+        var previous = GetArcPoint(start - step, radius);
+        var next = vertices[^1];
 
         var shieldChain = new ChainShape();
         shieldChain.CreateChain(vertices, previous, next);
         _fixtureSystem.TryCreateFixture(shield, shieldChain, "shield",
             hard: false,
             collisionLayer: (int)CollisionGroup.BulletImpassable,
+            updates: false,
             body: shieldPhysics);
 
-        // Projectile raycasts use fixture broadphase boxes. Split the hard arc into short chains so those boxes
-        // follow the curve closely without adding invisible radial walls through the ship.
-        var collisionChains = Math.Min(DirectionalShieldCollisionChainCount, segments);
-        for (var i = 0; i < collisionChains; i++)
+        // Hard ChainShape fixtures are one-sided and lose their final edge. Use short convex strips so both
+        // regular contacts and projectile broadphase raycasts get a continuous, two-sided barrier.
+        var maximumRadius = radius * scale;
+        var collisionSegments = Math.Clamp(
+            (int)MathF.Ceiling(maximumRadius * arcRadians / DirectionalShieldCollisionSegmentLength),
+            DirectionalShieldMinimumCollisionSegments,
+            DirectionalShieldMaximumCollisionSegments);
+        var collisionStep = arcRadians / collisionSegments;
+        var innerRadius = MathF.Max(radius - DirectionalShieldCollisionThickness, radius * 0.5f);
+        Span<Vector2> collisionVertices = stackalloc Vector2[4];
+
+        for (var i = 0; i < collisionSegments; i++)
         {
-            var first = i * segments / collisionChains;
-            var last = (i + 1) * segments / collisionChains;
-            var collisionChain = new ChainShape();
-            collisionChain.CreateChain(
-                vertices.AsSpan(first, last - first + 1),
-                first == 0 ? previous : vertices[first - 1],
-                last == segments ? next : vertices[last + 1]);
-            _fixtureSystem.TryCreateFixture(shield, collisionChain, $"internalShield{i}",
+            var segmentStart = start + collisionStep * i;
+            var segmentEnd = segmentStart + collisionStep;
+            collisionVertices[0] = GetArcPoint(segmentStart, radius);
+            collisionVertices[1] = GetArcPoint(segmentEnd, radius);
+            collisionVertices[2] = GetArcPoint(segmentEnd, innerRadius);
+            collisionVertices[3] = GetArcPoint(segmentStart, innerRadius);
+
+            var collisionShape = new PolygonShape();
+            if (!collisionShape.Set(collisionVertices, collisionVertices.Length))
+                continue;
+
+            _fixtureSystem.TryCreateFixture(shield, collisionShape, $"internalShield{i}",
                 hard: true,
                 collisionLayer: (int)CollisionGroup.BulletImpassable,
+                updates: false,
                 body: shieldPhysics);
         }
 
         var field = EnsureComp<DirectionalShipShieldFieldComponent>(shield);
         field.ArcDegrees = directional.ArcDegrees;
         field.Direction = direction;
+        field.CollisionFixtureCount = collisionSegments;
+        _fixtureSystem.FixtureUpdate(shield, body: shieldPhysics);
     }
 
     private static bool IsPointInsideDirectionalShieldArc(

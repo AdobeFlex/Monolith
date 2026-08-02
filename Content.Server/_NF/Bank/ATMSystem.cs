@@ -157,6 +157,8 @@ public sealed partial class BankSystem
         }
 
         var originalDeposit = deposit;
+        var companyCommission = GetCompanyDepositCommission(player, originalDeposit); // Exodus corporate ATM commission
+        deposit -= companyCommission; // Exodus corporate ATM commission
         foreach (var (account, taxCoeff) in component.TaxAccounts)
         {
             if (!float.IsFinite(taxCoeff) || taxCoeff <= 0.0f)
@@ -179,7 +181,12 @@ public sealed partial class BankSystem
 
         ConsolePopup(args.Actor, Loc.GetString("bank-atm-menu-deposit-successful"));
         PlayConfirmSound(uid, component);
-        _adminLogger.Add(LogType.ATMUsage, LogImpact.Low, $"{ToPrettyString(player):actor} deposited {deposit} into {ToPrettyString(component.Owner)}");
+        // Exodus-begin corporate ATM commission
+        _adminLogger.Add(LogType.ATMUsage,
+            LogImpact.Low,
+            $"{ToPrettyString(player):actor} deposited {deposit} into {ToPrettyString(component.Owner)} " +
+            $"(gross: {originalDeposit}, company commission: {companyCommission})");
+        // Exodus-end
 
         state.Deposit = 0;
         state.Balance = bank.Balance;

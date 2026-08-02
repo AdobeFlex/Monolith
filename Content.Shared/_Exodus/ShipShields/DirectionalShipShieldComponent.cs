@@ -23,4 +23,5 @@ public sealed partial class DirectionalShipShieldFieldComponent : Component
 {
     public float ArcDegrees;
     public Angle Direction;
+    public int CollisionFixtureCount;
 }

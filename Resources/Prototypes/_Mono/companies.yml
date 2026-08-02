@@ -64,6 +64,7 @@
   description: drake-industries-description
   color: "#C97D7D"
   image: /Textures/_Mono/Companies/drake_industries.png
+  atmDepositCommission: 0.15 # Exodus corporate ATM commission
   startingItems: # Exodus company-fleet
   - CompanyTechDiskCaseDrake # Exodus company-fleet
 
@@ -73,6 +74,7 @@
   description: steel-hammer-description
   color: "#92a2a1"
   image: /Textures/_Mono/Companies/steel_hammer.png
+  atmDepositCommission: 0.15 # Exodus corporate ATM commission
   startingItems: # Exodus company-fleet
   - CompanyTechDiskCaseSteelHammer # Exodus company-fleet
 
@@ -82,6 +84,7 @@
   description: harmony-medical-enterprises-description
   color: "#FC7303"
   image: /Textures/_Mono/Companies/HME.png
+  atmDepositCommission: 0.15 # Exodus corporate ATM commission
   startingItems: # Exodus company-fleet
   - CompanyTechDiskCaseHme # Exodus company-fleet
 
@@ -91,6 +94,7 @@
   description: midnight-arms-co-description
   color: "#FF2E2E"
   image: /Textures/_Mono/Companies/MACo.png
+  atmDepositCommission: 0.15 # Exodus corporate ATM commission
   startingItems: # Exodus company-fleet
   - CompanyTechDiskCaseMaco # Exodus company-fleet
 
@@ -102,6 +106,7 @@
   description: ussp-description
   image: /Textures/_Mono/Companies/USSP.png
   npcFaction: USSP # Exodus - company NPC faction
+  atmDepositCommission: 0.15 # Exodus corporate ATM commission
 
 # Major companies
 
@@ -111,6 +116,7 @@
   description: dark-matter-enterprises-description
   color: "#BF00B9"
   image: /Textures/_Mono/Companies/dme.png #DME Logo
+  atmDepositCommission: 0.15 # Exodus corporate ATM commission
   startingItems: # Exodus company-fleet
   - CompanyTechDiskCaseDme # Exodus company-fleet
 
@@ -119,6 +125,7 @@
   name: aetherion-dynamics-name # Ru-Localization
   description: aetherion-dynamics-description
   color: "#7E72B2"
+  atmDepositCommission: 0.15 # Exodus corporate ATM commission
   startingItems: # Exodus company-fleet
   - CompanyTechDiskCaseAetherion # Exodus company-fleet
 
@@ -128,6 +135,7 @@
   description: horizon-energy-description
   color: "#69E37F"
   image: /Textures/_Mono/Companies/horizon_energy.png
+  atmDepositCommission: 0.15 # Exodus corporate ATM commission
   startingItems: # Exodus company-fleet
   - CompanyTechDiskCaseHorizon # Exodus company-fleet
 
@@ -140,6 +148,7 @@
   description: universal-states-of-america-description
   color: "#0A3161"
   image: /Textures/_Mono/Companies/UNSA.png
+  atmDepositCommission: 0.15 # Exodus corporate ATM commission
   startingItems: # Exodus company-fleet
   - CompanyTechDiskCaseUnsa # Exodus company-fleet
 
@@ -148,6 +157,7 @@
   name: civil-defense-milita-name # Ru-Localization
   description: civil-defense-milita-description
   color: "#5e6ab3" # Exodus-Company-Recolor
+  atmDepositCommission: 0.15 # Exodus corporate ATM commission
   startingItems: # Exodus company-fleet
   - CompanyTechDiskCaseCdm # Exodus company-fleet
 
@@ -157,6 +167,7 @@
   description: ullman-industries-description
   color: "#52326A"
   image: /Textures/_Mono/Companies/ullman_industries.png
+  atmDepositCommission: 0.15 # Exodus corporate ATM commission
   startingItems: # Exodus company-fleet
   - CompanyTechDiskCaseUllman # Exodus company-fleet
 
@@ -166,6 +177,7 @@
   description: nosske-eien-rnd-description
   color: "#9573AF"
   image: /Textures/_Mono/Companies/ne_rd.png
+  atmDepositCommission: 0.15 # Exodus corporate ATM commission
   startingItems: # Exodus company-fleet
   - CompanyTechDiskCaseNosske # Exodus company-fleet
 
@@ -175,6 +187,7 @@
   description: blackhawkpmc-description
   color: "#419E23"
   image: /Textures/_Mono/Companies/BMC.png
+  atmDepositCommission: 0.15 # Exodus corporate ATM commission
   startingItems: # Exodus company-fleet
   - CompanyTechDiskCaseBlackhawk # Exodus company-fleet
 
@@ -199,6 +212,7 @@
   name: The-Hive-name # Ru-Localization
   description: The-Hive-description
   color: "#5918a8"
+  atmDepositCommission: 0.15 # Exodus corporate ATM commission
   startingItems: # Exodus company-fleet
   - CompanyTechDiskCaseHive # Exodus company-fleet
 
@@ -209,6 +223,7 @@
   name: paycheck-bratva-name # Ru-Localization
   description: paycheck-bratva-description
   color: "#7a0303"
+  atmDepositCommission: 0.15 # Exodus corporate ATM commission
   startingItems: # Exodus company-fleet
   - CompanyTechDiskCaseBratva # Exodus company-fleet
 
@@ -219,6 +234,7 @@
   color: "#aa1010"
   image: /Textures/_Mono/Companies/CSP.png
   whitelisted: true
+  atmDepositCommission: 0.15 # Exodus corporate ATM commission
 
 # Exodus disable-viper-group — prototype kept for job refs; hidden from lobby
 - type: company
@@ -228,6 +244,7 @@
   color: "#B82121"
   image: /Textures/_Mono/Companies/thevipergroup.png
   disabled: true
+  atmDepositCommission: 0.15 # Exodus corporate ATM commission
   # whitelisted: true
 
 - type: company
@@ -237,6 +254,7 @@
   color: "#930000"
   image: /Textures/_Mono/Companies/redsailcorsairs.png
   whitelisted: true
+  atmDepositCommission: 0.15 # Exodus corporate ATM commission
 
 - type: company
   id: PLXCOR
@@ -245,3 +263,4 @@
   color: "#B500B5"
   image: /Textures/_Mono/Companies/PLXCOR.png
   whitelisted: true
+  atmDepositCommission: 0.15 # Exodus corporate ATM commission
