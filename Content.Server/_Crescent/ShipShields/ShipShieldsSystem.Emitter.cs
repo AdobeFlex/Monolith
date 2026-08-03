@@ -76,7 +76,7 @@ public partial class ShipShieldsSystem
         // Exodus-end
         args.Projectile.ProjectileSpent = true;
 
-        RaiseShieldStateChanged(Transform(uid).GridUid); // Exodus fire-control event-driven UI updates
+        RaiseShieldStateChanged(Transform(ent).GridUid); // Exodus fire-control event-driven UI updates
 
         QueueDel(args.Deflected);
     }
