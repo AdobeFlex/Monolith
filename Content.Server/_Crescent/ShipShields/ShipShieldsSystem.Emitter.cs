@@ -28,12 +28,12 @@ public partial class ShipShieldsSystem
     {
         SubscribeLocalEvent<ShipShieldEmitterComponent, ShieldDeflectedEvent>(OnShieldDeflected);
         SubscribeLocalEvent<ShipShieldEmitterComponent, ExaminedEvent>(OnExamined);
-        SubscribeLocalEvent<ShipShieldEmitterComponent, ComponentStartup>(OnEmitterStartup); // Exodus fire-control event-driven UI updates
+        SubscribeLocalEvent<ShipShieldEmitterComponent, MapInitEvent>(OnEmitterMapInit); // Exodus fire-control event-driven UI updates
         SubscribeLocalEvent<ShipShieldEmitterComponent, ComponentRemove>(OnRemoved);
     }
 
     // Exodus-begin fire-control event-driven UI updates
-    private void OnEmitterStartup(Entity<ShipShieldEmitterComponent> owner, ref ComponentStartup args)
+    private void OnEmitterMapInit(Entity<ShipShieldEmitterComponent> owner, ref MapInitEvent args)
     {
         RaiseShieldStateChanged(Transform(owner).GridUid);
     }
