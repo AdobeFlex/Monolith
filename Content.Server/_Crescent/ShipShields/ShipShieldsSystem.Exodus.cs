@@ -304,6 +304,8 @@ public sealed partial class ShipShieldsSystem
             AdjustEmitterLoad(source, emitter, receiver);
         // Exodus-end
 
+        RaiseShieldStateChanged(Transform(source).GridUid); // Exodus fire-control event-driven UI updates
+
         return true;
     }
 
