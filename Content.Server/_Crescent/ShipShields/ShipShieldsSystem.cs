@@ -221,12 +221,21 @@ public sealed partial class ShipShieldsSystem : EntitySystem
         // only handle ship weapons for now. engine update introduced physics regressions. Let's polish everything else and circle back yeah?
         // Ensuring projectiles coming froms same grid don't hit shield is handled by ProjectileGridPhaseComponent
         if (!_shipWeaponProjectileQuery.HasComponent(args.OtherEntity) ||
-        !_projectileQuery.TryGetComponent(args.OtherEntity, out var projectile) ||
-        projectile.ProjectileSpent)
+            !_projectileQuery.TryGetComponent(args.OtherEntity, out var projectile) ||
+            projectile.ProjectileSpent)
         {
             args.Cancelled = true;
             return;
         }
+
+        // Exodus-begin directional shield interception
+        if (_directionalShieldFieldQuery.TryGetComponent(uid, out var directional) &&
+            !IsProjectileInsideDirectionalShieldArc(uid, directional, args))
+        {
+            args.Cancelled = true;
+            return;
+        }
+        // Exodus-end
 
         //if (TryComp<TimedDespawnComponent>(args.OtherEntity, out var despawn))
         //    despawn.Lifetime += despawn.Lifetime;

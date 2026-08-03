@@ -10,16 +10,13 @@ using Robust.Shared.Maths; // Exodus directional shields
 using Robust.Shared.Physics; // Exodus directional shields
 using Robust.Shared.Physics.Collision.Shapes; // Exodus directional shields
 using Robust.Shared.Physics.Components; // Exodus directional shields
+using Robust.Shared.Physics.Events; // Exodus directional shields
 using Robust.Shared.Timing; // Exodus shield overload handling
 
 namespace Content.Server._Crescent.ShipShields;
 
 public sealed partial class ShipShieldsSystem
 {
-    private const float DirectionalShieldCollisionSegmentLength = 4f; // Exodus directional shields
-    private const float DirectionalShieldCollisionThickness = 1f; // Exodus directional shields
-    private const int DirectionalShieldMinimumCollisionSegments = 8; // Exodus directional shields
-    private const int DirectionalShieldMaximumCollisionSegments = 64; // Exodus directional shields
     [Dependency] private readonly IGameTiming _timing = default!; // Exodus shield overload handling
 
     // Exodus-begin | shield hit absorption, overload causes and directional shield rotation
@@ -81,22 +78,15 @@ public sealed partial class ShipShieldsSystem
 
         _fixtureSystem.DestroyFixture(shield, "shield", updates: false, body: shieldPhysics);
 
-        var collisionFixtureCount = _directionalShieldFieldQuery.TryGetComponent(shield, out var field)
-            ? field.CollisionFixtureCount
-            : 0;
-
-        for (var i = 0; i < collisionFixtureCount; i++)
-        {
-            _fixtureSystem.DestroyFixture(shield, $"internalShield{i}", updates: false, body: shieldPhysics);
-        }
-
-        GenerateDirectionalShieldFixtures(
+        GenerateDirectionalShieldVisualFixture(
             shield,
             shieldPhysics,
             mapGrid,
             visuals.Padding,
             ent.Comp,
             args.NewRotation);
+        UpdateDirectionalShieldField(shield, ent.Comp, args.NewRotation);
+        _fixtureSystem.FixtureUpdate(shield, body: shieldPhysics);
         _physicsSystem.WakeBody(shield, body: shieldPhysics);
     }
 
@@ -144,6 +134,26 @@ public sealed partial class ShipShieldsSystem
         DirectionalShipShieldEmitterComponent directional,
         Angle direction)
     {
+        GenerateDirectionalShieldVisualFixture(
+            shield,
+            shieldPhysics,
+            mapGrid,
+            padding,
+            directional,
+            direction);
+        GenerateDirectionalShieldCollisionFixture(shield, shieldPhysics, mapGrid, padding);
+        UpdateDirectionalShieldField(shield, directional, direction);
+        _fixtureSystem.FixtureUpdate(shield, body: shieldPhysics);
+    }
+
+    private void GenerateDirectionalShieldVisualFixture(
+        EntityUid shield,
+        PhysicsComponent shieldPhysics,
+        MapGridComponent mapGrid,
+        float padding,
+        DirectionalShipShieldEmitterComponent directional,
+        Angle direction)
+    {
         var width = mapGrid.LocalAABB.Width + padding;
         var height = mapGrid.LocalAABB.Height + padding;
         var radius = MathF.Min(width, height) * 0.5f;
@@ -184,43 +194,70 @@ public sealed partial class ShipShieldsSystem
             collisionLayer: (int)CollisionGroup.BulletImpassable,
             updates: false,
             body: shieldPhysics);
+    }
 
-        // Hard ChainShape fixtures are one-sided and lose their final edge. Use short convex strips so both
-        // regular contacts and projectile broadphase raycasts get a continuous, two-sided barrier.
-        var maximumRadius = radius * scale;
-        var collisionSegments = Math.Clamp(
-            (int)MathF.Ceiling(maximumRadius * arcRadians / DirectionalShieldCollisionSegmentLength),
-            DirectionalShieldMinimumCollisionSegments,
-            DirectionalShieldMaximumCollisionSegments);
-        var collisionStep = arcRadians / collisionSegments;
-        var innerRadius = MathF.Max(radius - DirectionalShieldCollisionThickness, radius * 0.5f);
-        Span<Vector2> collisionVertices = stackalloc Vector2[4];
+    private void GenerateDirectionalShieldCollisionFixture(
+        EntityUid shield,
+        PhysicsComponent shieldPhysics,
+        MapGridComponent mapGrid,
+        float padding)
+    {
+        var halfWidth = (mapGrid.LocalAABB.Width + padding) * 0.5f;
+        var halfHeight = (mapGrid.LocalAABB.Height + padding) * 0.5f;
+        Span<Vector2> collisionVertices = stackalloc Vector2[PhysicsConstants.MaxPolygonVertices];
+        var step = MathF.Tau / collisionVertices.Length;
 
-        for (var i = 0; i < collisionSegments; i++)
+        for (var i = 0; i < collisionVertices.Length; i++)
         {
-            var segmentStart = start + collisionStep * i;
-            var segmentEnd = segmentStart + collisionStep;
-            collisionVertices[0] = GetArcPoint(segmentStart, radius);
-            collisionVertices[1] = GetArcPoint(segmentEnd, radius);
-            collisionVertices[2] = GetArcPoint(segmentEnd, innerRadius);
-            collisionVertices[3] = GetArcPoint(segmentStart, innerRadius);
-
-            var collisionShape = new PolygonShape();
-            if (!collisionShape.Set(collisionVertices, collisionVertices.Length))
-                continue;
-
-            _fixtureSystem.TryCreateFixture(shield, collisionShape, $"internalShield{i}",
-                hard: true,
-                collisionLayer: (int)CollisionGroup.BulletImpassable,
-                updates: false,
-                body: shieldPhysics);
+            var angle = step * i;
+            collisionVertices[i] = new Vector2(MathF.Cos(angle) * halfWidth, MathF.Sin(angle) * halfHeight);
         }
 
+        var collisionShape = new PolygonShape();
+        if (!collisionShape.Set(collisionVertices, collisionVertices.Length))
+            return;
+
+        _fixtureSystem.TryCreateFixture(shield, collisionShape, "internalShield",
+            hard: true,
+            collisionLayer: (int)CollisionGroup.BulletImpassable,
+            updates: false,
+            body: shieldPhysics);
+    }
+
+    private void UpdateDirectionalShieldField(
+        EntityUid shield,
+        DirectionalShipShieldEmitterComponent directional,
+        Angle direction)
+    {
         var field = EnsureComp<DirectionalShipShieldFieldComponent>(shield);
         field.ArcDegrees = directional.ArcDegrees;
         field.Direction = direction;
-        field.CollisionFixtureCount = collisionSegments;
-        _fixtureSystem.FixtureUpdate(shield, body: shieldPhysics);
+    }
+
+    private bool IsProjectileInsideDirectionalShieldArc(
+        EntityUid shield,
+        DirectionalShipShieldFieldComponent directional,
+        PreventCollideEvent args)
+    {
+        var projectileVelocity = _physicsSystem.GetMapLinearVelocity(args.OtherEntity, component: args.OtherBody);
+        var shieldVelocity = _physicsSystem.GetMapLinearVelocity(shield, component: args.OurBody);
+        var worldDirection = _transformSystem.GetWorldRotation(shield, _transformQuery) + directional.Direction;
+        return IsIncomingDirectionProtected(worldDirection, directional.ArcDegrees, projectileVelocity - shieldVelocity);
+    }
+
+    internal static bool IsIncomingDirectionProtected(
+        Angle shieldDirection,
+        float arcDegrees,
+        Vector2 relativeVelocity)
+    {
+        var speedSquared = relativeVelocity.LengthSquared();
+        if (speedSquared <= float.Epsilon)
+            return false;
+
+        var incomingDirection = -relativeVelocity / MathF.Sqrt(speedSquared);
+        var arcRadians = Math.Clamp(arcDegrees, 1f, 359f) * MathF.PI / 180f;
+        var minimumDot = MathF.Cos(arcRadians * 0.5f);
+        return Vector2.Dot(incomingDirection, shieldDirection.ToWorldVec()) >= minimumDot;
     }
 
     private static bool IsPointInsideDirectionalShieldArc(
