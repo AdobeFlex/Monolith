@@ -124,6 +124,7 @@ public sealed partial class ShipShieldsSystem
 
         return true;
     }
+    // Exodus-end
 
     // Exodus-begin directional shield geometry
     private void GenerateDirectionalShieldFixtures(
