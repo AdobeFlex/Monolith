@@ -63,7 +63,8 @@ public sealed partial class ShipShieldsSystem : EntitySystem
             if (emitter.Accumulator < EmitterUpdateRate)
                 continue;
 
-            // Exodus: capture this before a new shield load can change the receiver state.
+            // Exodus-begin shield damage-overload update handling
+            // Capture this before a new shield load can change the receiver state.
             var poweredBeforeLoad = power.Powered;
             // Exodus-begin fire-control event-driven UI updates
             var previousDamage = emitter.Damage;
@@ -114,6 +115,7 @@ public sealed partial class ShipShieldsSystem : EntitySystem
             HandleDamageOverload((uid, emitter), poweredBeforeLoad, IsDamageOverloaded(emitter));
             // Exodus-end
             AdjustEmitterLoad(uid, emitter, power);
+            // Exodus-end
             // Exodus-shield-swap-fix-start: a ship's shield downtime is grid-wide. Don't raise a shield
             // if the grid is already shielded (prevents a second generator shadowing the active shield),
             // or if any other emitter on the grid is still serving its overload lockout. The lockout is
