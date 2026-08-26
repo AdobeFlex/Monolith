@@ -139,7 +139,7 @@ public sealed class ShipShieldOverlay : Overlay
         if (layerCount == 1)
             return color;
 
-        var progress = (float) layer / Math.Max(1, layerCount - 1);
+        var progress = (float)layer / Math.Max(1, layerCount - 1);
         var alpha = 0.85f - progress * 0.35f;
         return color.WithAlpha(color.A * alpha);
     }

@@ -17,7 +17,7 @@ public sealed partial class ExplodeOnShieldOverloadSystem : EntitySystem
 
         SubscribeLocalEvent<ExplodeOnShieldOverloadComponent, ShipShieldOverloadAttemptEvent>(
             OnOverloadAttempt,
-            after: new[] { typeof(CdmShieldReserveSystem), typeof(TriptychShieldSystem) });
+            after: new[] { typeof(CdmShieldReserveSystem), typeof(LayeredShipShieldSystem) });
     }
 
     private void OnOverloadAttempt(

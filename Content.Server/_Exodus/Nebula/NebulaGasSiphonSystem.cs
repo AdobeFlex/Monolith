@@ -88,6 +88,7 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         SubscribeLocalEvent<PhysicsBodyTypeChangedEvent>(OnBodyTypeChange);
         SubscribeLocalEvent<FixturesComponent, ComponentStartup>(OnFixturesStartup);
         SubscribeLocalEvent<FixturesComponent, ComponentRemove>(OnFixturesRemove);
+        SubscribeLocalEvent<FixturesComponent, MoveEvent>(OnFixturesMoved);
         SubscribeLocalEvent<AnchorStateChangedEvent>(OnAnchorStateChanged);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
@@ -295,6 +296,26 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
     {
         if (IsStaticBody(ent.Owner) && TryComp<TransformComponent>(ent.Owner, out var xform))
             InvalidateGrid(xform.GridUid);
+    }
+
+    private void OnFixturesMoved(Entity<FixturesComponent> ent, ref MoveEvent args)
+    {
+        if (_gridQuery.HasComp(ent.Owner) || !IsStaticBody(ent.Owner))
+            return;
+
+        InvalidateMovedFixtureArea(ent.Owner, args.OldPosition, args.OldRotation);
+        InvalidateMovedFixtureArea(ent.Owner, args.NewPosition, args.NewRotation);
+    }
+
+    private void InvalidateMovedFixtureArea(
+        EntityUid entityUid,
+        EntityCoordinates coordinates,
+        Angle rotation)
+    {
+        if (ResolveGridUid(coordinates.EntityId) is not { } gridUid || !HasSiphons(gridUid))
+            return;
+
+        InvalidateGridEntityArea(gridUid, entityUid, coordinates, rotation);
     }
 
     private void OnAnchorStateChanged(ref AnchorStateChangedEvent args)
@@ -931,14 +952,14 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         if (intervalTicks <= 1)
             return TimeSpan.Zero;
 
-        var hash = unchecked((uint) uid.Id);
+        var hash = unchecked((uint)uid.Id);
         hash ^= hash >> 16;
         hash = unchecked(hash * 0x7FEB352Du);
         hash ^= hash >> 15;
         hash = unchecked(hash * 0x846CA68Bu);
         hash ^= hash >> 16;
 
-        return TimeSpan.FromTicks((long) (hash % (ulong) intervalTicks));
+        return TimeSpan.FromTicks((long)(hash % (ulong)intervalTicks));
     }
 
     private void UpdateSiphonAppearance(EntityUid uid, bool filterInstalled)
@@ -1054,7 +1075,7 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         }
 
         var dir = (xform.LocalRotation + siphon.SpaceAxisRotation).GetCardinalDir().ToIntVec();
-        var firstFreeTile = Math.Max(0, siphon.FootprintLength) / 2 + 1;
+        var firstFreeTile = GetFirstFreeTile(siphon.FootprintLength);
         var lastFreeTile = firstFreeTile + range - 1;
         var forward = center + dir * lastFreeTile;
         var backward = center - dir * lastFreeTile;
@@ -1076,8 +1097,7 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         var dir = (xform.LocalRotation + siphon.SpaceAxisRotation).GetCardinalDir();
         var forward = dir.ToIntVec();
         var backward = -forward;
-        var footprintHalfLength = Math.Max(0, siphon.FootprintLength) / 2;
-        var firstFreeTile = footprintHalfLength + 1;
+        var firstFreeTile = GetFirstFreeTile(siphon.FootprintLength);
 
         for (var i = firstFreeTile; i < firstFreeTile + siphon.Range; i++)
         {
@@ -1089,6 +1109,11 @@ public sealed class NebulaGasSiphonSystem : EntitySystem
         }
 
         return true;
+    }
+
+    internal static int GetFirstFreeTile(int footprintLength)
+    {
+        return Math.Max(0, footprintLength) / 2 + 1;
     }
 
     private bool IsClearTile(EntityUid gridUid, MapGridComponent grid, Vector2i indices)

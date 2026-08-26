@@ -18,6 +18,9 @@ public sealed partial class NearestShuttleTeleporterComponent : Component
     [DataField]
     public TimeSpan Cooldown = TimeSpan.FromSeconds(60);
 
+    [DataField]
+    public TimeSpan FailureCooldown = TimeSpan.FromSeconds(2);
+
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
     public TimeSpan NextUse;
 

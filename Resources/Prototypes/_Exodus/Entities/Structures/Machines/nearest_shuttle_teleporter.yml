@@ -26,6 +26,7 @@
   - type: NearestShuttleTeleporter
     maxRange: 512
     cooldown: 60
+    failureCooldown: 2
   - type: Damageable
     damageContainer: StructuralInorganic
     damageModifierSet: Metallic

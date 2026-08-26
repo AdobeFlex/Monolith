@@ -407,18 +407,20 @@ public sealed class CompanyTerritoryBannerSystem : EntitySystem
         ProtoId<CompanyPrototype> company,
         out ProtoId<TerritoryFactionPrototype> faction)
     {
-        var query = EntityManager.AllEntityQueryEnumerator<CompanyTerritoryBannerComponent, TransformComponent>();
-        while (query.MoveNext(out _, out var banner, out var xform))
+        var query = EntityManager.AllEntityQueryEnumerator<GridTerritoryComponent>();
+        while (query.MoveNext(out _, out var territory))
         {
-            if (!xform.Anchored ||
-                banner.Company is not { } bannerCompany ||
-                bannerCompany != company ||
-                banner.TerritoryFaction is not { } bannerFaction)
+            if (territory.CorporateController != company ||
+                territory.ActiveCorporateBanner is not { } activeBanner ||
+                territory.ControllingFaction is not { } controllingFaction ||
+                !TryComp<CompanyTerritoryBannerComponent>(activeBanner, out var banner) ||
+                banner.Company != company ||
+                banner.TerritoryFaction != controllingFaction)
             {
                 continue;
             }
 
-            faction = bannerFaction;
+            faction = controllingFaction;
             return true;
         }
 
@@ -510,4 +512,3 @@ public sealed class CompanyTerritoryBannerSystem : EntitySystem
         RemCompDeferred<PendingTerritoryClaimActorComponent>(banner);
     }
 }
-

@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Server._Exodus.ShipShields; // Exodus layered ship shields
 using Content.Server.Power.Components;
 using Content.Shared._Crescent.ShipShields;
 using Content.Shared._Exodus.ShipShields; // Exodus directional shields
@@ -17,6 +18,8 @@ namespace Content.Server._Crescent.ShipShields;
 
 public sealed partial class ShipShieldsSystem
 {
+    private const int DirectionalShieldMinimumSegments = 16; // Exodus directional shields
+    private const int DirectionalShieldMaximumSegments = 256; // Exodus directional shields
     [Dependency] private readonly IGameTiming _timing = default!; // Exodus shield overload handling
 
     // Exodus-begin | shield hit absorption, overload causes and directional shield rotation
@@ -161,7 +164,10 @@ public sealed partial class ShipShieldsSystem
         var scaleX = width > height;
         var scale = scaleX ? width / height : height / width;
         var arcRadians = Math.Clamp(directional.ArcDegrees, 1f, 359f) * MathF.PI / 180f;
-        var segments = Math.Max(16, (int)MathF.Ceiling(radius * 16f * arcRadians / MathF.Tau));
+        var segments = Math.Clamp(
+            (int)MathF.Ceiling(radius * 16f * arcRadians / MathF.Tau),
+            DirectionalShieldMinimumSegments,
+            DirectionalShieldMaximumSegments);
         var step = arcRadians / segments;
         var directionVector = direction.ToWorldVec();
         var directionRadians = MathF.Atan2(directionVector.Y, directionVector.X);
@@ -291,12 +297,14 @@ public sealed partial class ShipShieldsSystem
         // Convert added watt load into the emitter's existing Damage accumulator so it shares
         // the same recovery/overload logic as projectile deflection.
         var currentLoad = CalculateLoadDamage(emitter);
-        var targetLoad = Math.Clamp(currentLoad + loadWatts, 0f, emitter.MaxDraw);
+        // Keep load above MaxDraw so layered shields can carry overflow into their inner layers.
+        var targetLoad = Math.Max(0f, currentLoad + loadWatts);
         emitter.Damage = Math.Max(emitter.Damage, DamageForLoad(emitter, targetLoad));
         // Avoid the regular shield recovery tick immediately eating the same strike.
         emitter.Accumulator = 0f;
         // Exodus-begin layered shield recovery
-        emitter.LayerRecoveryAccumulator = TimeSpan.Zero;
+        if (_layeredShieldQuery.TryGetComponent(source, out var layered))
+            layered.RecoveryAccumulator = TimeSpan.Zero;
         // Exodus-end
         var overloadTriggered = targetLoad >= emitter.MaxDraw || IsDamageOverloaded(emitter);
         HandleDamageOverload((source, emitter), poweredBeforeLoad, overloadTriggered);
@@ -341,20 +349,35 @@ public sealed partial class ShipShieldsSystem
         var safeLoadDamage = DamageForLoad(emitter, safeLoad);
         return Math.Min(safeDamage, safeLoadDamage);
     }
+
+    /// <summary>
+    /// Returns the lowest damage value at which either configured overload limit is reached.
+    /// </summary>
+    internal static float CalculateDamageOverloadThreshold(ShipShieldEmitterComponent emitter)
+    {
+        var overloadDamage = Math.Max(0f, emitter.DamageLimit);
+        if (emitter.MaxDraw <= 0f || emitter.PowerModifier <= 0f || emitter.DamageExp <= 0f)
+            return overloadDamage;
+
+        return Math.Min(overloadDamage, DamageForLoad(emitter, emitter.MaxDraw));
+    }
     // Exodus-end
 
     // Exodus-begin layered shield load scaling
-    private static float GetDeflectionDamageModifier(ShipShieldEmitterComponent emitter)
+    private static float GetDeflectionDamageModifier(
+        Entity<ShipShieldEmitterComponent> ent,
+        LayeredShipShieldComponent? layered)
     {
-        var maximumLayers = Math.Max(1, emitter.VisualLayerCount);
-        var activeLayers = emitter.ActiveVisualLayerCount <= 0
-            ? maximumLayers
-            : Math.Clamp(emitter.ActiveVisualLayerCount, 1, maximumLayers);
+        if (layered is null)
+            return Math.Max(0f, ent.Comp.DeflectionDamageModifier);
+
+        var maximumLayers = Math.Max(1, layered.LayerCount);
+        var activeLayers = Math.Clamp(layered.ActiveLayerCount, 1, maximumLayers);
         var collapsedLayers = maximumLayers - activeLayers;
 
         return Math.Max(
             0f,
-            emitter.DeflectionDamageModifier + collapsedLayers * emitter.LayerDeflectionDamageModifierStep);
+            ent.Comp.DeflectionDamageModifier + collapsedLayers * layered.DeflectionDamageModifierStep);
     }
     // Exodus-end
 }

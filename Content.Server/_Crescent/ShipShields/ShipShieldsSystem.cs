@@ -15,6 +15,7 @@ using Robust.Shared.Physics.Events;
 using Robust.Shared.Physics.Systems;
 using System.Numerics;
 using Content.Server._Crescent.ShipShields.Components;
+using Content.Server._Exodus.ShipShields; // Exodus layered ship shields
 
 
 namespace Content.Server._Crescent.ShipShields;
@@ -41,10 +42,10 @@ public sealed partial class ShipShieldsSystem : EntitySystem
     private EntityQuery<ShipShieldVisualsComponent> _shieldVisualsQuery;
     private EntityQuery<TransformComponent> _transformQuery;
     private EntityQuery<DirectionalShipShieldFieldComponent> _directionalShieldFieldQuery; // Exodus directional shields
+    private EntityQuery<LayeredShipShieldComponent> _layeredShieldQuery; // Exodus layered ship shields
     // Exodus-end
     // Exodus-begin shield deflection queue
     private readonly List<QueuedShieldDeflection> _queuedShieldDeflections = new();
-    private readonly HashSet<EntityUid> _queuedShieldDeflectionSources = new();
 
     private readonly record struct QueuedShieldDeflection(EntityUid Source, EntityUid Deflected);
     // Exodus-end
@@ -179,7 +180,7 @@ public sealed partial class ShipShieldsSystem : EntitySystem
         ent.Comp.DamageOverloadStartedTick = _timing.CurTick;
     }
 
-    private static bool IsDamageOverloaded(ShipShieldEmitterComponent emitter)
+    internal static bool IsDamageOverloaded(ShipShieldEmitterComponent emitter)
     {
         return CalculateLoadDamage(emitter) >= emitter.MaxDraw ||
                emitter.Damage > emitter.DamageLimit;
@@ -224,6 +225,7 @@ public sealed partial class ShipShieldsSystem : EntitySystem
         _shieldVisualsQuery = GetEntityQuery<ShipShieldVisualsComponent>();
         _transformQuery = GetEntityQuery<TransformComponent>();
         _directionalShieldFieldQuery = GetEntityQuery<DirectionalShipShieldFieldComponent>(); // Exodus directional shields
+        _layeredShieldQuery = GetEntityQuery<LayeredShipShieldComponent>(); // Exodus layered ship shields
         // Exodus-end
 
         SubscribeLocalEvent<ShipShieldComponent, PreventCollideEvent>(OnPreventCollide);
@@ -288,7 +290,6 @@ public sealed partial class ShipShieldsSystem : EntitySystem
         if (_queuedShieldDeflections.Count == 0)
             return;
 
-        _queuedShieldDeflectionSources.Clear();
         var count = _queuedShieldDeflections.Count;
         for (var i = 0; i < count; i++)
         {
@@ -302,23 +303,18 @@ public sealed partial class ShipShieldsSystem : EntitySystem
 
             var ev = new ShieldDeflectedEvent(queued.Deflected, projectile);
             RaiseLocalEvent(queued.Source, ref ev);
-            _queuedShieldDeflectionSources.Add(queued.Source);
-        }
 
-        foreach (var source in _queuedShieldDeflectionSources)
-        {
-            if (TerminatingOrDeleted(source) ||
-                EntityManager.IsQueuedForDeletion(source) ||
-                !_shieldEmitterQuery.TryGetComponent(source, out var emitter))
+            if (TerminatingOrDeleted(queued.Source) ||
+                EntityManager.IsQueuedForDeletion(queued.Source) ||
+                !_shieldEmitterQuery.TryGetComponent(queued.Source, out var emitter) ||
+                !IsDamageOverloaded(emitter))
             {
                 continue;
             }
 
-            var poweredBeforeLoad = _apcPowerReceiverQuery.TryGetComponent(source, out var power) && power.Powered;
-            HandleDamageOverload((source, emitter), poweredBeforeLoad, IsDamageOverloaded(emitter));
+            var poweredBeforeLoad = _apcPowerReceiverQuery.TryGetComponent(queued.Source, out var power) && power.Powered;
+            HandleDamageOverload((queued.Source, emitter), poweredBeforeLoad, true);
         }
-
-        _queuedShieldDeflectionSources.Clear();
 
         if (_queuedShieldDeflections.Count == count)
             _queuedShieldDeflections.Clear();
@@ -369,12 +365,13 @@ public sealed partial class ShipShieldsSystem : EntitySystem
         {
             shieldVisuals.ShieldColor = emitter.ShieldColor;
             // Exodus-begin layered ship shield visuals
-            var maximumLayers = Math.Max(1, emitter.VisualLayerCount);
-            shieldVisuals.LayerCount = emitter.ActiveVisualLayerCount <= 0
-                ? maximumLayers
-                : Math.Clamp(emitter.ActiveVisualLayerCount, 1, maximumLayers);
-            shieldVisuals.LayerThickness = emitter.VisualLayerThickness;
-            shieldVisuals.LayerGap = emitter.VisualLayerGap;
+            if (_layeredShieldQuery.TryGetComponent(source.Value, out var layered))
+            {
+                var maximumLayers = Math.Max(1, layered.LayerCount);
+                shieldVisuals.LayerCount = Math.Clamp(layered.ActiveLayerCount, 1, maximumLayers);
+                shieldVisuals.LayerThickness = layered.LayerThickness;
+                shieldVisuals.LayerGap = layered.LayerGap;
+            }
             // Exodus-end
             Dirty(shield, shieldVisuals);
         }

@@ -10,11 +10,12 @@ namespace Content.Client._Exodus.Nebula;
 /// </summary>
 public sealed class NebulaGasSiphonSystem : EntitySystem
 {
-    [ValidatePrototypeId<EntityPrototype>]
-    private const string ArrowPrototype = "NebulaGasSiphonArrow";
+    private static readonly EntProtoId ArrowPrototype = "NebulaGasSiphonArrow";
 
     public override void Initialize()
     {
+        base.Initialize();
+
         SubscribeLocalEvent<NebulaGasSiphonComponent, ClientExaminedEvent>(OnSiphonExamined);
     }
 

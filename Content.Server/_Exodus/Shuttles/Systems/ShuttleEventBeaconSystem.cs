@@ -54,23 +54,16 @@ public sealed partial class ShuttleEventBeaconSystem : EntitySystem
             return;
         }
 
-        var ruleUid = _gameTicker.ForceAddGameRule(ent.Comp.Rule);
-        if (!ruleUid.IsValid())
+        if (!_gameTicker.TryForceAddGameRule(
+                ent.Comp.Rule,
+                out var addedRule,
+                rule => TryInitializeRule(rule, user)))
         {
             _popup.PopupEntity(Loc.GetString(ent.Comp.FailurePopup), user, user);
             return;
         }
 
-        if (HasComp<AlertLevelInterceptionRuleComponent>(ruleUid))
-        {
-            if (!TryResolveAlertTargetStation(user, out var targetStation) ||
-                !_alertLevelInterceptionRule.TrySetTargetStation(ruleUid, targetStation))
-            {
-                QueueDel(ruleUid);
-                _popup.PopupEntity(Loc.GetString(ent.Comp.FailurePopup), user, user);
-                return;
-            }
-        }
+        var ruleUid = addedRule.Value;
 
         if (!_gameTicker.StartGameRule(ruleUid))
         {
@@ -81,24 +74,34 @@ public sealed partial class ShuttleEventBeaconSystem : EntitySystem
 
         _popup.PopupEntity(Loc.GetString(ent.Comp.SuccessPopup), user, user);
 
-        RemComp<ShuttleEventBeaconComponent>(ent.Owner);
-
         if (ent.Comp.ConsumeOnSuccess)
             QueueDel(ent.Owner);
     }
 
-    private bool TryResolveAlertTargetStation(EntityUid user, out EntityUid? station)
+    private bool TryInitializeRule(EntityUid rule, EntityUid user)
     {
-        station = _station.GetOwningStation(user);
-        if (station == null)
+        if (!HasComp<AlertLevelInterceptionRuleComponent>(rule))
+            return true;
+
+        return TryResolveAlertTargetStation(user, out var targetStation) &&
+               _alertLevelInterceptionRule.TrySetTargetStation(rule, targetStation);
+    }
+
+    private bool TryResolveAlertTargetStation(EntityUid user, out EntityUid station)
+    {
+        if (_station.GetOwningStation(user) is { } owningStation)
         {
-            foreach (var stationUid in _station.GetStationsSet())
-            {
-                station = stationUid;
-                break;
-            }
+            station = owningStation;
+            return true;
         }
 
-        return station != null;
+        foreach (var stationUid in _station.GetStationsSet())
+        {
+            station = stationUid;
+            return true;
+        }
+
+        station = default;
+        return false;
     }
 }

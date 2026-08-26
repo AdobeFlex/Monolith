@@ -7,7 +7,6 @@ using Content.Shared.Popups;
 using Content.Shared.Storage.Components; // Exodus-company-card-access
 using Content.Shared.Storage.EntitySystems; // Exodus-company-card-access
 using Content.Shared.UserInterface;
-using Content.Shared.Verbs; // Exodus-company-card-access
 using Robust.Shared.GameObjects; // Exodus-company-card-access
 
 namespace Content.Shared._Mono.Company;
@@ -31,7 +30,6 @@ public sealed partial class CompanyAccessReaderSystem : EntitySystem
 
         SubscribeLocalEvent<CompanyAccessReaderComponent, ActivatableUIOpenAttemptEvent>(OnUIOpenAttempt);
         SubscribeLocalEvent<CompanyAccessReaderComponent, ActivateInWorldEvent>(OnActivate, before: [typeof(SharedStorageSystem)]); // Exodus-company-card-access
-        SubscribeLocalEvent<CompanyAccessReaderComponent, GetVerbsEvent<ActivationVerb>>(OnGetActivationVerbs, after: [typeof(SharedStorageSystem)]); // Exodus-company-card-access
         SubscribeLocalEvent<CompanyAccessReaderComponent, BoundUIOpenedEvent>(OnBoundUIOpened); // Exodus-company-card-access
         SubscribeLocalEvent<CompanyAccessReaderComponent, StorageOpenAttemptEvent>(OnStorageOpenAttempt); // Exodus-company-card-access
         SubscribeLocalEvent<CompanyAccessReaderComponent, DumpableDoAfterEvent>(OnDump,
@@ -45,14 +43,6 @@ public sealed partial class CompanyAccessReaderSystem : EntitySystem
 
         args.Handled = true;
         ShowDeniedPopup(entity, args.User);
-    }
-
-    private void OnGetActivationVerbs(Entity<CompanyAccessReaderComponent> entity, ref GetVerbsEvent<ActivationVerb> args) // Exodus-company-card-access
-    {
-        if (!entity.Comp.RequireCompanyCard || IsAllowed(entity.Comp, args.User))
-            return;
-
-        args.Verbs.Clear();
     }
 
     private void OnBoundUIOpened(Entity<CompanyAccessReaderComponent> entity, ref BoundUIOpenedEvent args) // Exodus-company-card-access
@@ -94,17 +84,7 @@ public sealed partial class CompanyAccessReaderSystem : EntitySystem
     private bool IsAllowed(CompanyAccessReaderComponent component, EntityUid user)
     {
         if (component.RequireCompanyCard)
-        {
-            if (!TryFindAccessibleCompanyCard(user, out var idCard)
-                || idCard.Comp.CompanyName.Id == "None")
-            {
-                return false;
-            }
-
-            return component.RequiredCompanies.Count == 0
-                ? !component.Inverted
-                : component.RequiredCompanies.Contains(idCard.Comp.CompanyName) != component.Inverted;
-        }
+            return HasAllowedCompanyCard(component, user);
 
         if (!TryComp<CompanyComponent>(user, out var userCompany))
             return component.Inverted;
@@ -112,14 +92,14 @@ public sealed partial class CompanyAccessReaderSystem : EntitySystem
         return component.RequiredCompanies.Contains(userCompany.CompanyName) != component.Inverted;
     }
 
-    private bool TryFindAccessibleCompanyCard(EntityUid user, out Entity<IdCardComponent> idCard)
+    private bool HasAllowedCompanyCard(CompanyAccessReaderComponent component, EntityUid user)
     {
-        if (_idCard.TryGetIdCard(user, out idCard))
+        if (_idCard.TryGetIdCard(user, out var idCard) && IsCardAllowed(component, idCard.Comp))
             return true;
 
         foreach (var item in _hands.EnumerateHeld(user))
         {
-            if (_idCard.TryGetIdCard(item, out idCard))
+            if (_idCard.TryGetIdCard(item, out idCard) && IsCardAllowed(component, idCard.Comp))
                 return true;
         }
 
@@ -127,13 +107,22 @@ public sealed partial class CompanyAccessReaderSystem : EntitySystem
         {
             while (enumerator.NextItem(out var item))
             {
-                if (_idCard.TryGetIdCard(item, out idCard))
+                if (_idCard.TryGetIdCard(item, out idCard) && IsCardAllowed(component, idCard.Comp))
                     return true;
             }
         }
 
-        idCard = default;
         return false;
+    }
+
+    private static bool IsCardAllowed(CompanyAccessReaderComponent component, IdCardComponent idCard)
+    {
+        if (idCard.CompanyName.Id == "None")
+            return false;
+
+        return component.RequiredCompanies.Count == 0
+            ? !component.Inverted
+            : component.RequiredCompanies.Contains(idCard.CompanyName) != component.Inverted;
     }
 
     private void ShowDeniedPopup(Entity<CompanyAccessReaderComponent> entity, EntityUid user)

@@ -101,13 +101,14 @@
     damageOverloadTimePunishment: 35
     shieldColor: "#FFFFFF"
     deflectionDamageModifier: 0.65
-    visualLayerCount: 3
-    visualLayerThickness: 0.35
-    visualLayerGap: 0.9
-    layerCollapseDamageFraction: 0.55
-    layerRecoveryDamageThreshold: 0.55
-    layerRecoveryInterval: 15 # seconds
-    layerDeflectionDamageModifierStep: 0.2
+  - type: LayeredShipShield
+    layerCount: 3
+    layerThickness: 0.35
+    layerGap: 0.9
+    collapseDamageFraction: 0.55
+    recoveryDamageThreshold: 0.55
+    recoveryInterval: 15 # seconds
+    deflectionDamageModifierStep: 0.2
   - type: RadarBlip
     radarColor: "#FFFFFF"
     gridConfig:

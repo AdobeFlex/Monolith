@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Numerics;
 using Content.Server.Popups;
 using Content.Server.Shuttles.Components;
@@ -25,6 +26,7 @@ public sealed class NearestShuttleTeleporterSystem : EntitySystem
     [Dependency] private readonly TurfSystem _turf = default!;
 
     private EntityQuery<MapGridComponent> _gridQuery;
+    private readonly List<(EntityUid Grid, float DistanceSquared)> _candidateGridBuffer = new();
 
     public override void Initialize()
     {
@@ -89,6 +91,7 @@ public sealed class NearestShuttleTeleporterSystem : EntitySystem
         var origin = _transform.GetWorldPosition(padXform);
         if (!TryFindDestination(mapUid, currentGrid, origin, ent.Comp.MaxRange, out var destCoords))
         {
+            ent.Comp.NextUse = curTime + ent.Comp.FailureCooldown;
             _popup.PopupEntity(Loc.GetString(ent.Comp.PopupFail), user, user);
             args.Handled = true;
             return;
@@ -103,7 +106,6 @@ public sealed class NearestShuttleTeleporterSystem : EntitySystem
 
         _transform.SetCoordinates(user, destCoords);
         ent.Comp.NextUse = curTime + ent.Comp.Cooldown;
-        Dirty(ent);
 
         _popup.PopupEntity(Loc.GetString(ent.Comp.PopupSuccess), user, user);
         args.Handled = true;
@@ -117,59 +119,56 @@ public sealed class NearestShuttleTeleporterSystem : EntitySystem
         out EntityCoordinates destCoords)
     {
         destCoords = default;
-        var bestDist = maxRange > 0f ? maxRange * maxRange : float.MaxValue;
-        var found = false;
+        var maxDistanceSquared = maxRange > 0f ? maxRange * maxRange : float.MaxValue;
+        _candidateGridBuffer.Clear();
 
         var query = EntityQueryEnumerator<ShuttleComponent, TransformComponent, MapGridComponent>();
-        while (query.MoveNext(out var gridUid, out _, out var xform, out var grid))
+        while (query.MoveNext(out var gridUid, out _, out var xform, out _))
         {
             if (gridUid == excludeGrid || xform.MapUid != mapUid)
                 continue;
 
             var delta = _transform.GetWorldPosition(xform) - origin;
-            var distSq = delta.LengthSquared();
-            if (distSq >= bestDist)
+            var distanceSquared = delta.LengthSquared();
+            if (distanceSquared > maxDistanceSquared)
                 continue;
 
-            if (!TryFindSafeTile(gridUid, grid, out var candidateCoords))
-                continue;
-
-            bestDist = distSq;
-            destCoords = candidateCoords;
-            found = true;
+            _candidateGridBuffer.Add((gridUid, distanceSquared));
         }
 
-        return found;
+        _candidateGridBuffer.Sort(static (left, right) =>
+            left.DistanceSquared.CompareTo(right.DistanceSquared));
+
+        foreach (var candidate in _candidateGridBuffer)
+        {
+            if (!_gridQuery.TryGetComponent(candidate.Grid, out var grid) ||
+                !TryFindSafeTile(candidate.Grid, grid, out destCoords))
+            {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     private bool TryFindSafeTile(EntityUid gridUid, MapGridComponent grid, out EntityCoordinates coords)
     {
         coords = default;
-        var centerCoords = new EntityCoordinates(gridUid, grid.LocalAABB.Center);
-        var centerTile = _map.LocalToTile(gridUid, grid, centerCoords);
-
-        for (var radius = 0; radius < 16; radius++)
+        var tiles = _map.GetAllTilesEnumerator(gridUid, grid);
+        while (tiles.MoveNext(out var maybeTile))
         {
-            for (var x = -radius; x <= radius; x++)
+            if (maybeTile is not { } tile ||
+                _turf.IsSpace(tile) ||
+                tile.Tile.IsEmpty ||
+                _turf.IsTileBlocked(tile, CollisionGroup.MobMask))
             {
-                for (var y = -radius; y <= radius; y++)
-                {
-                    if (radius != 0 && Math.Abs(x) != radius && Math.Abs(y) != radius)
-                        continue;
-
-                    var indices = centerTile + new Vector2i(x, y);
-                    if (!_map.TryGetTileRef(gridUid, grid, indices, out var tileRef))
-                        continue;
-
-                    if (_turf.IsSpace(tileRef)
-                        || tileRef.Tile.IsEmpty
-                        || _turf.IsTileBlocked(tileRef, CollisionGroup.MobMask))
-                        continue;
-
-                    coords = _map.GridTileToLocal(gridUid, grid, indices);
-                    return true;
-                }
+                continue;
             }
+
+            coords = _map.GridTileToLocal(gridUid, grid, tile.GridIndices);
+            return true;
         }
 
         return false;

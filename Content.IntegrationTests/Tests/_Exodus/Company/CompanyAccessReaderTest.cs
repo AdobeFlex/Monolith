@@ -1,6 +1,8 @@
 using Content.Shared._Mono.Company;
 using Content.Shared.Access.Components;
 using Content.Shared.DoAfter;
+using Content.Shared.Hands.Components;
+using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Storage.Components;
 using Robust.Shared.GameObjects;
 
@@ -20,6 +22,12 @@ public sealed class CompanyAccessReaderTest
     requiredCompanies:
     - SteelHammerManufacturing
     popupMessage: null
+
+- type: entity
+  id: ExodusTestCompanyCard
+  components:
+  - type: Item
+  - type: IdCard
 ";
 
     [Test]
@@ -40,6 +48,41 @@ public sealed class CompanyAccessReaderTest
 
             var idCard = entMan.AddComponent<IdCardComponent>(user);
             idCard.CompanyName = "SteelHammerManufacturing";
+
+            var allowed = CreateDumpEvent(entMan, readerUid, user);
+            entMan.EventBus.RaiseLocalEvent(readerUid, allowed);
+            Assert.That(allowed.Handled, Is.False);
+
+            entMan.DeleteEntity(readerUid);
+            entMan.DeleteEntity(user);
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task AnyAccessibleMatchingCompanyCardAllowsAccess()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entMan = server.ResolveDependency<IEntityManager>();
+        var handsSystem = entMan.System<SharedHandsSystem>();
+
+        await server.WaitAssertion(() =>
+        {
+            var readerUid = entMan.Spawn("ExodusTestCompanyAccessReader");
+            var user = entMan.Spawn();
+            var hands = entMan.AddComponent<HandsComponent>(user);
+            handsSystem.AddHand(user, "left", HandLocation.Left, hands);
+            handsSystem.AddHand(user, "right", HandLocation.Right, hands);
+
+            var wrongCard = entMan.Spawn("ExodusTestCompanyCard");
+            entMan.GetComponent<IdCardComponent>(wrongCard).CompanyName = "MidnightArmsCo";
+            Assert.That(handsSystem.TryPickup(user, wrongCard, "left", checkActionBlocker: false, animate: false));
+
+            var matchingCard = entMan.Spawn("ExodusTestCompanyCard");
+            entMan.GetComponent<IdCardComponent>(matchingCard).CompanyName = "SteelHammerManufacturing";
+            Assert.That(handsSystem.TryPickup(user, matchingCard, "right", checkActionBlocker: false, animate: false));
 
             var allowed = CreateDumpEvent(entMan, readerUid, user);
             entMan.EventBus.RaiseLocalEvent(readerUid, allowed);

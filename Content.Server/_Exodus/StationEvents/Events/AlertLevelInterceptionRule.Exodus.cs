@@ -4,15 +4,15 @@ namespace Content.Server.StationEvents.Events;
 
 public sealed partial class AlertLevelInterceptionRule
 {
-    public bool TrySetTargetStation(EntityUid rule, EntityUid? station)
+    public bool TrySetTargetStation(EntityUid rule, EntityUid station)
     {
-        if (!TryComp<AlertLevelInterceptionRuleComponent>(rule, out var alertRule))
-            return true;
-
-        if (station is not { } targetStation)
+        if (TerminatingOrDeleted(station) ||
+            !TryComp<AlertLevelInterceptionRuleComponent>(rule, out var alertRule))
+        {
             return false;
+        }
 
-        alertRule.TargetStation = targetStation;
+        alertRule.TargetStation = station;
         return true;
     }
 }

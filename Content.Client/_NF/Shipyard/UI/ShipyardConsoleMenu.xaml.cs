@@ -132,14 +132,14 @@ public sealed partial class ShipyardConsoleMenu : FancyWindow
         if (corpVessels.Count > 0 && !string.IsNullOrEmpty(_buyerCompanyId)
             && _protoManager.TryIndex<CompanyPrototype>(_buyerCompanyId, out var companyProto))
         {
-            Vessels.AddChild(new Label
+            var companyHeader = new Label
             {
                 Text = Loc.GetString("shipyard-console-company-section",
                     ("company", Loc.GetString(companyProto.Name))),
                 StyleClasses = { "LabelKeyText" },
                 Margin = new Thickness(4, 8, 4, 4),
-            });
-            AddVesselsToControls(corpVessels, search, free, canPurchase);
+            };
+            AddVesselsToControls(corpVessels, search, free, canPurchase, companyHeader);
         }
 
         AddVesselsToControls(publicVessels, search, free, canPurchase);
@@ -176,7 +176,12 @@ public sealed partial class ShipyardConsoleMenu : FancyWindow
     /// <summary>
     /// Adds all vessels in a given list of prototypes as VesselRows in the UI.
     /// </summary>
-    private void AddVesselsToControls(IEnumerable<VesselPrototype?> vessels, string search, bool free, bool canPurchase)
+    private void AddVesselsToControls(
+        IEnumerable<VesselPrototype?> vessels,
+        string search,
+        bool free,
+        bool canPurchase,
+        Control? sectionHeader = null) // Exodus company-fleet
     {
         foreach (var prototype in vessels)
         {
@@ -211,6 +216,12 @@ public sealed partial class ShipyardConsoleMenu : FancyWindow
             };
             vesselEntry.Purchase.OnPressed += (args) => { OnOrderApproved?.Invoke(args); };
             // vesselEntry.Preview.OnPressed += (args) => { OnPreviewShip?.Invoke(args); }; // Exodus disable shipyard-preview
+            if (sectionHeader is not null) // Exodus company-fleet
+            {
+                Vessels.AddChild(sectionHeader); // Exodus company-fleet
+                sectionHeader = null; // Exodus company-fleet
+            }
+
             Vessels.AddChild(vesselEntry);
         }
     }

@@ -19,7 +19,8 @@ public sealed partial class BankSystem
         if (!float.IsFinite(commission) || commission <= 0f)
             return 0;
 
-        return (int)Math.Floor(deposit * Math.Min(commission, 1f));
+        var commissionAmount = Math.Floor((double)deposit * Math.Min(commission, 1f));
+        return (int)Math.Min(commissionAmount, int.MaxValue);
     }
 
     private void UpdateDepositBreakdown(

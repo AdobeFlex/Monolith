@@ -1,4 +1,5 @@
 using Content.Server._Crescent.ShipShields.Components;
+using Content.Server._Exodus.ShipShields; // Exodus layered ship shields
 using Content.Shared._Crescent.ShipShields;
 using Content.Server.Power.Components;
 using Content.Shared.Projectiles;
@@ -52,8 +53,9 @@ public partial class ShipShieldsSystem
     private void OnShieldDeflected(Entity<ShipShieldEmitterComponent> ent, ref ShieldDeflectedEvent args)
     {
         // Exodus-begin layered shield recovery
-        if (ent.Comp.ActiveVisualLayerCount < Math.Max(1, ent.Comp.VisualLayerCount))
-            ent.Comp.LayerRecoveryAccumulator = TimeSpan.Zero;
+        _layeredShieldQuery.TryGetComponent(ent, out var layered);
+        if (layered is not null && layered.ActiveLayerCount < Math.Max(1, layered.LayerCount))
+            layered.RecoveryAccumulator = TimeSpan.Zero;
         // Exodus-end
 
         var addedDamage = 0f;
@@ -71,7 +73,7 @@ public partial class ShipShieldsSystem
 
         addedDamage += (float)args.Projectile.Damage.GetTotal();
         // Exodus-begin layered shield deflection tuning
-        var deflectionModifier = GetDeflectionDamageModifier(ent.Comp);
+        var deflectionModifier = GetDeflectionDamageModifier(ent, layered);
         ent.Comp.Damage += addedDamage * deflectionModifier;
         // Exodus-end
         args.Projectile.ProjectileSpent = true;
