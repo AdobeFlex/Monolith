@@ -1,4 +1,5 @@
 using Content.Server._Crescent.ShipShields.Components;
+using Content.Server._Exodus.ShipShields; // Exodus layered ship shields
 using Content.Shared._Crescent.ShipShields;
 using Content.Server.Power.Components;
 using Content.Shared.Projectiles;
@@ -28,12 +29,12 @@ public partial class ShipShieldsSystem
     {
         SubscribeLocalEvent<ShipShieldEmitterComponent, ShieldDeflectedEvent>(OnShieldDeflected);
         SubscribeLocalEvent<ShipShieldEmitterComponent, ExaminedEvent>(OnExamined);
-        SubscribeLocalEvent<ShipShieldEmitterComponent, ComponentStartup>(OnEmitterStartup); // Exodus fire-control event-driven UI updates
+        SubscribeLocalEvent<ShipShieldEmitterComponent, MapInitEvent>(OnEmitterMapInit); // Exodus fire-control event-driven UI updates
         SubscribeLocalEvent<ShipShieldEmitterComponent, ComponentRemove>(OnRemoved);
     }
 
     // Exodus-begin fire-control event-driven UI updates
-    private void OnEmitterStartup(Entity<ShipShieldEmitterComponent> owner, ref ComponentStartup args)
+    private void OnEmitterMapInit(Entity<ShipShieldEmitterComponent> owner, ref MapInitEvent args)
     {
         RaiseShieldStateChanged(Transform(owner).GridUid);
     }
@@ -48,26 +49,40 @@ public partial class ShipShieldsSystem
         RaiseShieldStateChanged(parent); // Exodus fire-control event-driven UI updates
     }
 
-    private void OnShieldDeflected(EntityUid uid, ShipShieldEmitterComponent component, ShieldDeflectedEvent args)
+    // Exodus-begin shield deflection damage handling
+    private void OnShieldDeflected(Entity<ShipShieldEmitterComponent> ent, ref ShieldDeflectedEvent args)
     {
+        // Exodus-begin layered shield recovery
+        _layeredShieldQuery.TryGetComponent(ent, out var layered);
+        if (layered is not null && layered.ActiveLayerCount < Math.Max(1, layered.LayerCount))
+            layered.RecoveryAccumulator = TimeSpan.Zero;
+        // Exodus-end
+
+        var addedDamage = 0f;
+
         if (TryComp<EmpOnTriggerComponent>(args.Deflected, out var emp))
         {
-            component.Damage += Math.Clamp(emp.EnergyConsumption, 0f, MAX_EMP_DAMAGE);
+            addedDamage += Math.Clamp(emp.EnergyConsumption, 0f, MAX_EMP_DAMAGE);
             _trigger.Trigger(args.Deflected);
         }
 
         if (TryComp<ExplosiveComponent>(args.Deflected, out var exp) && _prototypeManager.TryIndex(exp.ExplosionType, out var type))
         {
-            component.Damage += exp.TotalIntensity * (float)type.DamagePerIntensity.GetTotal();
+            addedDamage += exp.TotalIntensity * (float)type.DamagePerIntensity.GetTotal();
         }
 
-        component.Damage += (float)args.Projectile.Damage.GetTotal();
+        addedDamage += (float)args.Projectile.Damage.GetTotal();
+        // Exodus-begin layered shield deflection tuning
+        var deflectionModifier = GetDeflectionDamageModifier(ent, layered);
+        ent.Comp.Damage += addedDamage * deflectionModifier;
+        // Exodus-end
         args.Projectile.ProjectileSpent = true;
 
-        RaiseShieldStateChanged(Transform(uid).GridUid); // Exodus fire-control event-driven UI updates
+        RaiseShieldStateChanged(Transform(ent).GridUid); // Exodus fire-control event-driven UI updates
 
         QueueDel(args.Deflected);
     }
+    // Exodus-end
 
     private void OnExamined(EntityUid uid, ShipShieldEmitterComponent component, ExaminedEvent args)
     {
