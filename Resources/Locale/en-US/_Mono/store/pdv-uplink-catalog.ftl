@@ -325,3 +325,14 @@ uplink-pdv-t4-saturn-voucher-desc = A small card that authorizes the procurement
 # Exodus-faction-ai-core
 uplink-pirate-faction-ai-core-name = PDV Station AI Core
 uplink-pirate-faction-ai-core-desc = A screwable faction AI core aligned to PirateNF friend-or-foe logic.
+
+# MARK: Materials
+
+uplink-pdv-composite5-name = 5 adamantite
+uplink-pdv-composite5-desc = Requisition some advanced alloy.
+
+uplink-pdv-composite15-name = 15 adamantite
+uplink-pdv-composite15-desc = Requisition a good amount of advanced alloy.
+
+uplink-pdv-composite30-name = 30 adamantite
+uplink-pdv-composite30-desc = Requisition a lot of advanced alloy.

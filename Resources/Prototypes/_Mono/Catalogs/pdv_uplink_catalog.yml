@@ -1567,3 +1567,52 @@
       - FactionStaticUplinkPdv
 
 # end T4
+
+# Exodus: import material acquisition without moving or repricing existing offers.
+- type: listing
+  id: UplinkPdvComposite5
+  name: uplink-pdv-composite5-name
+  description: uplink-pdv-composite5-desc
+  productEntity: SheetPdvComposite5
+  icon: { sprite: Objects/Materials/Sheets/glass.rsi, state: plastitaniumglass }
+  cost:
+    Doubloon: 28 # Exodus: +10%, rounded up.
+  categories:
+  - UplinkPdvMaterials
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - PirateUplink
+
+- type: listing
+  id: UplinkPdvComposite15
+  name: uplink-pdv-composite15-name
+  description: uplink-pdv-composite15-desc
+  productEntity: SheetPdvComposite15
+  icon: { sprite: Objects/Materials/Sheets/glass.rsi, state: plastitaniumglass_2 }
+  cost:
+    Doubloon: 83 # Exodus: +10%, rounded up.
+  categories:
+  - UplinkPdvMaterials
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - PirateUplink
+
+- type: listing
+  id: UplinkPdvComposite30
+  name: uplink-pdv-composite30-name
+  description: uplink-pdv-composite30-desc
+  productEntity: SheetPdvComposite30
+  icon: { sprite: Objects/Materials/Sheets/glass.rsi, state: plastitaniumglass_3 }
+  cost:
+    Doubloon: 165 # Exodus: +10%, rounded up.
+  categories:
+  - UplinkPdvMaterials
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - PirateUplink

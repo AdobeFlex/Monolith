@@ -56,6 +56,7 @@
     - UplinkPirateAmmo
     - UplinkPirateMedical
     - UplinkPirateUtility
+    - UplinkPdvMaterials
     - UplinkPirateExplosives
     - UplinkPdvVouchers
     - UplinkPdvIdCards # Exodus
