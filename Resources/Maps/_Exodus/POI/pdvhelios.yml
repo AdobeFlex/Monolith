@@ -6,7 +6,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 08/24/2026 08:09:13
-  entityCount: 8504
+  entityCount: 8505
 maps: []
 grids:
 - 1
@@ -46650,6 +46650,14 @@ entities:
 - proto: SpawnPointLatejoin
   entities:
   - uid: 6657
+    components:
+    - type: Transform
+      pos: -10.5,16.5
+      parent: 1
+# Dedicated operative marker on the existing safe arrival tile.
+- proto: SpawnPointPDVTarkhan
+  entities:
+  - uid: 8505
     components:
     - type: Transform
       pos: -10.5,16.5

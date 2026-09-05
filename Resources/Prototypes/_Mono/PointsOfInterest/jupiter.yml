@@ -38,9 +38,7 @@
       - type: NpcFactionMember # Exodus faction-owned POI target filtering
         factions:
         - PirateNF
-      # Exodus-begin territory-grid
-      - type: GridTerritory
-      # Exodus-end
+      # Exodus: Jupiter is a mobile carrier, not a capturable territory.
       components:
         - type: StationNameSetup
           mapNameTemplate: 'ДФ | Авианосец Класса Юпитер' # Ru-Localization

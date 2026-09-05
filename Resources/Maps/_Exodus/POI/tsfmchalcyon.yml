@@ -6,7 +6,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 08/23/2026 09:04:09
-  entityCount: 10436
+  entityCount: 10437
 maps: []
 grids:
 - 1
@@ -53440,6 +53440,14 @@ entities:
     components:
     - type: Transform
       rot: 3.141592653589793 rad
+      pos: 14.5,8.5
+      parent: 1
+# Dedicated operative marker on the existing safe arrival tile.
+- proto: SpawnPointTsfMarsoc
+  entities:
+  - uid: 10437
+    components:
+    - type: Transform
       pos: 14.5,8.5
       parent: 1
 - proto: SpawnPointSheriff

@@ -68,6 +68,7 @@
             Cadet: [ 6, 6 ] # Exodus-Cadet-Return
             TsfEngineer: [ 2, 2 ]
             TsfBorg: [ 2, 2 ]
+            TsfMarsoc: [ 1, 1 ] # One base operative, available at round start and for late joins.
           tags:
           - HeadOfPersonnel
           - HeadOfSecurity
