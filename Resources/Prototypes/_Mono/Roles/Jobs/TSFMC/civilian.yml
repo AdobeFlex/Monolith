@@ -5,7 +5,7 @@
   playTimeTracker: JobTsfCivilian
   startingGear: TsfCivilianGear
   icon: JobIconTSFCiv
-  supervisors: job-supervisors-prisoner
+  supervisors: job-supervisors-tsf-civilian # Exodus civilian contractor localization
   weight: 0
   displayWeight: 0
   alwaysUseSpawner: true

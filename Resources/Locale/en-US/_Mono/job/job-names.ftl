@@ -12,11 +12,13 @@ job-name-md-medic = Emergency Responder
 # MARK: TSF
 job-name-tsf-engineer = TSFMC Engineer
 job-name-tsf-borg = TSFMC Cyborg
-job-name-tsf-civilian = TSF Contractor
+# Exodus civilian contractor localization
+job-name-tsf-civilian = TSF Civilian Mercenary
 
 # MARK: PDV
 job-name-pdv-borg = PDV Cyborg
-job-name-pdv-civilian = PDV Freeman
+# Exodus civilian contractor localization
+job-name-pdv-civilian = PDV Civilian Mercenary
 job-name-pdv-ambassador = Dynasty Ambassador
 job-name-pdv-prince = Dynasty Prince
 

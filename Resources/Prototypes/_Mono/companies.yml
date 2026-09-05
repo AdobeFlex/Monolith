@@ -19,7 +19,8 @@
 
 - type: company
   id: TSFCivilian
-  name: Trans-Solarian Federation
+  name: tsf-civilian-name # Exodus civilian contractor localization
+  description: tsf-civilian-description # Exodus civilian contractor localization
   color: "#047ABD"
   disabled: true
   companyUplinkCurrency: FederationMilitaryCredit
@@ -34,7 +35,8 @@
 
 - type: company
   id: PDVCivilian
-  name: Phaethon Dynasty
+  name: pdv-civilian-name # Exodus civilian contractor localization
+  description: pdv-civilian-description # Exodus civilian contractor localization
   color: "#D2B48C"
   disabled: true
   companyUplinkCurrency: Doubloon
