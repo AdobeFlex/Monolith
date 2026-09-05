@@ -17,3 +17,11 @@
   anchorPoi: TSFMCHalcyon
   minDistance: 3000
   maxDistance: 4000
+
+# Place the existing round-start Jupiter POI near Helios; arrival-beacon ships are unaffected.
+- type: relativePoiPlacement
+  id: JupiterNearHelios
+  poi: Jupiter
+  anchorPoi: HeliosFortress
+  minDistance: 1200
+  maxDistance: 3900
