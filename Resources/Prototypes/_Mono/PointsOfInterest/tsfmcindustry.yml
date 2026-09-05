@@ -15,6 +15,10 @@
   spawnGroup: Required
   gridPath: /Maps/_Mono/POI/tsfmc_industry.yml
   addComponents:
+  - type: IffAffiliation # Exodus fixed civilian organization, faction-only color.
+    mode: FixedCompany
+    company: TSFCivilian
+    faction: TSFMC
   - type: IFF
     color: "#047abd"
     readOnly: true

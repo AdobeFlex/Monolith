@@ -10,6 +10,10 @@
     Frontier:
       stationProto: StandardFrontierStation
       gridComponents:
+      # Exodus-begin non-capturable hub: show its name without an affiliation line.
+      - type: IffAffiliation
+        mode: None
+      # Exodus-end
       - type: IFF
         color: "#37946e"
         readOnly: true

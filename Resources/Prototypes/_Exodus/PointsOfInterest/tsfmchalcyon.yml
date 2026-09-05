@@ -20,6 +20,8 @@
   spawnGroup: PairedFactionPoi # Exodus paired faction POI spawn
   gridPath: /Maps/_Exodus/POI/tsfmchalcyon.yml # Exodus ai-remote-borgs
   addComponents:
+  - type: IffAffiliation
+    mode: CorporateControl
   - type: IFF
     color: "#00a1fc"
     readOnly: true
@@ -88,6 +90,9 @@
   spawnGroup: Required
   gridPath: /Maps/_Mono/POI/tsfmchalcyon_hw.yml
   addComponents:
+  - type: IffAffiliation
+    mode: Faction
+    faction: TSFMC
   - type: IFF
     color: "#047abd"
     readOnly: true

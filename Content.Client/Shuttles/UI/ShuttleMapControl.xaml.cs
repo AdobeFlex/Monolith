@@ -478,7 +478,8 @@ public sealed partial class ShuttleMapControl : BaseShuttleControl
                 detectionLevel == DetectionLevel.PartialDetected ?
                     Loc.GetString($"shuttle-console-signature-infrared")
                     : _detection.HandleUnknownMassLabel(grid.Owner)
-                : _shuttles.GetIFFLabel(grid, self: true, component: iffComp);
+                // Exodus only actual corporate control adds an affiliation line on the FTL map.
+                : _shuttles.GetIFFLabel(grid, self: _shuttleEntity == grid.Owner || !_shuttles.HasCorporateIffLabel(grid.Owner), component: iffComp);
 
             if (string.IsNullOrEmpty(iffText))
                 continue;
@@ -514,6 +515,7 @@ public sealed partial class ShuttleMapControl : BaseShuttleControl
                 var displayColor = adjustedColor;
                 if (hasLabel &&
                     gridUid is { } labelGrid &&
+                    !_shuttles.UsesFactionIffColor(labelGrid) && // Exodus company control changes text, never faction color.
                     _companyQuery.TryGetComponent(labelGrid, out var companyComp) &&
                     !string.IsNullOrEmpty(companyComp.CompanyName) &&
                     PrototypeManager.TryIndex<CompanyPrototype>(companyComp.CompanyName, out var gridCompanyProto))

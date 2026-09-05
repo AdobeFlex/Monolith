@@ -18,6 +18,11 @@
   spawnGroup: Required
   gridPath: /Maps/_Exodus/Supercapitals/jupiter.yml # Exodus upstream map at owned path
   addComponents:
+  # Exodus-begin military affiliation without adding a capture territory.
+  - type: IffAffiliation
+    mode: Faction
+    faction: PDV
+  # Exodus-end
   - type: IFF
     color: "#d1bf58"
     flags: [HideLabel]

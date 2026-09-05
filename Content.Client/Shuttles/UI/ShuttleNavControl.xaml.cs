@@ -897,7 +897,8 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
 
                     // Get company color if entity has CompanyComponent
                     var displayColor = labelColor;
-                    if (!hideLabel && _companyQuery.TryGetComponent(gUid, out CompanyComponent? companyComp) && // Exodus - SafeZone
+                    if (!hideLabel && !_shuttles.UsesFactionIffColor(gUid) && // Exodus keep managed labels faction-colored.
+                        _companyQuery.TryGetComponent(gUid, out CompanyComponent? companyComp) && // Exodus - SafeZone
                         !string.IsNullOrEmpty(companyComp.CompanyName))
                     {
                         CompanyPrototype? prototype = null;
