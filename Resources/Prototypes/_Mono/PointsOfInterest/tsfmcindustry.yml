@@ -10,10 +10,7 @@
   id: TSFMCIndustry
   parent: [BasePOI, BaseRepairablePOI]
   name: 'ТСФ-ГРАЖД «Звёздное благословение»' # Exodus Stellar Blessing localization
-  minimumDistance: 1 # Mono
-  maximumDistance: 200 # Mono
-  posX: 3500
-  posY: -5000
+  # Exodus: placement around TSFMCHalcyon is configured by TSFIndustryNearFlagship in _Exodus/PointsOfInterest/relative_placement.yml.
   spawnGamePreset: [ NFAdventure, NFPirate, MonoStandard, MonoRogueTSF, MonoTSFUSSP, MonoADS, MonoChimera, MonoMixed, MonoAllAtOnce ]
   spawnGroup: Required
   gridPath: /Maps/_Mono/POI/tsfmc_industry.yml

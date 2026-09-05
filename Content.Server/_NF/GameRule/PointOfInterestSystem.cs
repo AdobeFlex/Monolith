@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Numerics;
+using Content.Server._Exodus.Worldgen; // Exodus relative POI placement
 using Content.Server._NF.Trade;
 using Content.Server.GameTicking;
 using Content.Server.Station.Systems;
@@ -8,6 +9,7 @@ using Content.Shared.GameTicking;
 using Content.Shared.Maps;
 using Robust.Shared.Configuration;
 using Robust.Shared.Map;
+using Robust.Shared.Map.Components; // Exodus relative POI grid loading
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Content.Server._NF.Station.Systems;
@@ -45,6 +47,8 @@ public sealed partial class PointOfInterestSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+
+        InitializeRelativePlacement(); // Exodus relative POI placement
 
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
@@ -117,6 +121,9 @@ public sealed partial class PointOfInterestSystem : EntitySystem
             var proto = pairedPrototypes[i];
             var offset = offsets[i];
 
+            if (QueueRelativePoi(mapUid, proto, pairedStations)) // Exodus relative POI placement
+                continue;
+
             if (TrySpawnPoiGrid(mapUid, proto, offset, out var pairedUid) && pairedUid is { Valid: true } paired)
             {
                 pairedStations.Add(paired);
@@ -173,6 +180,8 @@ public sealed partial class PointOfInterestSystem : EntitySystem
                 overrideName += $" {(char)('A' + i)}"; // " A" ... " Z"
             else
                 overrideName += $" {i + 1}"; // " 27", " 28"...
+            if (QueueRelativePoi(mapUid, proto, depotStations, overrideName, i)) // Exodus relative POI placement
+                continue;
             if (TrySpawnPoiGrid(mapUid, proto, offset, out var depotUid, overrideName: overrideName) && depotUid is { Valid: true } depot)
             {
                 // Nasty jank: set up destination in the station.
@@ -214,6 +223,14 @@ public sealed partial class PointOfInterestSystem : EntitySystem
             if (marketsAdded >= marketCount)
                 break;
 
+            // Exodus-begin relative POI placement: selected copies still count towards the pool limit.
+            if (QueueRelativePoi(mapUid, proto, marketStations))
+            {
+                marketsAdded++;
+                continue;
+            }
+            // Exodus-end
+
             var offset = GetRandomPOICoord(proto); // Exodus fixed offsets and placement collision
 
             if (TrySpawnPoiGrid(mapUid, proto, offset, out var marketUid) && marketUid is { Valid: true } market)
@@ -249,6 +266,11 @@ public sealed partial class PointOfInterestSystem : EntitySystem
             if (optionalsAdded >= optionalCount)
                 break;
 
+            // Exodus-begin relative POI placement
+            if (QueueRelativePoi(mapUid, proto, optionalStations))
+                continue;
+            // Exodus-end
+
             var offset = GetRandomPOICoord(proto); // Exodus fixed offsets and placement collision
 
             if (TrySpawnPoiGrid(mapUid, proto, offset, out var optionalUid) && optionalUid is { Valid: true } uid)
@@ -259,14 +281,15 @@ public sealed partial class PointOfInterestSystem : EntitySystem
         }
     }
 
-    public void GenerateRequireds(MapId mapUid, List<PointOfInterestPrototype> requiredPrototypes, out List<EntityUid> requiredStations)
+    public void GenerateRequireds(MapId mapUid, List<PointOfInterestPrototype> requiredPrototypes, out List<EntityUid> requiredStations,
+        List<EntityUid>? output = null) // Exodus keep deferred results in the owning rule's list.
     {
         //Stations are required are ones that are vital to function but otherwise still follow a generic random spawn logic
         //Traditionally these would be stations like Expedition Lodge, NFSD station, Prison/Courthouse POI, etc.
         //There are no limit to these, and any prototype marked alwaysSpawn = true will get pulled out of any list that isnt Markets/Depots
         //And will always appear every time, and also will not be included in other optional/dynamic lists
 
-        requiredStations = new List<EntityUid>();
+        requiredStations = output ?? new List<EntityUid>(); // Exodus deferred POI output
 
         if (_ticker.CurrentPreset is null)
             return;
@@ -278,6 +301,8 @@ public sealed partial class PointOfInterestSystem : EntitySystem
             if (proto.SpawnGamePreset.Length > 0 && !proto.SpawnGamePreset.Contains(currentPreset))
                 continue;
 
+            if (QueueRelativePoi(mapUid, proto, requiredStations)) // Exodus relative POI placement
+                continue;
             var offset = GetRandomPOICoord(proto); // Exodus fixed offsets and placement collision
             var reservedBeforeLoad = proto.PlacementClearance > 0f;
             if (reservedBeforeLoad)
@@ -320,6 +345,8 @@ public sealed partial class PointOfInterestSystem : EntitySystem
                 var chance = _random.NextFloat(0, 1);
                 if (chance <= proto.SpawnChance)
                 {
+                    if (QueueRelativePoi(mapUid, proto, uniqueStations)) // Exodus relative POI placement
+                        break;
                     var offset = GetRandomPOICoord(proto); // Exodus fixed offsets and placement collision
 
                     if (TrySpawnPoiGrid(mapUid, proto, offset, out var optionalUid) && optionalUid is { Valid: true } uid)
@@ -333,11 +360,19 @@ public sealed partial class PointOfInterestSystem : EntitySystem
         }
     }
 
-    private bool TrySpawnPoiGrid(MapId mapUid, PointOfInterestPrototype proto, Vector2 offset, out EntityUid? gridUid, string? overrideName = null)
+    // Exodus: relative placement shares station/component/warp setup with ordinary POIs.
+    private bool TrySpawnPoiGrid(MapId mapUid, PointOfInterestPrototype proto, Vector2 offset, out EntityUid? gridUid, string? overrideName = null,
+        RelativePoiPlacementPrototype? relative = null)
     {
         gridUid = null;
-        if (!_map.TryLoadGrid(mapUid, proto.GridPath, out var loadedGrid, offset: offset, rot: _random.NextAngle()))
+        // Exodus-begin relative POI placement
+        Entity<MapGridComponent>? loadedGrid;
+        var success = relative == null
+            ? _map.TryLoadGrid(mapUid, proto.GridPath, out loadedGrid, offset: offset, rot: _random.NextAngle())
+            : _relativePoi.TryLoadRelativeGrid(mapUid, proto.GridPath, relative, proto.PlacementClearance, null, out loadedGrid);
+        if (!success || loadedGrid == null)
             return false;
+        // Exodus-end
         gridUid = loadedGrid.Value;
         List<EntityUid> gridList = [loadedGrid.Value];
 
@@ -362,6 +397,7 @@ public sealed partial class PointOfInterestSystem : EntitySystem
                 _renameWarps.SyncWarpPointsToGrids(gridList, forceAdminOnly: hideWarp);
         }
 
+        _relativePoi.Register(loadedGrid.Value.Owner, new(false, proto.ID), proto.PlacementClearance); // Exodus relative POI anchor
         return true;
     }
 
@@ -398,12 +434,14 @@ public sealed partial class PointOfInterestSystem : EntitySystem
         return _random.NextVector2(minRange, maxRange);
     }
 
-    private bool IsPlacementValid(Vector2 coordinates, float clearance, float minimumSeparation)
+    private bool IsPlacementValid(Vector2 coordinates, float clearance, float minimumSeparation, Vector2? anchorOrigin = null) // Exodus relative anchor exemption
     {
         clearance = MathF.Max(0f, clearance);
 
         foreach (var placement in _stationPlacements)
         {
+            if (anchorOrigin is { } anchor && Vector2.DistanceSquared(placement.Coordinates, anchor) < 0.01f) // Exodus anchor clearance is checked against the actual grid separately.
+                continue;
             var requiredSeparation = MathF.Max(minimumSeparation, clearance + placement.Clearance);
             if (Vector2.DistanceSquared(placement.Coordinates, coordinates) < requiredSeparation * requiredSeparation)
                 return false;

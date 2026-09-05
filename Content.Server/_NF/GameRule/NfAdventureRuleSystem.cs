@@ -319,6 +319,8 @@ public sealed partial class NFAdventureRuleSystem : GameRuleSystem<NFAdventureRu
 
         var mapUid = GameTicker.DefaultMap;
 
+        _poi.BeginRelativeGeneration(mapUid); // Exodus validate relative placement dependencies before selecting POIs.
+
         //First, we need to grab the list and sort it into its respective spawning logics
         List<PointOfInterestPrototype> depotProtos = [];
         List<PointOfInterestPrototype> marketProtos = [];
@@ -375,10 +377,11 @@ public sealed partial class NFAdventureRuleSystem : GameRuleSystem<NFAdventureRu
         _poi.GenerateDepots(mapUid, depotProtos, out component.CargoDepots);
         _poi.GenerateMarkets(mapUid, marketProtos, out component.MarketStations);
         _poi.GeneratePairedFactionPois(mapUid, pairedFactionProtos, out _); // Exodus paired faction POI spawn
-        _poi.GenerateRequireds(mapUid, requiredProtos, out var randomRequiredPois);
-        component.RequiredPois.AddRange(randomRequiredPois); // Exodus fixed resource cluster placement order
+        _poi.GenerateRequireds(mapUid, requiredProtos, out _, component.RequiredPois); // Exodus include deferred required POIs without copying the output list.
         _poi.GenerateOptionals(mapUid, optionalProtos, out component.OptionalPois);
         _poi.GenerateUniques(mapUid, remainingUniqueProtosBySpawnGroup, out component.UniquePois);
+
+        _poi.ProcessRelativePois(mapUid); // Exodus dependents of ordinary POIs spawn before nebula generation.
 
         base.Started(uid, component, gameRule, args);
 
@@ -388,6 +391,7 @@ public sealed partial class NFAdventureRuleSystem : GameRuleSystem<NFAdventureRu
         // Exodus-begin nebula roundstart generation coordinator
         // Run nebula generation explicitly after regular NF station-generation listeners have fired.
         _nebulaRoundstart.GenerateRoundstartContent(mapUid);
+        _poi.ProcessRelativePois(mapUid, final: true); // Exodus resolve cross-spawner chains and report missing anchors.
         // Exodus-end
     }
 
