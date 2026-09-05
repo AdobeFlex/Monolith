@@ -2,8 +2,8 @@
 - type: vessel
   id: Yukikaze
   parent: BaseVessel
-  name: MMC-CSC Yukikaze
-  description: A craft with slightly-more armor than the Kite, with a layer of plasteel and plastitanium, plus a shield! Only comes with a 2 AK-820s + 20mms and very cramped interior however.
+  name: ММС-CSC «Юкикадзэ» # Exodus MMC localization
+  description: Корабль с более серьёзной бронёй, чем у «Кайта»: слои пластали и пластитана дополнены щитом. Вооружён двумя АК-820 и 20-мм орудиями, но внутри очень тесно. # Exodus MMC localization
   price: 123288
   category: Small
   group: Mieyo
@@ -21,7 +21,7 @@
 
 - type: gameMap
   id: Yukikaze
-  mapName: 'MMC-CSC Yukikaze'
+  mapName: 'ММС-CSC «Юкикадзэ»' # Exodus MMC localization
   mapPath: /SharedMaps/_Mono/Shuttles/Mieyo/yukikaze.yml
   minPlayers: 0
   stations:
@@ -29,7 +29,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Yukikaze MCSC{1}'
+          mapNameTemplate: 'Юкикадзэ MCSC{1}' # Exodus MMC localization
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

@@ -9,7 +9,7 @@
 - type: pointOfInterest
   id: TSFMCIndustry
   parent: [BasePOI, BaseRepairablePOI]
-  name: 'TSF-CIV "Stellar Blessing"'
+  name: 'ТСФ-ГРАЖД «Звёздное благословение»' # Exodus Stellar Blessing localization
   minimumDistance: 1 # Mono
   maximumDistance: 200 # Mono
   posX: 3500
@@ -23,6 +23,9 @@
     readOnly: true
   - type: SolarPoweredGrid
     doNotCull: true
+  - type: NpcFactionMember # Exodus TSF civilian affiliation
+    factions:
+    - TSFMC
   - type: WorldGenDistanceCarver
     distanceThresholds:
     # Dead zone
@@ -34,7 +37,7 @@
 
 - type: gameMap
   id: TSFMCIndustry
-  mapName: 'TSF-CIV "Stellar Blessing"'
+  mapName: 'ТСФ-ГРАЖД «Звёздное благословение»' # Exodus Stellar Blessing localization
   mapPath: /Maps/_Mono/POI/tsfmc_industry.yml
   minPlayers: 0
   randomRotation: false
@@ -43,10 +46,13 @@
       stationProto: StandardFrontierOutpost
       gridComponents:
       - type: VesselInfo
-        description: "A colony ship from the Federation system, sent to the Colossus Radius for industrial expansion. Home to TSF civilians."
+        description: "Колониальный корабль Федерации, направленный в радиус Колосса для промышленного освоения. Здесь живут гражданские ТСФ." # Exodus Stellar Blessing localization
+      - type: NpcFactionMember # Exodus TSF civilian affiliation
+        factions:
+        - TSFMC
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'TSF-CIV "Stellar Blessing"'
+          mapNameTemplate: 'ТСФ-ГРАЖД «Звёздное благословение»' # Exodus Stellar Blessing localization
         - type: ExtraStationInformation
           icon:
             sprite: _NF/Structures/Decoration/banner.rsi

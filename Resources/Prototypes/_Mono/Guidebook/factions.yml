@@ -117,12 +117,12 @@
 
 - type: guideEntry
   id: Viper_Group
-  name: The Viper Group
+  name: Вайперы # Exodus Viper localization
   text: "/ServerInfo/_Mono/Guidebook/Factions/viper_group.xml"
   priority: 11
 
 - type: guideEntry
   id: MMC
-  name: Mieyo Manufacturing Concern
+  name: Производственный концерн «Мэйё» # Exodus MMC localization
   text: "/ServerInfo/_Mono/Guidebook/Factions/mmc.xml"
   priority: 12

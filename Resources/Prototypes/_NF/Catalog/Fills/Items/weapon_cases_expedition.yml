@@ -15,7 +15,7 @@
 - type: entity
   parent: WeaponCaseShort
   id: WeaponCaseShortViper
-  suffix: Dungeon, Viper
+  suffix: Подземелье, «Гадюка» # Exodus Viper localization
   components:
   - type: StorageFill
     contents:

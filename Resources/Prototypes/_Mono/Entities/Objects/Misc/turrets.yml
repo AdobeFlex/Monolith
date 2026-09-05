@@ -72,7 +72,7 @@
 - type: entity
   parent: BaseWeaponBallisticTurret
   id: WeaponTurretViper
-  suffix: Viper
+  suffix: Вайперы # Exodus Viper localization
   components:
   - type: NpcFactionMember
     factions:

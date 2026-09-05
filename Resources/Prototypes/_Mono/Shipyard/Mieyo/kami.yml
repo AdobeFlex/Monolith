@@ -1,8 +1,8 @@
 - type: vessel
   id: Kami
   parent: BaseVessel
-  name: MMC Kami
-  description: Light mining craft. Only equipped with 2 20mms, plus 2 mining pulsers and a magnet.
+  name: ММС «Ками» # Exodus MMC localization
+  description: Лёгкий шахтёрский корабль. Оснащён двумя 20-мм орудиями, двумя шахтёрскими пульсарами и магнитом. # Exodus MMC localization
   price: 92015
   category: Small
   group: Mieyo
@@ -20,7 +20,7 @@
 
 - type: gameMap
   id: Kami
-  mapName: 'MMC Kami'
+  mapName: 'ММС «Ками»' # Exodus MMC localization
   mapPath: /SharedMaps/_Mono/Shuttles/Mieyo/kami.yml
   minPlayers: 0
   stations:
@@ -28,7 +28,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Kami MMC{1}'
+          mapNameTemplate: 'Ками ММС{1}' # Exodus MMC localization
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

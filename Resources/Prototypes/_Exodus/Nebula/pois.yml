@@ -171,6 +171,29 @@
     tags: [ POI ]
   - type: InitRepairSnapshot
 
+# MMC Hokkaido: a station POI restricted to blue and purple nebulas.
+- type: nebulaPoi
+  id: NebulaPoiHokkaido
+  path: /Maps/_Mono/POI/hokkaido.yml
+  spawnIn:
+  - NebulaBlueMarker
+  - NebulaPurpleMarker
+  minDensity: 0.1
+  maxDensity: 1
+  maxSpawnDistanceFromCenter: 35000
+  protectedRadius: 1000
+  name: 'ММС «Хоккайдо»'
+  stationGameMap: Hokkaido
+  hideWarp: true
+  addComponents:
+  - type: IFF
+    color: "#EEEEEE"
+    readOnly: true
+  - type: ForceAnchor
+  - type: Tag
+    tags: [ POI ]
+  - type: InitRepairSnapshot
+
 - type: nebulaPoi
   id: NebulaPoiAdsSmallAncientStorage
   path: /Maps/_Exodus/POI/ads_small_ancient_storage.yml

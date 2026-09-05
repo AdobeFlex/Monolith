@@ -37,7 +37,7 @@
 - type: entity
   parent: AirlockSyndicateGlass
   id: AirlockViperGlass
-  suffix: Viper Group, Locked
+  suffix: Вайперы, Закрыто # Exodus Viper localization
   components:
   - type: ContainerFill
     containers:
@@ -46,7 +46,7 @@
 - type: entity
   parent: AirlockSyndicateGlass
   id: AirlockViperCommandGlass
-  suffix: Viper Group Command, Locked
+  suffix: Командование Вайперов, Закрыто # Exodus Viper localization
   components:
   - type: ContainerFill
     containers:
@@ -57,7 +57,7 @@
 - type: entity
   parent: AirlockGlass
   id: AirlockMieyoGlass
-  suffix: Mieyo
+  suffix: ММС # Exodus MMC localization
   components:
   - type: Sprite
     sprite: _Mono/Structures/Doors/Airlocks/Glass/mieyo.rsi
@@ -69,7 +69,7 @@
 - type: entity
   parent: AirlockMieyoGlass
   id: AirlockMieyoGlassLocked
-  suffix: Mieyo, Locked
+  suffix: ММС, Закрыто # Exodus MMC localization
   components:
   - type: ContainerFill
     containers:
@@ -78,7 +78,7 @@
 - type: entity
   parent: AirlockMieyoGlass
   id: AirlockMieyoGlassLockedSecurity
-  suffix: Mieyo Security, Locked
+  suffix: Безопасность ММС, Закрыто # Exodus MMC localization
   components:
   - type: ContainerFill
     containers:
@@ -87,7 +87,7 @@
 - type: entity
   parent: AirlockMieyoGlass
   id: AirlockMieyoGlassLockedLiason
-  suffix: Mieyo Liason, Locked
+  suffix: Руководство ММС, Закрыто # Exodus MMC localization
   components:
   - type: ContainerFill
     containers:

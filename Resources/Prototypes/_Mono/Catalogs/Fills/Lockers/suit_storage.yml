@@ -150,7 +150,7 @@
 - type: entity
   id: SuitStorageViperWL
   parent: SuitStorageBase
-  suffix: Viper Group - BROOD
+  suffix: Вайперы — BROOD # Exodus Viper localization
   components:
   - type: StorageFill
     contents:
@@ -167,7 +167,7 @@
 - type: entity
   id: SuitStorageViperJackal
   parent: SuitStorageBase
-  suffix: Viper Group - Jackal
+  suffix: Вайперы — JACKAL # Exodus Viper localization
   components:
   - type: StorageFill
     contents:
@@ -186,7 +186,7 @@
 - type: entity
   id: SuitStorageMieyoMining
   parent: SuitStorageBase
-  suffix: MMC Mining
+  suffix: ММС, Шахтёрский # Exodus MMC localization
   components:
   - type: StorageFill
     contents:
@@ -202,7 +202,7 @@
 - type: entity
   id: SuitStorageMieyoCombat
   parent: SuitStorageBase
-  suffix: MMC Combat
+  suffix: ММС, Боевой # Exodus MMC localization
   components:
   - type: StorageFill
     contents:

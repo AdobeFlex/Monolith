@@ -135,7 +135,8 @@
 
 - type: company
   id: MMC
-  name: Mieyo Manufacturing Concern
+  name: mmc-company-name # Exodus MMC localization
+  description: mmc-company-description # Exodus MMC localization
   color: "#EEEEEE"
   disabled: true
 

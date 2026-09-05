@@ -3,6 +3,11 @@
   name: job-name-pdv-civilian
   description: job-description-pdv-civilian
   playTimeTracker: JobPdvCivilian
+  # Exodus-begin: match the ordinary mercenary unlock requirement.
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 54000 # 15 hours
+  # Exodus-end
   startingGear: PdvCivilianGear
   icon: JobIconPDVCiv
   supervisors: job-supervisors-pdv-civilian # Exodus civilian contractor localization

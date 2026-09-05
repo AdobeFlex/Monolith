@@ -195,7 +195,7 @@
 - type: entity
   parent: AirlockHeavyCommand
   id: AirlockHeavyViperLocked
-  suffix: Viper Group, Locked
+  suffix: Вайперы, Закрыто # Exodus Viper localization
   components:
   - type: Sprite
     sprite: _Mono/Structures/Doors/HeavyAirlocks/Standard/security.rsi
@@ -206,7 +206,7 @@
 - type: entity
   parent: AirlockHeavyViperLocked
   id: AirlockHeavyViperCommandLocked
-  suffix: Viper Group Command, Locked
+  suffix: Командование Вайперов, Закрыто # Exodus Viper localization
   components:
   - type: ContainerFill
     containers:
@@ -215,7 +215,7 @@
 - type: entity
   parent: AirlockHeavyCommand
   id: AirlockHeavyMieyoLocked
-  suffix: Mieyo Security, Locked
+  suffix: Безопасность ММС, Закрыто # Exodus MMC localization
   components:
   - type: Sprite
     sprite: _Mono/Structures/Doors/HeavyAirlocks/Standard/mieyo.rsi
@@ -226,7 +226,7 @@
 - type: entity
   parent: AirlockHeavyMieyoLocked
   id: AirlockHeavyMieyoLiasonLocked
-  suffix: Mieyo Liason, Locked
+  suffix: Руководство ММС, Закрыто # Exodus MMC localization
   components:
   - type: Sprite
     sprite: _Mono/Structures/Doors/HeavyAirlocks/Standard/mieyo.rsi

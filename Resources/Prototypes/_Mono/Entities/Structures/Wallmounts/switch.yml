@@ -9,7 +9,7 @@
 
 - type: entity
   id: LockableButtonViper
-  suffix: Viper
+  suffix: Вайперы # Exodus Viper localization
   parent: LockableButton
   components:
   - type: AccessReader
@@ -17,7 +17,7 @@
 
 - type: entity
   id: LockableButtonMieyo
-  suffix: Mieyo
+  suffix: ММС # Exodus MMC localization
   parent: LockableButton
   components:
   - type: AccessReader

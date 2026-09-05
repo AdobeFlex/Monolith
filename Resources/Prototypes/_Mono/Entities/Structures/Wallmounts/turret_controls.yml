@@ -254,7 +254,7 @@
   parent: WeaponEnergyTurretStationControlPanel
   id: WeaponEnergyTurretViperControlPanel
   name: VG sentry turret control panel
-  suffix: VG Command access
+  suffix: Доступ командования Вайперов # Exodus Viper localization
   description: A wall-mounted interface that allows a local artifical intelligence to adjust the operational parameters of linked sentry turrets.
   components:
   - type: AccessReader
@@ -271,7 +271,7 @@
   parent: BallisticTurretHeavyAIBase
   id: BallisticTurretHeavyAIVG
   name: VG heavy remote sentry turret
-  suffix: VG
+  suffix: Вайперы # Exodus Viper localization
   components:
   - type: AccessReader
     access: [["ViperCommand"]]
@@ -297,7 +297,7 @@
   parent: WeaponEnergyTurretStationControlPanel
   id: WeaponEnergyTurretMieyoControlPanel
   name: mieyo sentry turret control panel
-  suffix: Mieyo Security access
+  suffix: Доступ безопасности ММС # Exodus MMC localization
   description: A wall-mounted interface that allows a local artifical intelligence to adjust the operational parameters of linked sentry turrets.
   components:
   - type: AccessReader
@@ -315,7 +315,7 @@
   parent: BallisticTurretHeavyAIBase
   id: BallisticTurretHeavyAIMieyo
   name: mieyo heavy remote sentry turret
-  suffix: Mieyo
+  suffix: ММС # Exodus MMC localization
   components:
   - type: AccessReader
     access: [["MieyoSecurity"]]

@@ -23,7 +23,7 @@
 - type: entity
   parent: AirlockExternalGlass
   id: AirlockExternalGlassMieyo
-  suffix: Mieyo, Glass, External
+  suffix: ММС, Стеклянный, Внешний # Exodus MMC localization
   components:
   - type: Sprite
     sprite: _Mono/Structures/Doors/Airlocks/Glass/externalmieyo.rsi
@@ -31,7 +31,7 @@
 - type: entity
   parent: AirlockExternalGlassMieyo
   id: AirlockExternalGlassMieyoLocked
-  suffix: Locked, Mieyo, Glass, External
+  suffix: Закрыто, ММС, Стеклянный, Внешний # Exodus MMC localization
   components:
   - type: ContainerFill
     containers:

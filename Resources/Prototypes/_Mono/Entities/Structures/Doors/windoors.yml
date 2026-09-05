@@ -10,7 +10,7 @@
 - type: entity
   parent: WindoorSecure
   id: WindoorSecureMieyoLocked
-  suffix: Mieyo, Locked
+  suffix: ММС, Закрыто # Exodus MMC localization
   components:
   - type: ContainerFill
     containers:

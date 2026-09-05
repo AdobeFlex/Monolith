@@ -1,20 +1,20 @@
 - type: loadout
   id: MMCRankCS
-  name: Corporate Security
+  name: Корпоративная охрана # Exodus MMC localization
   components:
   - type: ChatRank
     rank: mmc-security
 
 - type: loadout
   id: MMCRankAS
-  name: Asset Security
+  name: Охрана активов # Exodus MMC localization
   components:
   - type: ChatRank
     rank: mmc-asset-security
 
 - type: loadout
   id: MMCRankSAS
-  name: Senior Asset Security
+  name: Старший охранник # Exodus MMC localization
   effects:
   - !type:GroupLoadoutEffect
     proto: MMCSeniorSecurity

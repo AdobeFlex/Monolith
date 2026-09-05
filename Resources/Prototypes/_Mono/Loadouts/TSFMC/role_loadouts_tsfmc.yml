@@ -255,6 +255,9 @@
   - MercenaryBalaclava # Mono
   # - CivGunCaseSpecial # Mono
   - ContractorArmorPlates # Mono
-  - TsfmcSidearm
-  - TsfmcSidearmAmmo
+  # Exodus-begin: ordinary mercenary weapon selection.
+  - MercenaryFirearm
+  - MercenaryPistol
+  - MercenaryMag
+  # Exodus-end
   canCustomizeName: true

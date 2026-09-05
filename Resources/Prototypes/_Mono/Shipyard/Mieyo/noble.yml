@@ -1,8 +1,8 @@
 - type: vessel
   id: MieyoNoble
   parent: BaseVessel
-  name: MMC-SKR Mieyo-Noble
-  description: A slightly heavier mining craft, equipped with 4 mining pulsers and a magnet, but no self defense and poor armor.
+  name: ММС-SKR «Мэйё-Нобл» # Exodus MMC localization
+  description: Более тяжёлый шахтёрский корабль с четырьмя шахтёрскими пульсарами и магнитом, но без средств самообороны и с плохой бронёй. # Exodus MMC localization
   price: 94365
   category: Small
   group: Mieyo
@@ -20,7 +20,7 @@
 
 - type: gameMap
   id: MieyoNoble
-  mapName: 'MMC-SKR Mieyo-Noble'
+  mapName: 'ММС-SKR «Мэйё-Нобл»' # Exodus MMC localization
   mapPath: /SharedMaps/_Mono/Shuttles/Mieyo/noble.yml
   minPlayers: 0
   stations:
@@ -28,7 +28,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Mieyo-Noble MMC{1}'
+          mapNameTemplate: 'Мэйё-Нобл ММС{1}' # Exodus MMC localization
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

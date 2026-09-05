@@ -217,7 +217,7 @@
 - type: entity
   parent: AirlockShuttleSyndicate
   id: AirlockExternalShuttleViperLocked
-  suffix: External, Docking, Viper Group, Locked
+  suffix: Внешний, Стыковочный, Вайперы, Закрыто # Exodus Viper localization
   components:
   - type: ContainerFill
     containers:
@@ -226,7 +226,7 @@
 - type: entity
   parent: AirlockGlassShuttleSyndicate
   id: AirlockExternalGlassShuttleViperLocked
-  suffix: Viper Group, Locked, Glass
+  suffix: Вайперы, Закрыто, Стеклянный # Exodus Viper localization
   components:
   - type: ContainerFill
     containers:
@@ -235,7 +235,7 @@
 - type: entity
   parent: AirlockShuttleNfsd
   id: AirlockExternalShuttleMieyoLocked
-  suffix: External, Docking, Mieyo, Locked
+  suffix: Внешний, Стыковочный, ММС, Закрыто # Exodus MMC localization
   components:
   - type: ContainerFill
     containers:
@@ -244,7 +244,7 @@
 - type: entity
   parent: AirlockGlassShuttleNfsd
   id: AirlockExternalGlassShuttleMieyoLocked
-  suffix: External, Docking, Mieyo, Locked, Glass
+  suffix: Внешний, Стыковочный, ММС, Закрыто, Стеклянный # Exodus MMC localization
   components:
   - type: ContainerFill
     containers:
@@ -253,7 +253,7 @@
 - type: entity
   parent: AirlockExternalShuttleMieyoLocked
   id: AirlockExternalShuttleMieyoLockedOutpost
-  suffix: OUTPOST ONLY, External, Docking, Mieyo, Locked
+  suffix: ТОЛЬКО АВАНПОСТ, Внешний, Стыковочный, ММС, Закрыто # Exodus MMC localization
   components:
   - type: Destructible # Mono - buff docking port health
     thresholds:
@@ -271,7 +271,7 @@
 - type: entity
   parent: AirlockExternalGlassShuttleMieyoLocked
   id: AirlockExternalGlassShuttleMieyoLockedOutpost
-  suffix: OUTPOST ONLY, External, Docking, Mieyo, Locked, Glass # Longest suffix in mono?
+  suffix: ТОЛЬКО АВАНПОСТ, Внешний, Стыковочный, ММС, Закрыто, Стеклянный # Exodus MMC localization
   components:
   - type: Destructible # Mono - buff docking port health
     thresholds:

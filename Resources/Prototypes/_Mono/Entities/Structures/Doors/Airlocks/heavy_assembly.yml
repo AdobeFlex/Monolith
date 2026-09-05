@@ -130,7 +130,7 @@
 - type: entity
   parent: AirlockHeavyAssembly
   id: AirlockHeavyAssemblyMieyo
-  suffix: Mieyo
+  suffix: ММС # Exodus MMC localization
   components:
   - type: Sprite
     sprite: _Mono/Structures/Doors/HeavyAirlocks/Standard/mieyo.rsi

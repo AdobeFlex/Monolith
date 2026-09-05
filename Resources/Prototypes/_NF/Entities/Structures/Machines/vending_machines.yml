@@ -512,7 +512,7 @@
 - type: entity
   parent: NFVendingMachineCart
   id: MonoVendingMachineCartMieyo
-  suffix: MMC
+  suffix: ММС # Exodus MMC localization
   components:
   - type: VendingMachine
     pack: MonoPTechMieyoInventory

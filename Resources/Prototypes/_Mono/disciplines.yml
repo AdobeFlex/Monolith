@@ -152,7 +152,7 @@
     1: 0
     2: 0.5
     3: 0.5
-  uiName: VG
+  uiName: Вайперы # Exodus Viper localization
 
 - type: techDiscipline
   id: Mieyo
@@ -165,4 +165,4 @@
     1: 0
     2: 0.5
     3: 0.5
-  uiName: MMC
+  uiName: ММС # Exodus MMC localization

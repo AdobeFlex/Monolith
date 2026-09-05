@@ -1,8 +1,8 @@
 - type: vessel
   id: MieyoSakuratsu
   parent: BaseVessel
-  name: MMC-SKR Sakuratsu
-  description: A licensed production variant of the Sakuratsu, with MMC-branded suits and a better ore processor installed.
+  name: ММС-SKR «Мэйё-Сакуратсу» # Exodus MMC localization
+  description: Лицензионная версия «Сакуратсу» со скафандрами ММС и улучшенным рудопереработчиком. # Exodus MMC localization
   price: 99721
   category: Medium
   group: Mieyo
@@ -21,7 +21,7 @@
 
 - type: gameMap
   id: MieyoSakuratsu
-  mapName: 'MMC-SKR Mieyo-Sakuratsu'
+  mapName: 'ММС-SKR «Мэйё-Сакуратсу»' # Exodus MMC localization
   mapPath: /SharedMaps/_Mono/Shuttles/Mieyo/sakuratsu_mieyo.yml
   minPlayers: 0
   stations:
@@ -29,7 +29,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Mieyo-Sakuratsu MMC{1}'
+          mapNameTemplate: 'Мэйё-Сакуратсу ММС{1}' # Exodus MMC localization
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'

@@ -2,7 +2,7 @@
   parent: BaseStationAdminBankATM
   id: StationAdminBankATMMMC
   description: Used to transfer funds to and from the local MMC account.
-  suffix: Mieyo
+  suffix: ММС # Exodus MMC localization
   components:
   - type: StationBankATM
     account: Mieyo

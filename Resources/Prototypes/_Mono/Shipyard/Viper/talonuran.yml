@@ -7,8 +7,8 @@
 - type: vessel
   id: Talonuran
   parent: BaseVessel
-  name: VG Talonuran
-  description: A small heavy support craft, comissioned by the Viper Group for fleet support. Magboots suggested.
+  name: Вайперы «Талонуран» # Exodus Viper localization
+  description: Малый корабль тяжёлой поддержки, заказанный «Вайперами» для сопровождения флота. Рекомендуются магнитные сапоги. # Exodus Viper localization
   price: 47500 # Exodus keep ship price
   category: Small
   group: Viper
@@ -27,7 +27,7 @@
 
 - type: gameMap
   id: Talonuran
-  mapName: 'VG Talonuran'
+  mapName: 'Вайперы «Талонуран»' # Exodus Viper localization
   mapPath: /SharedMaps/_Mono/Shuttles/Viper/talonuran.yml
   minPlayers: 0
   stations:
@@ -35,7 +35,7 @@
       stationProto: StandardFrontierVessel
       components:
         - type: StationNameSetup
-          mapNameTemplate: 'Talonuran MIL{1}'
+          mapNameTemplate: 'Талонуран MIL{1}' # Exodus Viper localization
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'
