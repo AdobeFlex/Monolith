@@ -1,8 +1,11 @@
 ﻿using Content.Shared.CCVar;
 using Content.Shared.Chat;
 using Content.Shared._Exodus.Communications;
+using Content.Shared._Exodus.Territory;
+using Content.Shared._Exodus.War;
 using Robust.Client.UserInterface;
 using Robust.Shared.Configuration;
+using Robust.Shared.Prototypes;
 
 namespace Content.Client._Exodus.Communications.UI;
 
@@ -25,6 +28,7 @@ public sealed partial class CommunicationsConsoleBoundUserInterface : BoundUserI
         _menu.OnAnnounce += AnnounceButtonPressed;
         _menu.OnBroadcast += BroadcastButtonPressed;
         _menu.OnAlertLevel += AlertLevelSelected;
+        _menu.OnDeclareWar += DeclareWar;
     }
 
     public void AlertLevelSelected(string level)
@@ -48,6 +52,11 @@ public sealed partial class CommunicationsConsoleBoundUserInterface : BoundUserI
         SendMessage(new CommunicationsConsoleBroadcastMessage(message));
     }
 
+    private void DeclareWar(ProtoId<TerritoryFactionPrototype> targetFaction)
+    {
+        SendMessage(new CommunicationsConsoleDeclareWarMessage(targetFaction));
+    }
+
     protected override void UpdateState(BoundUserInterfaceState state)
     {
         base.UpdateState(state);
@@ -63,6 +72,7 @@ public sealed partial class CommunicationsConsoleBoundUserInterface : BoundUserI
             _menu.CurrentLevel = commsState.CurrentAlert;
 
             _menu.UpdateAlertLevels(commsState.AlertLevels, _menu.CurrentLevel);
+            _menu.UpdateWarState(commsState.WarState);
             _menu.AlertLevelButton.Disabled = !_menu.AlertLevelSelectable;
             _menu.AnnounceButton.Disabled = !_menu.CanAnnounce;
             _menu.BroadcastButton.Disabled = !_menu.CanBroadcast;

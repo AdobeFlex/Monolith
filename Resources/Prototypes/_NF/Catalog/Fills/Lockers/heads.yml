@@ -62,7 +62,7 @@
     contents:
       - id: ShriffIDCard
       - id: BoxHandcuff # Frontier
-      - id: CommsComputerCircuitboard # Frontier
+      - id: TSFCommsComputerCircuitboard # Exodus: rebuilds the TSFMC faction console.
       - id: MedalCaseNfsd # Frontier
       - id: Demag # Frontier
       - id: RubberStampSheriff

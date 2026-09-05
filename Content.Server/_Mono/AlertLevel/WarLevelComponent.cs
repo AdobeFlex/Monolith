@@ -6,5 +6,6 @@ namespace Content.Server._Mono.AlertLevel;
 [RegisterComponent]
 public sealed partial class WarLevelComponent : Component
 {
-    [ViewVariables(VVAccess.ReadWrite)] public bool PostWar = false;
+    [ViewVariables(VVAccess.ReadOnly)]
+    public bool PostWar => Declarations.Count != 0; // Exodus: aggregate of active pairwise declarations.
 }

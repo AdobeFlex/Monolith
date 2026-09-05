@@ -24,6 +24,13 @@ public sealed partial class TerritoryFactionPrototype : IPrototype
     public LocId RadarLabel { get; private set; } = default!;
 
     /// <summary>
+    /// Optional normally-cased faction name for interfaces and announcements.
+    /// Falls back to <see cref="RadarLabel"/> when omitted.
+    /// </summary>
+    [DataField]
+    public LocId? DisplayName { get; private set; }
+
+    /// <summary>
     /// Optional: the entity prototype that acts as the claim banner for this faction.
     /// Used for validation or future admin tools.
     /// </summary>

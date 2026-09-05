@@ -1,4 +1,5 @@
 using Content.Server._Mono.AlertLevel;
+using Content.Server._Exodus.War; // Exodus: directional faction war status.
 using Content.Server.Access.Systems;
 using Content.Server.AlertLevel;
 using Content.Server.CartridgeLoader;
@@ -46,6 +47,7 @@ namespace Content.Server.PDA
         [Dependency] private SectorServiceSystem _sectorService = default!;
         [Dependency] private IPrototypeManager _prototypeManager = default!;
         [Dependency] private readonly IConfigurationManager _config = default!; // DeltaV
+        [Dependency] private FactionWarSystem _factionWar = default!; // Exodus: directional faction war status.
 
         private static DateTime ServerDate; // DeltaV - PDA
 
@@ -378,10 +380,32 @@ namespace Content.Server.PDA
         // Mono
         private void UpdateWarLevel(EntityUid uid, PdaComponent pda)
         {
-            var station = _sectorService.GetServiceEntity();
-            if (!TryComp(station, out WarLevelComponent? warComp))
+            // Exodus-begin: show every active pair while retaining the legacy aggregate COLD/HOT heading.
+            if (!_factionWar.TryGetState(out var state))
+            {
+                pda.WarLevel = null;
                 return;
-            pda.WarLevel = warComp.PostWar ? Loc.GetString("comp-pda-ui-station-war-level-post") : Loc.GetString("comp-pda-ui-station-war-level-pre");
+            }
+
+            if (!state.Comp.PostWar)
+            {
+                pda.WarLevel = Loc.GetString("comp-pda-ui-station-war-level-pre");
+                return;
+            }
+
+            var entries = new List<string>(state.Comp.Declarations.Count);
+            foreach (var declaration in state.Comp.Declarations)
+            {
+                entries.Add(Loc.GetString("war-declaration-pda-entry",
+                    ("declarer", _factionWar.GetFactionName(declaration.DeclaringFaction)),
+                    ("target", _factionWar.GetFactionName(declaration.TargetFaction))));
+            }
+
+            var heading = Loc.GetString("comp-pda-ui-station-war-level-post");
+            pda.WarLevel = entries.Count == 0
+                ? heading
+                : $"{heading}\n{string.Join("\n", entries)}";
+            // Exodus-end
         }
 
         private string? GetDeviceNetAddress(EntityUid uid)

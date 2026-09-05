@@ -45,6 +45,7 @@
 - type: territoryFaction
   id: TSFMC
   radarLabel: territory-faction-tsf
+  displayName: territory-faction-tsf-name
   banner: BannerNGC
   npcFaction: TSFMC
   discountAlignment: Positive
@@ -53,6 +54,7 @@
 - type: territoryFaction
   id: PDV
   radarLabel: territory-faction-phaeton
+  displayName: territory-faction-phaeton-name
   banner: BannerPDV
   npcFaction: PirateNF
   discountAlignment: Positive
@@ -61,6 +63,7 @@
 - type: territoryFaction
   id: Khsira
   radarLabel: territory-faction-khsira
+  displayName: territory-faction-khsira-name
   banner: BannerKhsira
   npcFaction: AsakimDefenceForces
   discountAlignment: Positive

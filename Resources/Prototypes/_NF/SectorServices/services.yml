@@ -59,6 +59,10 @@
   id: WarAlerts
   components:
   - type: WarLevel
+    # Exodus-begin: playable factions and the two-hour declaration lockout.
+    factions: [TSFMC, PDV, Khsira]
+    declarationDelay: 7200
+    # Exodus-end
 
 - type: sectorService
   id: BountyContracts

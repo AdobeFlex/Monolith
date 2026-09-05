@@ -1,42 +1,47 @@
-using Content.Server._NF.SectorServices;
-using Content.Server.Chat.Systems;
-using Robust.Shared.Audio;
+using Content.Server._Exodus.War; // Exodus: pairwise faction wars.
+using Content.Shared._Exodus.Territory; // Exodus: pairwise faction wars.
+using Robust.Shared.Prototypes; // Exodus: pairwise faction wars.
 
 namespace Content.Server._Mono.AlertLevel;
 
 public sealed partial class WarLevelSystem : EntitySystem
 {
-    [Dependency] private SectorServiceSystem _sectorService = default!;
-    [Dependency] private ChatSystem _chatSystem = default!;
+    // Exodus-begin: retain the legacy API while delegating state changes to the pairwise war system.
+    private static readonly ProtoId<TerritoryFactionPrototype> LegacyDeclaringFaction = "TSFMC";
+    private static readonly ProtoId<TerritoryFactionPrototype> LegacyTargetFaction = "PDV";
+
+    [Dependency] private FactionWarSystem _factionWar = default!;
 
     public bool GetWarLevel(EntityUid station, WarLevelComponent? alert = null)
     {
-        if (!TryComp(_sectorService.GetServiceEntity(), out alert))
-            return false;
-
-        return alert.PostWar;
+        return _factionWar.TryGetState(out var state) && state.Comp.PostWar;
     }
 
     public void SetLevel(bool level, WarLevelComponent? component = null)
     {
-        EntityUid sectorEnt = _sectorService.GetServiceEntity();
-        if (!TryComp<WarLevelComponent>(sectorEnt, out component))
+        if (level)
         {
-            Log.Error($"Unable to find WarLevelComponent for entity {sectorEnt}");
+            var result = _factionWar.TryDeclareWar(
+                LegacyDeclaringFaction,
+                LegacyTargetFaction,
+                force: true);
+
+            if (result != WarDeclarationResult.Success && result != WarDeclarationResult.AlreadyAtWar)
+                Log.Error($"Failed to enable the legacy war level: {result}.");
+
             return;
         }
 
-        component.PostWar = level;
-        Log.Info($"Setting WarLevelComponent for entity {sectorEnt} to {component.PostWar}. Input value {level}");
-            _chatSystem.DispatchGlobalAnnouncement(
-                level ? Loc.GetString("war-level-announcement-post") :  Loc.GetString("war-level-announcement-pre"),
-                sender: Loc.GetString("war-level-announcement-sender"),
-                playSound: level,
-                announcementSound: level ? new SoundPathSpecifier("/Audio/Misc/gamma.ogg") : new SoundPathSpecifier("/Audio/Announcements/notice2.ogg"),
-                colorOverride: level ? Color.Crimson : Color.CornflowerBlue);
+        // Legacy COLD means that no faction pair is at war, so this intentionally clears every declaration.
+        if (!_factionWar.TryGetState(out _))
+        {
+            Log.Error("Failed to disable the legacy war level: the sector war state is unavailable.");
+            return;
+        }
 
-        RaiseLocalEvent(new WarLevelChangedEvent(level)); // Frontier: pass invalid, we have no station
+        _factionWar.ClearAllWars();
     }
+    // Exodus-end
 }
 
 public sealed class WarLevelChangedEvent : EntityEventArgs

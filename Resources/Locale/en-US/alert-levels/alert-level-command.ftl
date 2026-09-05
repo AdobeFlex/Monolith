@@ -8,7 +8,9 @@ cmd-setalertlevel-hint-1 = <level>
 cmd-setalertlevel-hint-2 = [locked]
 
 # Exodus-begin: restore manual war-level control without enabling automatic portstrikes.
-cmd-setwarlevel-desc = Set the war level to HOT (true) or COLD (false).
-cmd-setwarlevel-help = Usage: setwarlevel <postwar>
-cmd-setwarlevel-hint-1 = <postwar>
+cmd-setwarlevel-desc = Declares or ends a pairwise faction war. The one-argument form is retained for legacy administration.
+cmd-setwarlevel-help = Usage: setwarlevel <true|false> [declarer] [target]
+    With one argument, true declares TSFMC → PDV and false ends all wars.
+    With three arguments, changes only the specified directed faction war.
+cmd-setwarlevel-hint-1 = <true|false>
 # Exodus-end
