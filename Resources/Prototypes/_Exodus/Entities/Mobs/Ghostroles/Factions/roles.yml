@@ -48,9 +48,9 @@
   - Hydrakin
   components:
   - type: GhostRole
-    name: ghost-role-information-tarkhan-operative-name
-    description: ghost-role-information-tarkhan-description
-    rules: ghost-role-information-tarkhan-rules
+    name: ghost-role-information-exodus-tarkhan-operative-name
+    description: ghost-role-information-exodus-tarkhan-description
+    rules: ghost-role-information-exodus-tarkhan-rules
     job: PDVTarkhan
     mindRoles:
     - MindRoleGhostRoleNeutral

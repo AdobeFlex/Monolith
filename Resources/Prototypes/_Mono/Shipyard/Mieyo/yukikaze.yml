@@ -3,7 +3,7 @@
   id: Yukikaze
   parent: BaseVessel
   name: ММС-CSC «Юкикадзэ» # Exodus MMC localization
-  description: Корабль с более серьёзной бронёй, чем у «Кайта»: слои пластали и пластитана дополнены щитом. Вооружён двумя АК-820 и 20-мм орудиями, но внутри очень тесно. # Exodus MMC localization
+  description: 'Корабль с более серьёзной бронёй, чем у «Кайта»: слои пластали и пластитана дополнены щитом. Вооружён двумя АК-820 и 20-мм орудиями, но внутри очень тесно.' # Exodus MMC localization; quote the colon in the description.
   price: 123288
   category: Small
   group: Mieyo

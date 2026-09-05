@@ -3,3 +3,4 @@ ent-SpawnPointPDVCivilian = точка появления гражданског
 
 ent-ClothingHeadsetTsfCivilian = радиогарнитура гражданского сектора ТСФ
 ent-ClothingHeadsetAltFreelancer = охватывающая гарнитура Авангарда
+    .desc = { ent-ClothingHeadsetAlt.desc }
