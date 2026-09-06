@@ -614,7 +614,8 @@ public sealed partial class SafetyDepositBoxSystem : EntitySystem
                 return;
             }
 
-            if (!TryPrototype(boxEntity, out var physicalProto) || physicalProto.ToString() != databaseBox.ProtoId)
+            // Exodus: compare the stored prototype ID, not its diagnostic string representation.
+            if (!TryPrototype(boxEntity, out var physicalProto) || physicalProto.ID != databaseBox.ProtoId)
             {
                 Reject(consoleUid, player, "safety-deposit-error-invalid-box");
                 return;

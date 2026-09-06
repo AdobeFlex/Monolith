@@ -30,28 +30,4 @@
   position: 9728,-33024
   radius: 4200
 
-# Planet FTL approaches remain usable after the enlarged Kyphrus orbit layout.
-- type: nebulaProtectedPoint
-  id: PlanetFervidus
-  position: 8736.166,3188.950
-  radius: 1500
-
-- type: nebulaProtectedPoint
-  id: PlanetMerak
-  position: 5759.673,12869.972
-  radius: 1500
-
-- type: nebulaProtectedPoint
-  id: PlanetAsclepiu
-  position: -14157.959,12968.893
-  radius: 1500
-
-- type: nebulaProtectedPoint
-  id: PlanetAerumna
-  position: -24091.056,-10425.139
-  radius: 1500
-
-- type: nebulaProtectedPoint
-  id: PlanetThrascias
-  position: -4626.292,-40989.754
-  radius: 1500
+# Planet positions are intentionally not protected: nebulas may overlap them.
