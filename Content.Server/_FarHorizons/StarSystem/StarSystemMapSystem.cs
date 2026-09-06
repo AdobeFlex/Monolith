@@ -1,4 +1,5 @@
 using Content.Server.GameTicking;
+using Content.Shared._Exodus.Shuttles; // Exodus
 using Content.Shared._FarHorizons.StarSystem;
 using Content.Shared._FarHorizons.StarSystem.Helpers;
 using Content.Shared._FarHorizons.StarSystem.Prototypes;
@@ -51,7 +52,9 @@ public sealed partial class StarSystemMapSystem : SharedStarSystemMapSystem
         {
             var coords = new EntityCoordinates(ent, ent.Comp.StarSystem.Star.Position);
             var spawned = SpawnAtPosition(starEnt.ID, coords);
-            _metadata.SetEntityName(spawned, ent.Comp.StarSystem.Star.Name);
+            // Exodus: named stellar objects accept localization keys; upstream literal names remain supported.
+            var name = ent.Comp.StarSystem.Star.Name;
+            _metadata.SetEntityName(spawned, Loc.TryGetString(name, out var localizedName) ? localizedName : name);
             _pvs.AddGlobalOverride(spawned);
         }
 
@@ -61,7 +64,16 @@ public sealed partial class StarSystemMapSystem : SharedStarSystemMapSystem
             {
                 var planetCoords = new EntityCoordinates(ent, planet.Position);
                 var spawnedPlanet = SpawnAtPosition(planetEnt.ID, planetCoords);
-                _metadata.SetEntityName(spawnedPlanet, planet.Name);
+                // Exodus-begin localized planet names and configurable classification labels.
+                _metadata.SetEntityName(spawnedPlanet, Loc.TryGetString(planet.Name, out var localizedName) ? localizedName : planet.Name);
+                if (planet.RadarLabel is { } label)
+                {
+                    var affiliation = EnsureComp<IffAffiliationComponent>(spawnedPlanet);
+                    affiliation.Mode = IffAffiliationMode.FixedLabel;
+                    affiliation.Label = label;
+                    Dirty(spawnedPlanet, affiliation);
+                }
+                // Exodus-end
                 _pvs.AddGlobalOverride(spawnedPlanet);
             }
         }

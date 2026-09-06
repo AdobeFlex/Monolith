@@ -44,7 +44,7 @@
 
 - type: starType
   id: StarKyphrus
-  name: Kyphrus
+  name: guide-entry-kyphrus # Exodus: localized stellar name.
   shader: MainSequenceStar
   solarMass: 0.62
   color: '#FFD2A1'

@@ -33,6 +33,12 @@ public sealed partial class IffAffiliationComponent : Component
     /// </summary>
     [DataField, AutoNetworkedField]
     public ProtoId<CompanyPrototype>? Company;
+
+    /// <summary>
+    /// Localization key displayed in FixedLabel mode, without assigning an organization or faction.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public string? Label;
 }
 
 [Serializable, NetSerializable]
@@ -42,4 +48,5 @@ public enum IffAffiliationMode : byte
     Faction,
     FixedCompany,
     None,
+    FixedLabel,
 }

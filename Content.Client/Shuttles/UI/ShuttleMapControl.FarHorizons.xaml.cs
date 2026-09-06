@@ -15,12 +15,7 @@ public sealed partial class ShuttleMapControl
             starSystem.StarSystem == null)
             return;
         
-        var starPos = Vector2.Transform(starSystem.StarSystem.Star.Position, matty);
-        starPos = starPos with { Y = -starPos.Y };
-        starPos = ScalePosition(starPos);
-        var starRadius = Star.MAP_PIXEL_SIZE * starSystem.StarSystem.Star.Radius * MinimapScale;
-
-        handle.DrawCircle(starPos, starRadius, starSystem.StarSystem.Star.Color);
+        // Exodus: omit the stellar disc on navigation displays so it does not cover central stations.
 
         foreach (var planet in starSystem.StarSystem.Planets)
         {

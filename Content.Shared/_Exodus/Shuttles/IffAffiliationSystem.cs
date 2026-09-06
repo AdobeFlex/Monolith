@@ -66,6 +66,10 @@ public sealed partial class IffAffiliationSystem : EntitySystem
             case IffAffiliationMode.None:
                 return true;
 
+            case IffAffiliationMode.FixedLabel:
+                label = affiliation?.Label is { } labelId ? Loc.GetString(labelId) : string.Empty;
+                return true;
+
             case IffAffiliationMode.Faction:
                 var factionId = territory is { Radius: > 0f, ColorPoiByFaction: true }
                     ? territory.ControllingFaction

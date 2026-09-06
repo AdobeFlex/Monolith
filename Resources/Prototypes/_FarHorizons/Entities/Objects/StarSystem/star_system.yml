@@ -7,8 +7,9 @@
   components:
     - type: WarpPoint
     - type: FTLSmashImmune
-    - type: FTLBeacon
+    # Exodus: no stellar FTL beacon; the central station must remain readable and selectable.
     - type: IFF
+      flags: [Hide] # Exodus: hide the star's radar blip and label, not its background or light.
       color: '#FFD27F'
 
 - type: entity

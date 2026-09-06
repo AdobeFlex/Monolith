@@ -21,10 +21,7 @@ public partial class ShuttleNavControl
         var worldToView = worldToShuttle * shuttleToView;
         var viewScale = MathF.Sqrt((worldToView.M11 * worldToView.M11) + (worldToView.M12 * worldToView.M12));
 
-        var starPos = Vector2.Transform(starSystem.StarSystem.Star.Position, worldToView);
-        var starRadius = Star.NAV_PIXEL_SIZE * starSystem.StarSystem.Star.Radius * viewScale;
-
-        handle.DrawCircle(starPos, starRadius, starSystem.StarSystem.Star.Color.WithAlpha(0.5f));
+        // Exodus: omit the stellar disc on navigation displays so it does not cover central stations.
 
         foreach (var planet in starSystem.StarSystem.Planets)
         {

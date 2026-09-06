@@ -9,6 +9,7 @@ public sealed partial class Planet
 {
     [ViewVariables] public Vector2 Position;
     [ViewVariables] public string Name;
+    [ViewVariables] public string? RadarLabel; // Exodus: localized planet classification.
     [ViewVariables] public float EarthMass;
     [ViewVariables] public float Radius;
     [ViewVariables] public float Rotation;
@@ -29,6 +30,7 @@ public sealed partial class Planet
     {
         Position = position;
         Name = proto.Name;
+        RadarLabel = proto.RadarLabel; // Exodus
         Shader = proto.Shader;
         Palette = proto.Palette;
         Rotation = proto.Rotation;
