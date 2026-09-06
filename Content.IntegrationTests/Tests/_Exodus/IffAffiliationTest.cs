@@ -31,6 +31,7 @@ public sealed class IffAffiliationTest
             var loc = client.ResolveDependency<ILocalizationManager>();
             var grid = entities.Spawn();
             var territory = entities.AddComponent<GridTerritoryComponent>(grid);
+            var shuttles = entities.System<SharedShuttleSystem>();
             territory.Radius = 2500;
             territory.ColorPoiByFaction = true;
             territory.NeutralPoiColor = Color.Gray;
@@ -42,8 +43,16 @@ public sealed class IffAffiliationTest
             Assert.That(label, Is.EqualTo(loc.GetString("exodus-iff-no-corporate-control")));
             Assert.That(system.HasCorporateControlLabel(grid), Is.False);
 
+            Assert.That(shuttles.GetFtlIFFLabel(grid), Does.Not.Contain("\n"));
+            Assert.That(shuttles.GetFtlIFFLabel(grid, self: true), Does.Not.Contain("\n"));
+
             territory.CorporateController = "Colonial";
             Assert.That(system.HasCorporateControlLabel(grid), Is.True);
+            // A station's own FTL console must show the same corporate line as a visiting ship.
+            var ftlLabel = shuttles.GetFtlIFFLabel(grid);
+            Assert.That(ftlLabel, Does.Contain("\n"));
+            Assert.That(ftlLabel, Does.Contain(loc.GetString(prototypes.Index<CompanyPrototype>("Colonial").Name)));
+            Assert.That(shuttles.GetFtlIFFLabel(grid, self: true), Is.EqualTo(ftlLabel));
             Assert.That(system.TryGetLabel(grid, out label), Is.True);
             Assert.That(label, Is.EqualTo(loc.GetString(prototypes.Index<CompanyPrototype>("Colonial").Name)));
             Assert.That(system.TryGetColor(grid, out var color), Is.True);
@@ -58,6 +67,7 @@ public sealed class IffAffiliationTest
             territory.CorporateController = null;
             territory.ControllingFaction = null;
             Assert.That(system.HasCorporateControlLabel(grid), Is.False);
+            Assert.That(shuttles.GetFtlIFFLabel(grid, self: true), Does.Not.Contain("\n"));
             Assert.That(system.TryGetLabel(grid, out label), Is.True);
             Assert.That(label, Is.EqualTo(loc.GetString("exodus-iff-no-faction-control")));
             Assert.That(system.TryGetColor(grid, out color), Is.True);
@@ -138,9 +148,11 @@ public sealed class IffAffiliationTest
 
             shuttles.AddIFFFlag(grid, IFFFlags.HideLabel, iff);
             Assert.That(shuttles.GetIFFLabel(grid), Is.Null);
+            Assert.That(shuttles.GetFtlIFFLabel(grid), Is.Null);
             shuttles.RemoveIFFFlag(grid, IFFFlags.HideLabel, iff);
             shuttles.AddIFFFlag(grid, IFFFlags.Hide, iff);
             Assert.That(shuttles.GetIFFLabel(grid), Is.Null);
+            Assert.That(shuttles.GetFtlIFFLabel(grid), Is.Null);
             shuttles.RemoveIFFFlag(grid, IFFFlags.Hide, iff);
 
             display.Mode = IffAffiliationMode.FixedCompany;

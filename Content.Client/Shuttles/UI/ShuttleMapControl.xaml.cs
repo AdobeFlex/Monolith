@@ -479,7 +479,7 @@ public sealed partial class ShuttleMapControl : BaseShuttleControl
                     Loc.GetString($"shuttle-console-signature-infrared")
                     : _detection.HandleUnknownMassLabel(grid.Owner)
                 // Exodus only actual corporate control adds an affiliation line on the FTL map.
-                : _shuttles.GetIFFLabel(grid, self: _shuttleEntity == grid.Owner || !_shuttles.HasCorporateIffLabel(grid.Owner), component: iffComp);
+                : _shuttles.GetFtlIFFLabel(grid, self: _shuttleEntity == grid.Owner, component: iffComp);
 
             if (string.IsNullOrEmpty(iffText))
                 continue;
