@@ -336,3 +336,13 @@ uplink-pdv-composite15-desc = Requisition a good amount of advanced alloy.
 
 uplink-pdv-composite30-name = 30 adamantite
 uplink-pdv-composite30-desc = Requisition a lot of advanced alloy.
+
+# Exodus: selected upstream additions, preserving existing entries.
+uplink-pirate-chameleon-pda-name = Chameleon PDA
+uplink-pirate-chameleon-pda-desc = A PDA with integrated chameleon technology, allowing you to hide your true allegiance.
+
+uplink-pirate-chameleon-headset-name = Chameleon Headset
+uplink-pirate-chameleon-headset-desc = A headset with integrated chameleon technology, allowing you to hide your true allegiance.
+
+uplink-pirate-chameleon-backpack-name = Chameleon Backpack
+uplink-pirate-chameleon-backpack-desc = A backpack with integrated chameleon technology, allowing you to hide your true allegiance. Does not come with anything inside.

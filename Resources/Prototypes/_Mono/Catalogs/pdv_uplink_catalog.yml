@@ -1616,3 +1616,49 @@
     whitelist:
       tags:
       - PirateUplink
+
+# Exodus: selected upstream additions, preserving existing entries.
+- type: listing
+  id: UplinkPiratePdaChameleon
+  name: uplink-pirate-chameleon-pda-name
+  description: uplink-pirate-chameleon-pda-desc
+  productEntity: ChameleonPDA
+  cost:
+    Doubloon: 6 # Exodus: +10%, rounded up.
+  categories:
+  - UplinkPirateUtility
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - PirateUplink
+
+- type: listing
+  id: UplinkPirateHeadsetChameleon
+  name: uplink-pirate-chameleon-headset-name
+  description: uplink-pirate-chameleon-headset-desc
+  productEntity: ClothingHeadsetChameleon
+  cost:
+    Doubloon: 6 # Exodus: +10%, rounded up.
+  categories:
+  - UplinkPirateUtility
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - PirateUplink
+
+- type: listing
+  id: UplinkPirateBackpackChameleon
+  name: uplink-pirate-chameleon-backpack-name
+  description: uplink-pirate-chameleon-backpack-desc
+  productEntity: ClothingBackpackChameleon
+  cost:
+    Doubloon: 6 # Exodus: +10%, rounded up.
+  categories:
+  - UplinkPirateUtility
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - PirateUplink
