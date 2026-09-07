@@ -464,6 +464,7 @@
 
 - type: nebulaPoi
   id: NebulaPoiTSFMCOutpost
+  maxCount: 0 # Replaced by PDVCivilianOutpost near Helios; retain the old map for manual use.
   path: /Maps/_Mono/POI/tsfmcoutpost.yml
   spawnIn:
   - NebulaBlueMarker

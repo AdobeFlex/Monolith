@@ -25,3 +25,11 @@
   anchorPoi: HeliosFortress
   minDistance: 1200
   maxDistance: 3900
+
+# Civilian outpost replaces the old TSF peripheral outpost in the automatic spawn pool.
+- type: relativePoiPlacement
+  id: PDVCivilianOutpostNearHelios
+  poi: PDVCivilianOutpost
+  anchorPoi: HeliosFortress
+  minDistance: 3800
+  maxDistance: 3900
