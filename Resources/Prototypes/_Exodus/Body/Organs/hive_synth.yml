@@ -6,6 +6,7 @@
   name: hive-synth-heart-name
   description: hive-synth-heart-description
   components:
+  - type: SafetyDepositRestricted
   - type: OrganDamageProtection
     modifiers:
       thermal:
@@ -20,6 +21,7 @@
   name: hive-synth-lungs-name
   description: hive-synth-lungs-description
   components:
+  - type: SafetyDepositRestricted
   - type: OrganDamageProtection
     modifiers:
       electrical:
@@ -33,6 +35,7 @@
   name: hive-synth-liver-name
   description: hive-synth-liver-description
   components:
+  - type: SafetyDepositRestricted
   - type: OrganDamageProtection
     modifiers:
       dermal:
@@ -48,6 +51,7 @@
   name: hive-synth-eyes-name
   description: hive-synth-eyes-description
   components:
+  - type: SafetyDepositRestricted
   - type: OrganDamageProtection
     modifiers:
       radiation:

@@ -145,6 +145,7 @@
   name: aetherion-gunnery-board-name # Exodus company-fleet
   description: aetherion-gunnery-board-description # Exodus company-fleet
   components:
+  - type: SafetyDepositRestricted # Exodus: corporate technology cannot persist in safety deposit boxes.
   - type: Sprite
     state: security
   - type: MachineBoard

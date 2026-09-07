@@ -75,6 +75,7 @@
   name: ship-armor-module-blackhawk-flatpack-name
   description: ship-armor-module-blackhawk-flatpack-description
   components:
+  - type: SafetyDepositRestricted
   - type: Transform
     noRot: false
   - type: Rotatable

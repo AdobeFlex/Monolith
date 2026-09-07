@@ -99,6 +99,7 @@
   name: nebula-gas-siphon-board-name
   description: nebula-gas-siphon-board-description
   components:
+  - type: SafetyDepositRestricted
   - type: MachineBoard
     prototype: NebulaGasSiphon
     requirements:

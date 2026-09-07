@@ -4,6 +4,7 @@
   name: tech-disk-blackhawk-armor-name
   description: tech-disk-blackhawk-armor-description
   components:
+  - type: SafetyDepositRestricted
   - type: Sprite
     layers:
     - state: icon
@@ -23,6 +24,7 @@
   name: tech-disk-hme-organs-name
   description: tech-disk-hme-organs-description
   components:
+  - type: SafetyDepositRestricted
   - type: Sprite
     layers:
     - state: icon
@@ -48,6 +50,7 @@
   name: tech-disk-maco-small-arms-name
   description: tech-disk-maco-small-arms-description
   components:
+  - type: SafetyDepositRestricted
   - type: Sprite
     layers:
     - state: icon
@@ -68,6 +71,7 @@
   name: tech-disk-horizon-siphon-name
   description: tech-disk-horizon-siphon-description
   components:
+  - type: SafetyDepositRestricted
   - type: Sprite
     layers:
     - state: icon
@@ -88,6 +92,7 @@
   name: tech-disk-shm-hull-name
   description: tech-disk-shm-hull-description
   components:
+  - type: SafetyDepositRestricted
   - type: Sprite
     layers:
     - state: icon
@@ -107,6 +112,7 @@
   name: tech-disk-drake-ordnance-name
   description: tech-disk-drake-ordnance-description
   components:
+  - type: SafetyDepositRestricted
   - type: Sprite
     layers:
     - state: icon
@@ -126,6 +132,7 @@
   name: tech-disk-nosske-teleporter-name
   description: tech-disk-nosske-teleporter-description
   components:
+  - type: SafetyDepositRestricted
   - type: Sprite
     layers:
     - state: icon
@@ -147,6 +154,7 @@
   name: tech-disk-ullman-armaments-name
   description: tech-disk-ullman-armaments-description
   components:
+  - type: SafetyDepositRestricted
   - type: Sprite
     layers:
     - state: icon
@@ -166,6 +174,7 @@
   name: tech-disk-cdm-shield-name
   description: tech-disk-cdm-shield-description
   components:
+  - type: SafetyDepositRestricted
   - type: Sprite
     layers:
     - state: icon
@@ -186,6 +195,7 @@
   name: tech-disk-hive-organs-name
   description: tech-disk-hive-organs-description
   components:
+  - type: SafetyDepositRestricted
   - type: Sprite
     layers:
     - state: icon
@@ -207,6 +217,7 @@
   name: tech-disk-bratva-suit-name
   description: tech-disk-bratva-suit-description
   components:
+  - type: SafetyDepositRestricted
   - type: Sprite
     layers:
     - state: icon
@@ -227,6 +238,7 @@
   name: tech-disk-aetherion-gunnery-name
   description: tech-disk-aetherion-gunnery-description
   components:
+  - type: SafetyDepositRestricted
   - type: Sprite
     layers:
     - state: icon
@@ -246,6 +258,7 @@
   name: tech-disk-dme-plutonium-name
   description: tech-disk-dme-plutonium-description
   components:
+  - type: SafetyDepositRestricted
   - type: Sprite
     layers:
     - state: icon
@@ -265,6 +278,7 @@
   name: tech-disk-unsa-shield-name
   description: tech-disk-unsa-shield-description
   components:
+  - type: SafetyDepositRestricted
   - type: Sprite
     layers:
     - state: icon

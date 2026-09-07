@@ -26,6 +26,7 @@
   name: life-insurance-console-board-name
   description: life-insurance-console-board-description
   components:
+  - type: SafetyDepositRestricted
   - type: Sprite
     state: cpu_medical
   - type: ComputerBoard

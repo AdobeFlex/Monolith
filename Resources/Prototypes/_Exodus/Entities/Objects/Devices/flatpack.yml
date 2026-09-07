@@ -4,6 +4,7 @@
   name: weapon-turret-dravon-flatpack-name
   description: weapon-turret-dravon-flatpack-description
   components:
+  - type: SafetyDepositRestricted
   - type: Flatpack
     entity: WeaponTurretDravon
 

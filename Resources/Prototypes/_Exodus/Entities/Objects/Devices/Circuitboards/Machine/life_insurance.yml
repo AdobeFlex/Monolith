@@ -4,6 +4,7 @@
   name: life-insurance-scanner-board-name
   description: life-insurance-scanner-board-description
   components:
+  - type: SafetyDepositRestricted
   - type: Sprite
     state: medical
   - type: MachineBoard
@@ -22,6 +23,7 @@
   name: life-insurance-cloner-board-name
   description: life-insurance-cloner-board-description
   components:
+  - type: SafetyDepositRestricted
   - type: Sprite
     state: medical
   - type: MachineBoard

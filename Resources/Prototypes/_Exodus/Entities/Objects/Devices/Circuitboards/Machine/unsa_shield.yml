@@ -4,6 +4,7 @@
   name: unsa-directional-shield-board-name
   description: unsa-directional-shield-board-description
   components:
+  - type: SafetyDepositRestricted
   - type: Sprite
     state: security
   - type: MachineBoard
