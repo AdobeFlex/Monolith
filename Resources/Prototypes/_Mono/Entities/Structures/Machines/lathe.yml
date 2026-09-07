@@ -102,6 +102,7 @@
     - entity_storage
   - type: EntityStorage
     capacity: 75
+    openOnActivate: false # Exodus: click opens production UI; context-menu verbs handle ingredient storage.
   - type: ExtendDescription
     descriptionList:
     - description: Insert components for recipes by placing them on top of the lathe, then "open / close" inside its right-click menu.

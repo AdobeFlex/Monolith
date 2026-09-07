@@ -50,6 +50,14 @@ public abstract partial class SharedEntityStorageComponent : Component
     [DataField, ViewVariables(VVAccess.ReadWrite)]
     public bool OpenOnMove = true;
 
+    // Exodus-begin: allow machines to reserve normal activation for their UI.
+    /// <summary>
+    /// Whether normal activation toggles the storage. Context-menu verbs remain available when false.
+    /// </summary>
+    [DataField]
+    public bool OpenOnActivate = true;
+    // Exodus-end
+
     //The offset for where items are emptied/vacuumed for the EntityStorage.
     [DataField, ViewVariables(VVAccess.ReadWrite)]
     public Vector2 EnteringOffset = new(0, 0);
@@ -135,6 +143,8 @@ public abstract partial class SharedEntityStorageComponent : Component
 [Serializable, NetSerializable]
 public sealed class EntityStorageComponentState : ComponentState
 {
+    public bool OpenOnActivate; // Exodus: synchronize activation behavior for client prediction.
+
     public bool Open;
 
     public int Capacity;
@@ -147,8 +157,9 @@ public sealed class EntityStorageComponentState : ComponentState
 
     public TimeSpan NextInternalOpenAttempt;
 
-    public EntityStorageComponentState(bool open, int capacity, bool isCollidableWhenOpen, bool openOnMove, float enteringRange, TimeSpan nextInternalOpenAttempt)
+    public EntityStorageComponentState(bool open, int capacity, bool isCollidableWhenOpen, bool openOnMove, float enteringRange, TimeSpan nextInternalOpenAttempt, bool openOnActivate) // Exodus: include activation behavior.
     {
+        OpenOnActivate = openOnActivate; // Exodus
         Open = open;
         Capacity = capacity;
         IsCollidableWhenOpen = isCollidableWhenOpen;
