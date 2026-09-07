@@ -29,6 +29,8 @@ public abstract partial class SharedShuttleSystem
         if (string.IsNullOrEmpty(name))
             name = Loc.GetString("shuttle-console-unknown");
 
+        name = _iffAffiliation.GetGridName(grid, name);
+
         if (!_iffAffiliation.HasCorporateControlLabel(grid) ||
             !_iffAffiliation.TryGetLabel(grid, out var affiliation))
         {

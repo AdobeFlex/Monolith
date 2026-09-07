@@ -83,6 +83,12 @@ public sealed class CompanyTerritoryBannerSystem : EntitySystem
         if (ShouldClearCorporateController((args.Grid, territory), args.NewFaction))
             _territory.ClearCorporateController(args.Grid, args.Actor);
 
+        if (!_territory.AllowsCorporateControl(args.Grid))
+        {
+            _territory.ClearCorporateController(args.Grid, args.Actor);
+            return;
+        }
+
         if (args.NewFaction is null)
             return;
 
@@ -96,7 +102,7 @@ public sealed class CompanyTerritoryBannerSystem : EntitySystem
         if (territory.Comp.ActiveCorporateBanner is not { } activeBanner)
             return false;
 
-        if (newFaction is null)
+        if (newFaction is null || !_territory.AllowsCorporateControl(territory.Owner))
         {
             ClearActiveBannerBlip(activeBanner);
             return true;
@@ -146,6 +152,12 @@ public sealed class CompanyTerritoryBannerSystem : EntitySystem
         if (territory.ControllingFaction is not { } faction)
         {
             DenyAnchor(ent.Owner, args.User, "company-territory-banner-neutral", args);
+            return;
+        }
+
+        if (!_territory.AllowsCorporateControl(grid))
+        {
+            DenyAnchor(ent.Owner, args.User, "company-territory-banner-disabled", args);
             return;
         }
 

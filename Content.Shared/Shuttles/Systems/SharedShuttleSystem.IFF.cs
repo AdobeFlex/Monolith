@@ -35,7 +35,7 @@ public abstract partial class SharedShuttleSystem
 
     public string? GetIFFLabel(EntityUid gridUid, bool self = false, IFFComponent? component = null)
     {
-        var entName = MetaData(gridUid).EntityName;
+        var entName = _iffAffiliation.GetGridName(gridUid, MetaData(gridUid).EntityName); // Exodus - transient territory status.
 
         if (self)
         {

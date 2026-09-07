@@ -61,6 +61,15 @@ public sealed partial class IffAffiliationSystem : EntitySystem
         if (affiliation == null && territory == null)
             return false;
 
+        if (affiliation?.Mode != IffAffiliationMode.None &&
+            territory is { Claimable: true, ControllingFaction: { } controller } &&
+            _prototype.TryIndex(controller, out var controllerPrototype) &&
+            controllerPrototype.ControlLabel is { } controlLabel)
+        {
+            label = Loc.GetString(controlLabel);
+            return true;
+        }
+
         switch (affiliation?.Mode ?? IffAffiliationMode.CorporateControl)
         {
             case IffAffiliationMode.None:
@@ -94,6 +103,23 @@ public sealed partial class IffAffiliationSystem : EntitySystem
                     : GetCompanyLabel(territory.CorporateController);
                 return true;
         }
+    }
+
+    /// <summary>
+    /// Formats an optional territory status without persisting it in the station's actual name.
+    /// </summary>
+    public string GetGridName(EntityUid grid, string name)
+    {
+        if (_territoryQuery.TryGetComponent(grid, out var territory) &&
+            territory is { Claimable: true, ControllingFaction: { } controller } &&
+            _prototype.TryIndex(controller, out var faction) &&
+            faction.IffStatus is { } status)
+        {
+            var displayName = string.IsNullOrEmpty(name) ? Loc.GetString("shuttle-console-unknown") : name;
+            return Loc.GetString("exodus-iff-territory-status", ("name", displayName), ("status", Loc.GetString(status)));
+        }
+
+        return name;
     }
 
     /// <summary>

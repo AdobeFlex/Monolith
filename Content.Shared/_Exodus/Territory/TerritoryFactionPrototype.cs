@@ -52,6 +52,32 @@ public sealed partial class TerritoryFactionPrototype : IPrototype
     public TerritoryDiscountAlignment DiscountAlignment { get; private set; } = TerritoryDiscountAlignment.Positive;
 
     /// <summary>
+    /// Whether corporations may establish a secondary claim inside this faction's territory.
+    /// </summary>
+    [DataField]
+    public bool AllowCorporateControl { get; private set; } = true;
+
+    /// <summary>
+    /// Multiplier for natural healing of matching TerritoryRegeneration recipients on a controlled grid.
+    /// Does not affect positive passive damage, medical healing or entities without that component.
+    /// </summary>
+    [DataField]
+    public float PassiveHealingMultiplier { get; private set; } = 1f;
+
+    /// <summary>
+    /// Optional status appended to the grid name on both navigation and FTL maps.
+    /// Does not rename the actual grid or replace an existing name suffix.
+    /// </summary>
+    [DataField]
+    public LocId? IffStatus;
+
+    /// <summary>
+    /// Optional replacement for the corporate-control placeholder on the navigation radar.
+    /// </summary>
+    [DataField]
+    public LocId? ControlLabel;
+
+    /// <summary>
     /// Optional cooldown before this faction can claim another territory.
     /// If unset, territoryClaimRules.defaultFactionClaimCooldown is used.
     /// Zero disables per-faction claim cooldown for this faction.

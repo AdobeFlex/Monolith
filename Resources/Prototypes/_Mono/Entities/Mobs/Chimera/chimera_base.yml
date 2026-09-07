@@ -117,6 +117,8 @@
         Brute: -1.2
         Burn: -1.2
         Genetic: -0.1
+  - type: TerritoryRegeneration # Exodus - opt into healing on the hive's controlled grid.
+    faction: Chimera # Exodus - no bonus for biomass or unrelated creatures.
   - type: Targeting
   - type: Flammable
     fireSpread: true

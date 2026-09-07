@@ -5,6 +5,16 @@
   id: MobLetoferolHorror
   name: chimera fleshbeast
   components:
+  # Exodus-begin 1x1 radar marker, independent of player control.
+  - type: RadarBlip
+    requireNoGrid: false
+    visibleFromOtherGrids: true
+    config:
+      color: "#FF6A00"
+      shape: Square
+      bounds: "-0.5,-0.5,0.5,0.5"
+      respectZoom: true
+  # Exodus-end
   - type: MovementSpeedModifier
     baseWalkSpeed : 2.7
     baseSprintSpeed : 4.85
@@ -59,6 +69,13 @@
     - ActionSpawnBiomassTile
     - ActionSpawnBiomassWall
     - ActionSpawnLetoferolBeast
+    - ActionGrowChimeraCore # Exodus - player-built territory core.
+  # Exodus-begin territorial hive construction, including inherited ghost-role reinforcements.
+  - type: GrowTerritoryCore
+    core: ExodusChimeraCore
+    growDelay: 60
+    requireRepairIntegrity: false
+  # Exodus-end
   #- type: ActionGun
   #  action: ActionLetoferolSpike
   #  gunProto: LetoferolSpikeGun

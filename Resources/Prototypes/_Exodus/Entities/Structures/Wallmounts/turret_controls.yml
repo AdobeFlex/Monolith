@@ -1,0 +1,11 @@
+# Heavy sentry panels start in the same lethal mode as their linked turrets.
+- type: entity
+  parent: WeaponEnergyTurretStationControlPanel
+  id: BaseExodusHeavyTurretControlPanel
+  abstract: true
+  components:
+  - type: DeployableTurretController
+    armamentState: 1
+  - type: Appearance
+    appearanceDataInit:
+      enum.TurretControllerVisuals.ControlPanel: !type:Int32 1
