@@ -232,7 +232,7 @@
 # --- Drake Industries ---
 - type: latheRecipe
   id: SyndicateBombCerberus
-  result: SyndicateBomb
+  result: DrakeBomb
   completetime: 30
   materials:
     Steel: 5000
