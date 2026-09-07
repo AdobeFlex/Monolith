@@ -23,6 +23,10 @@
     regenDelay: 7
     regenInterval: 2
     chargeCostMultiplier: 1
+    # Includes all vine variants, including chimera biomass. Inherited by Blackhawk armor.
+    targetBlacklist:
+      components:
+      - Kudzu
     # Empty absorbRatios = all positive damage types at 100%.
     # Example selective setup:
     # absorbRatios:
