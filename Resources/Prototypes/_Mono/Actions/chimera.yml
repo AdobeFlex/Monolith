@@ -3,6 +3,7 @@
   name: Plant Biomass
   description: Spawns a growth of biomass that can expand outwards.
   components:
+  - type: ActionTargetingCursor # Exodus - opt in to the action targeting cursor.
   - type: WorldTargetAction
     checkCanAccess: true
     useDelay: 5
@@ -21,6 +22,7 @@
   name: Plant Flesh Wall
   description: Spawns a thick wall of biomass.
   components:
+  - type: ActionTargetingCursor # Exodus - opt in to the action targeting cursor.
   - type: WorldTargetAction
     checkCanAccess: true
     useDelay: 1
@@ -39,6 +41,7 @@
   name: Letoferol Beast
   description: Create another lower letoferol beast.
   components:
+  - type: ActionTargetingCursor # Exodus - opt in to the action targeting cursor.
   - type: WorldTargetAction
     checkCanAccess: true
     useDelay: 120
