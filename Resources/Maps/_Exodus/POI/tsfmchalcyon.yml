@@ -30341,7 +30341,8 @@ entities:
       powerLoad: 5
     - type: Battery
       startingCharge: 0
-- proto: ComputerCloningConsole
+# Life insurance auto-links the scanner 1 m away and the cloner 2 m away (default range: 4 m).
+- proto: LifeInsuranceConsole
   entities:
   - uid: 5375
     components:
@@ -30349,17 +30350,6 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 13.5,-11.5
       parent: 1
-    - type: ApcPowerReceiver
-      powerLoad: 5
-    - type: DeviceLinkSource
-      linkedPorts:
-        5561:
-        - - MedicalScannerSender
-          - MedicalScannerReceiver
-        - - CloningPodSender
-          - MedicalScannerReceiver
-    - type: Battery
-      startingCharge: 0
 - proto: ComputerCrewMonitoring
   entities:
   - uid: 4626
@@ -48576,7 +48566,7 @@ entities:
     - type: Transform
       pos: 19.5,-13.5
       parent: 1
-- proto: MedicalScanner
+- proto: LifeInsuranceScanner
   entities:
   - uid: 5561
     components:
@@ -57074,13 +57064,6 @@ entities:
     - type: Transform
       pos: 21.5,-6.5
       parent: 1
-- proto: VendingMachineClothing
-  entities:
-  - uid: 6951
-    components:
-    - type: Transform
-      pos: 15.5,-10.5
-      parent: 1
 - proto: VendingMachineCondiments
   entities:
   - uid: 8116
@@ -57143,6 +57126,11 @@ entities:
       parent: 1
 - proto: VendingMachineNfsdDrobe
   entities:
+  - uid: 6951
+    components:
+    - type: Transform
+      pos: 15.5,-10.5
+      parent: 1
   - uid: 8126
     components:
     - type: Transform
