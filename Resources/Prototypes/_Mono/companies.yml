@@ -137,7 +137,7 @@
   id: MMC
   name: mmc-company-name # Exodus MMC localization
   description: mmc-company-description # Exodus MMC localization
-  color: "#EEEEEE"
+  color: "#FF8800" # Exodus: match the MMC communications console announcement color.
   disabled: true
 
 # Major companies
