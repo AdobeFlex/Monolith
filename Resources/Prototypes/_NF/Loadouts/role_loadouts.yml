@@ -16,21 +16,21 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Contractor
-# mono: give vagrants mercenary loadout options
+# Exodus: restore civilian clothing groups instead of mercenary loadout options.
 - type: roleLoadout
   id: JobContractor
   groups:
-  - MercenaryHead
+  - ContractorHead # Exodus
   - ContractorNeck
-  - MercenaryJumpsuit
-  - MercenaryGloves
-  - MercenaryBackpack
+  - ContractorJumpsuit # Exodus
+  - ContractorGloves # Exodus
+  - ContractorBackpack # Exodus
   - ContractorOuterClothing
-  - MercenaryShoes
-  - MercenaryFace
-  - MercenaryGlasses
-  - MercenaryBelt
-  - MercenaryEars
+  - ContractorShoes # Exodus
+  - ContractorFace # Exodus
+  - ContractorGlasses # Exodus
+  - ContractorBelt # Exodus
+  - ContractorEars # Exodus
   - ContractorEncryptionKey
   - ContractorBoxSurvival
   - ContractorPDA
@@ -42,7 +42,7 @@
   - ContractorTrinkets
   - ContractorBureaucracy
   - NFSpeciesSpecific
-  - MercenaryBalaclava # Mono
+  # Exodus: no mercenary balaclava group for contractors.
   - ContractorFirearm # Mono
   - ContractorMag # Mono
 # - CivGunCaseSpecial # Mono
