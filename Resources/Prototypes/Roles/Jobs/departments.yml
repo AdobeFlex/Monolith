@@ -120,11 +120,13 @@
   - Bailiff
   - Sheriff
   - SeniorOfficer
+  - TsfMarsoc # Exodus: count the lobby operative as a combatant.
   - Pirate
   - PirateFirstMate
   - PirateCaptain
   - PDVDenasvar
   - PDVInfiltrator
+  - PDVTarkhan # Exodus: count the lobby operative as a combatant.
   - AsakimWarrior # Exodus asakim-combatant
   - AsakimCenturion # Exodus asakim-combatant
   - AsakimPrefect # Exodus asakim-combatant

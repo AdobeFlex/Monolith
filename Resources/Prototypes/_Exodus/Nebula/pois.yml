@@ -313,8 +313,6 @@
   - type: SolarPoweredGrid
     trackOnInit: true
     doNotCull: true
-  - type: Tower7G # Exodus-Adminbus
-    range: 256
   - type: ForceAnchor
   - type: Tag
     tags: [ POI ]
@@ -406,8 +404,6 @@
   - type: SolarPoweredGrid
     trackOnInit: true
     doNotCull: true
-  - type: Tower7G # Exodus-Adminbus
-    range: 256
   - type: ForceAnchor
   - type: Tag
     tags: [ POI ]
@@ -435,8 +431,6 @@
     trackOnInit: true
     doNotCull: true
   - type: StationTransit
-  - type: Tower7G # Exodus-Adminbus
-    range: 256
   - type: ForceAnchor
   - type: Tag
     tags: [ POI ]
@@ -516,8 +510,6 @@
   - type: SolarPoweredGrid
     trackOnInit: true
     doNotCull: true
-  - type: Tower7G # Exodus-Adminbus
-    range: 256
   - type: ForceAnchor
   - type: Tag
     tags: [ POI ]
