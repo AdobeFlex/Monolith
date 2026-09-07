@@ -1021,18 +1021,26 @@ entities:
     - type: Transform
       pos: 1.5,-0.5
       parent: 1
+# Exodus-begin: faction and civilian claims in the unobstructed central corridor.
 - proto: BannerNGC
   entities:
   - uid: 1295
     components:
     - type: Transform
-      pos: 19.5,3.5
+      pos: 23.5,-2.5
       parent: 1
+      anchored: true
+- proto: CompanyTerritoryBannerTSFCivilian
+  entities:
   - uid: 1296
     components:
     - type: Transform
-      pos: 19.5,-8.5
+      pos: 25.5,-2.5
       parent: 1
+      anchored: true
+    - type: CompanyTerritoryBanner
+      territoryFaction: TSFMC
+# Exodus-end
 - proto: BlastDoor
   entities:
   - uid: 115

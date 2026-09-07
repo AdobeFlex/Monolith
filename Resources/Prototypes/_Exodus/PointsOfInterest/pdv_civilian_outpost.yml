@@ -8,17 +8,12 @@
   gridPath: /Maps/_Exodus/POI/tsfmcoutpost.yml
   addComponents:
   - type: IffAffiliation
-    mode: FixedCompany
-    company: PDVCivilian
-    faction: PDV
+    mode: CorporateControl
   - type: IFF
     color: "#D2B48C"
     readOnly: true
   - type: SolarPoweredGrid
     doNotCull: true
-  - type: NpcFactionMember
-    factions:
-    - PirateNF
   - type: WorldGenDistanceCarver
     distanceThresholds:
     - maxDistance: 800
@@ -35,13 +30,11 @@
   stations:
     PDVCivilianOutpost:
       stationProto: StandardFrontierOutpost
-      # Civilian infrastructure, like Stellar Blessing: no capturable territory.
+      # Ownership comes from the faction and civilian banners placed on the map.
       gridComponents:
       - type: VesselInfo
         description: "Захваченный аванпост Транс-Солнечной Федерации, переоборудованный для гражданских нужд Династии Фаэтон. Здесь базируются гражданские наёмники ДФ."
-      - type: NpcFactionMember
-        factions:
-        - PirateNF
+      - type: GridTerritory
       components:
       - type: StationNameSetup
         mapNameTemplate: 'ДФ-ГРАЖД | Аванпост гражданских ДФ'

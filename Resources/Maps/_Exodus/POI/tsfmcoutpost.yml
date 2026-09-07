@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 09/07/2026 08:08:04
-  entityCount: 1069
+  entityCount: 1072
 maps: []
 grids:
 - 1
@@ -1239,6 +1239,14 @@ entities:
     - type: Transform
       pos: 3.5,-7.5
       parent: 1
+- proto: BannerPDV
+  entities:
+  - uid: 1113
+    components:
+    - type: Transform
+      pos: 1.5,5.5
+      parent: 1
+      anchored: true
 - proto: CableApcExtension
   entities:
   - uid: 386
@@ -2769,6 +2777,16 @@ entities:
     - type: Transform
       pos: -7.5,-20.5
       parent: 1
+- proto: CompanyTerritoryBannerPDVCivilian
+  entities:
+  - uid: 1114
+    components:
+    - type: Transform
+      pos: 3.5,5.5
+      parent: 1
+      anchored: true
+    - type: CompanyTerritoryBanner
+      territoryFaction: PDV
 - proto: ComputerAdvancedRadar
   entities:
   - uid: 209
@@ -5349,6 +5367,14 @@ entities:
     - type: Transform
       pos: 2.5,-5.5
       parent: 1
+- proto: ShieldGeneratorPOISmall
+  entities:
+  - uid: 1115
+    components:
+    - type: Transform
+      pos: -0.5,-16.5
+      parent: 1
+      anchored: true
 - proto: SMESAdvanced
   entities:
   - uid: 300

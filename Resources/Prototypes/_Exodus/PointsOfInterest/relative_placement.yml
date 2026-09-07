@@ -16,8 +16,8 @@
   id: TSFIndustryNearFlagship
   poi: TSFMCIndustry
   anchorPoi: TSFMCHalcyon
-  minDistance: 3000
-  maxDistance: 4000
+  minDistance: 5500
+  maxDistance: 6000
 
 # Place the existing round-start Jupiter POI near Helios; arrival-beacon ships are unaffected.
 - type: relativePoiPlacement
@@ -48,5 +48,5 @@
   id: PDVCivilianOutpostNearHelios
   poi: PDVCivilianOutpost
   anchorPoi: HeliosFortress
-  minDistance: 3800
-  maxDistance: 3900
+  minDistance: 5500
+  maxDistance: 6000

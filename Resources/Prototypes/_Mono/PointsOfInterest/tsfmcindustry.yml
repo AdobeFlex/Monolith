@@ -15,18 +15,14 @@
   spawnGroup: Required
   gridPath: /Maps/_Mono/POI/tsfmc_industry.yml
   addComponents:
-  - type: IffAffiliation # Exodus fixed civilian organization, faction-only color.
-    mode: FixedCompany
-    company: TSFCivilian
-    faction: TSFMC
+  - type: IffAffiliation # Exodus civilian ownership is established by the mapped banners.
+    mode: CorporateControl
   - type: IFF
     color: "#047abd"
     readOnly: true
   - type: SolarPoweredGrid
     doNotCull: true
-  - type: NpcFactionMember # Exodus TSF civilian affiliation
-    factions:
-    - TSFMC
+  # Exodus: the territory controller supplies the grid's NPC faction.
   - type: WorldGenDistanceCarver
     distanceThresholds:
     # Dead zone
@@ -48,9 +44,7 @@
       gridComponents:
       - type: VesselInfo
         description: "Колониальный корабль Федерации, направленный в радиус Колосса для промышленного освоения. Здесь живут гражданские ТСФ." # Exodus Stellar Blessing localization
-      - type: NpcFactionMember # Exodus TSF civilian affiliation
-        factions:
-        - TSFMC
+      - type: GridTerritory # Exodus civilian territory uses the PoiSmall profile and mapped banners.
       components:
         - type: StationNameSetup
           mapNameTemplate: 'ТСФ-ГРАЖД «Звёздное благословение»' # Exodus Stellar Blessing localization

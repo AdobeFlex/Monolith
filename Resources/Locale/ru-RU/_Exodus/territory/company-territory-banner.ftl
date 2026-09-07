@@ -37,6 +37,11 @@ ent-CompanyTerritoryBannerViper = Знамя «{ viper-group-name }»
 
 company-territory-banner-description = Знамя корпорации, закрепляющее её присутствие на территории выбранной фракции.
 
+ent-CompanyTerritoryBannerTSFCivilian = гражданское знамя ТСФ
+    .desc = Сине-белое знамя со звездой Транс-Солнечной Федерации. { company-territory-banner-description }
+ent-CompanyTerritoryBannerPDVCivilian = гражданское знамя ДФ
+    .desc = Бордовое знамя со светлыми вертикальными полосами и золотой эмблемой Династии Фаэтон. { company-territory-banner-description }
+
 company-territory-banner-no-territory = Знамя можно устанавливать только на территории станции.
 company-territory-banner-disabled = На этой территории нельзя устанавливать корпоративное знамя.
 company-territory-banner-neutral = Сначала территория должна принадлежать одной из фракций.
