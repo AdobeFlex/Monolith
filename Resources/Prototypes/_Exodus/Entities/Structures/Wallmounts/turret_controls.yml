@@ -8,4 +8,5 @@
     armamentState: 1
   - type: Appearance
     appearanceDataInit:
-      enum.TurretControllerVisuals.ControlPanel: !type:Int32 1
+      # GenericVisualizer compares appearance values as strings.
+      enum.TurretControllerVisuals.ControlPanel: !type:String "1"
