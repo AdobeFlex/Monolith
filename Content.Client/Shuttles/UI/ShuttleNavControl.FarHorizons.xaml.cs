@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Shared._Exodus.StarSystem; // Exodus
 using Content.Shared._FarHorizons.StarSystem;
 using Content.Shared._FarHorizons.StarSystem.Helpers;
 using Content.Shared.Shuttles.Components;
@@ -25,6 +26,10 @@ public partial class ShuttleNavControl
 
         foreach (var planet in starSystem.StarSystem.Planets)
         {
+            // Exodus: hide distant planetary discs together with their ordinary radar markers.
+            if (Vector2.Transform(planet.Position, worldToShuttle).LengthSquared() > planet.RadarRange * planet.RadarRange)
+                continue;
+
             var planetPos = Vector2.Transform(planet.Position, worldToView);
             var planetRadius = Planet.NAV_PIXEL_SIZE * planet.Radius * viewScale;
             handle.DrawCircle(planetPos, planetRadius, Color.Gray.WithAlpha(0.5f));
@@ -43,6 +48,7 @@ public partial class ShuttleNavControl
         var uiYCentre = (int)Height / 2;
         var blipSize = RadarBlipSize * 0.7f;
 
+        var planetQuery = EntManager.GetEntityQuery<PlanetMarkerComponent>(); // Exodus
         var query = EntManager.AllEntityQueryEnumerator<IFFComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var iff, out var xform))
         {
@@ -51,11 +57,16 @@ public partial class ShuttleNavControl
                 (iff.Flags & IFFFlags.Hide) != 0x0)
                 continue;
 
+            // Exodus: planet range is independent of the ordinary shuttle IFF limit.
+            var worldPos = _transform.GetWorldPosition(xform);
+            var distanceSquared = Vector2.DistanceSquared(worldPos, mapPos.Position);
+            if (planetQuery.TryGetComponent(uid, out var planet) && distanceSquared > planet.RadarRange * planet.RadarRange)
+                continue;
+
             if (_shuttles.GetIFFLabel(uid, component: iff) is not { } label)
                 continue;
 
             var color = _shuttles.GetIFFColor(uid, self: false, iff);
-            var worldPos = _transform.GetWorldPosition(uid);
             var uiPosition = Vector2.Transform(worldPos, worldToView) / UIScale;
 
             var uiXOffset = uiPosition.X - uiXCentre;
@@ -75,7 +86,7 @@ public partial class ShuttleNavControl
 
             NfAddBlipToList(_beaconBlips, isOutsideRadarCircle, uiPosition, uiXCentre, uiYCentre, color);
 
-            var distance = Vector2.Distance(worldPos, mapPos.Position);
+            var distance = MathF.Sqrt(distanceSquared); // Exodus reuse the planet range check.
             var displayedDistance = distance < 50f ? $"{distance:0.0}" : distance < 1000 ? $"{distance:0}" : $"{distance / 1000:0.0}k";
 
             var lines = Loc.GetString("shuttle-console-iff-label", ("name", label), ("distance", displayedDistance)).Split('\n');

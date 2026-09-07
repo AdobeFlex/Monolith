@@ -1,5 +1,6 @@
 using Content.Server.GameTicking;
 using Content.Shared._Exodus.Shuttles; // Exodus
+using Content.Shared._Exodus.StarSystem; // Exodus
 using Content.Shared._FarHorizons.StarSystem;
 using Content.Shared._FarHorizons.StarSystem.Helpers;
 using Content.Shared._FarHorizons.StarSystem.Prototypes;
@@ -34,6 +35,10 @@ public sealed partial class StarSystemMapSystem : SharedStarSystemMapSystem
 
     public void SetSystem(Entity<StarSystemMapComponent> ent, ProtoId<StarSystemPrototype> system)
     {
+        // Exodus: loading another grid or restarting preset rules must not duplicate the same system.
+        if (ent.Comp.System == system && ent.Comp.StarSystem != null)
+            return;
+
         ent.Comp.System = system;
         ent.Comp.StarSystem = BuildPlanetarySystem(system);
         Dirty(ent);
@@ -65,6 +70,10 @@ public sealed partial class StarSystemMapSystem : SharedStarSystemMapSystem
                 var planetCoords = new EntityCoordinates(ent, planet.Position);
                 var spawnedPlanet = SpawnAtPosition(planetEnt.ID, planetCoords);
                 // Exodus-begin localized planet names and configurable classification labels.
+                var marker = EnsureComp<PlanetMarkerComponent>(spawnedPlanet);
+                marker.Planet = planet.Prototype;
+                marker.RadarRange = planet.RadarRange;
+                Dirty(spawnedPlanet, marker);
                 _metadata.SetEntityName(spawnedPlanet, Loc.TryGetString(planet.Name, out var localizedName) ? localizedName : planet.Name);
                 if (planet.RadarLabel is { } label)
                 {

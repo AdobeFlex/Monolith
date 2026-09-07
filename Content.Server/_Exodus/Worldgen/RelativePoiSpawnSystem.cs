@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Shared._Exodus.StarSystem;
 using Content.Shared._NF.CCVar;
 using Robust.Shared.Configuration;
 using Robust.Shared.EntitySerialization.Systems;
@@ -60,13 +61,17 @@ public sealed class RelativePoiSpawnSystem : EntitySystem
                 Log.Error($"Multiple relative POI rules target {target}.");
             }
 
-            if ((rule.AnchorPoi == null) == (rule.AnchorNebulaPoi == null) ||
+            var anchorCount = (rule.AnchorPoi != null ? 1 : 0) +
+                              (rule.AnchorNebulaPoi != null ? 1 : 0) +
+                              (rule.AnchorPlanet != null ? 1 : 0);
+            if (anchorCount != 1 ||
                 !float.IsFinite(rule.MinDistance) || !float.IsFinite(rule.MaxDistance) ||
                 rule.MinDistance < 0 || rule.MaxDistance < rule.MinDistance ||
                 rule.Poi is { } poi && !_prototypes.HasIndex(poi) ||
                 rule.NebulaPoi is { } nebula && !_prototypes.HasIndex(nebula) ||
                 rule.AnchorPoi is { } anchor && !_prototypes.HasIndex(anchor) ||
-                rule.AnchorNebulaPoi is { } anchorNebula && !_prototypes.HasIndex(anchorNebula))
+                rule.AnchorNebulaPoi is { } anchorNebula && !_prototypes.HasIndex(anchorNebula) ||
+                rule.AnchorPlanet is { } anchorPlanet && !_prototypes.HasIndex(anchorPlanet))
             {
                 state.InvalidTargets.Add(target);
                 Log.Error($"Relative POI rule {rule.ID}: invalid anchor, prototype reference or distance range.");
@@ -86,6 +91,10 @@ public sealed class RelativePoiSpawnSystem : EntitySystem
                     Log.Error($"Relative POI rule {rule.ID}: cyclic or invalid dependency chain.");
                     break;
                 }
+
+                // Planets are generated independently and terminate POI dependency chains.
+                if (dependency.AnchorPlanet != null)
+                    break;
 
                 current = Anchor(dependency);
             }
@@ -128,7 +137,7 @@ public sealed class RelativePoiSpawnSystem : EntitySystem
                     continue;
                 }
 
-                if (FindAnchors(map, Anchor(rule)).Count == 0)
+                if (FindAnchors(map, rule).Count == 0)
                 {
                     i++;
                     continue;
@@ -179,7 +188,7 @@ public sealed class RelativePoiSpawnSystem : EntitySystem
         float clearance, Func<Vector2, bool>? filter, out Entity<MapGridComponent>? grid)
     {
         grid = null;
-        var anchors = FindAnchors(map, Anchor(rule));
+        var anchors = FindAnchors(map, rule);
         if (anchors.Count == 0)
             return false;
 
@@ -189,11 +198,13 @@ public sealed class RelativePoiSpawnSystem : EntitySystem
         for (var attempt = 0; attempt < retries; attempt++)
         {
             var anchor = anchors[attempt % anchors.Count];
-            if (Deleted(anchor) || !TryComp<MapGridComponent>(anchor, out var anchorGrid))
+            if (Deleted(anchor) || EntityManager.IsQueuedForDeletion(anchor))
                 continue;
 
             var anchorXform = Transform(anchor);
-            var anchorCenter = _transform.GetWorldMatrix(anchorXform).TransformBox(anchorGrid.LocalAABB).Center;
+            var anchorCenter = TryComp<MapGridComponent>(anchor, out var anchorGrid)
+                ? _transform.GetWorldMatrix(anchorXform).TransformBox(anchorGrid.LocalAABB).Center
+                : _transform.GetWorldPosition(anchorXform);
             // Uniform area distribution across the annulus; double avoids overflow when squaring.
             var minSquared = (double) rule.MinDistance * rule.MinDistance;
             var maxSquared = (double) rule.MaxDistance * rule.MaxDistance;
@@ -223,7 +234,8 @@ public sealed class RelativePoiSpawnSystem : EntitySystem
                 continue;
 
             grid = candidate;
-            Log.Info($"Relative POI {rule.ID}: placed at {Vector2.Distance(position, anchorCenter):0} m from {Anchor(rule)}.");
+            var anchorName = rule.AnchorPlanet is { } planet ? $"planet {planet}" : Anchor(rule).ToString();
+            Log.Info($"Relative POI {rule.ID}: placed at {Vector2.Distance(position, anchorCenter):0} m from {anchorName}.");
             return true;
         }
 
@@ -264,9 +276,23 @@ public sealed class RelativePoiSpawnSystem : EntitySystem
         return true;
     }
 
-    private List<EntityUid> FindAnchors(MapId map, PoiSpawnKey key)
+    private List<EntityUid> FindAnchors(MapId map, RelativePoiPlacementPrototype rule)
     {
         var result = new List<EntityUid>();
+        if (rule.AnchorPlanet is { } planet)
+        {
+            // Include paused planets: POIs are placed before the main map is initialized.
+            var planets = AllEntityQuery<PlanetMarkerComponent, TransformComponent>();
+            while (planets.MoveNext(out var uid, out var marker, out var xform))
+            {
+                if (marker.Planet == planet && xform.MapID == map &&
+                    !Deleted(uid) && !EntityManager.IsQueuedForDeletion(uid))
+                    result.Add(uid);
+            }
+            return result;
+        }
+
+        var key = Anchor(rule);
         var query = AllEntityQuery<PoiSpawnIdentityComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var identity, out var xform))
         {

@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Content.Server._Exodus.Worldgen;
+using Content.Shared._Exodus.StarSystem;
 using Content.Shared._NF.CCVar;
 using Robust.Shared.Configuration;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Map;
 using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
@@ -60,7 +62,67 @@ public sealed class RelativePoiSpawnTest
   anchorPoi: TestRelativePoiA
   minDistance: 3000
   maxDistance: 5000
+
+- type: pointOfInterest
+  id: TestRelativePlanetPoi
+  name: Test planet-relative POI
+  gridPath: /Maps/Test/Breathing/3by3-20oxy-80nit.yml
+  spawnGroup: TestRelativePois
+  spawnChance: 0
+
+- type: relativePoiPlacement
+  id: TestRelativePlanet
+  poi: TestRelativePlanetPoi
+  anchorPlanet: PlanetFervidus
+  minDistance: 4000
+  maxDistance: 6000
 """;
+
+    [Test]
+    public async Task PlanetAnchorUsesPositionOnTheSamePausedMapWithoutAnExtraCopy()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var entities = server.ResolveDependency<IEntityManager>();
+
+        await server.WaitAssertion(() =>
+        {
+            var maps = entities.System<SharedMapSystem>();
+            var placement = entities.System<RelativePoiSpawnSystem>();
+            var transform = entities.System<SharedTransformSystem>();
+            var mapUid = maps.CreateMap(out var mapId, runMapInit: false);
+            var otherMapUid = maps.CreateMap(out _, runMapInit: false);
+            var position = new Vector2(20000, -30000);
+            try
+            {
+                placement.Begin(mapId);
+                var output = new List<EntityUid>();
+                Assert.That(placement.QueueIfRelative(mapId, new(false, "TestRelativePlanetPoi"), output));
+
+                var wrongMapPlanet = entities.SpawnEntity(null, new EntityCoordinates(otherMapUid, position));
+                entities.AddComponent<PlanetMarkerComponent>(wrongMapPlanet).Planet = "PlanetFervidus";
+                placement.ProcessPending(mapId);
+                Assert.That(output, Is.Empty);
+
+                var planet = entities.SpawnEntity(null, new EntityCoordinates(mapUid, position));
+                entities.AddComponent<PlanetMarkerComponent>(planet).Planet = "PlanetFervidus";
+                placement.ProcessPending(mapId, final: true);
+                Assert.That(output, Has.Count.EqualTo(1));
+                var grid = entities.GetComponent<Robust.Shared.Map.Components.MapGridComponent>(output[0]);
+                var center = transform.GetWorldMatrix(output[0]).TransformBox(grid.LocalAABB).Center;
+                Assert.That(Vector2.Distance(position, center), Is.InRange(3999.99f, 6000.01f));
+
+                placement.ProcessPending(mapId, final: true);
+                Assert.That(output, Has.Count.EqualTo(1));
+            }
+            finally
+            {
+                entities.DeleteEntity(mapUid);
+                entities.DeleteEntity(otherMapUid);
+            }
+        });
+        await pair.CleanReturnAsync();
+    }
 
     [Test]
     public async Task AbsoluteDistanceUsesGridCentersEvenWithSectorScaling()

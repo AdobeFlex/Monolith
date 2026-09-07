@@ -10,6 +10,8 @@ public sealed partial class PlanetTypePrototype : IPrototype
     [DataField(required: true)] public string Name = default!;
     // Exodus: optional localization key for the planet classification shown instead of IFF affiliation.
     [DataField] public string? RadarLabel;
+    /// <summary>Exodus: ordinary radar visibility distance in meters, independent of FTL map visibility.</summary>
+    [DataField] public float RadarRange = 10000f;
     [DataField(required: true)] public string Shader = default!;
     [DataField(required: true)] public float EarthMass;
     [DataField] public float Rotation;

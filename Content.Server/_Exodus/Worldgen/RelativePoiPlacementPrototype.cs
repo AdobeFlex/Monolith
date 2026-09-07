@@ -1,5 +1,6 @@
 using Content.Server._NF.GameRule;
 using Content.Shared._Exodus.Nebula.Prototypes;
+using Content.Shared._FarHorizons.StarSystem.Prototypes;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server._Exodus.Worldgen;
@@ -7,7 +8,7 @@ namespace Content.Server._Exodus.Worldgen;
 /// <summary>
 /// Changes placement of an existing POI, without changing its selection, map or station setup.
 /// Exactly one target and one anchor must be specified. Distances are absolute world meters
-/// between grid bounding-box centers, independent of the sector distance multiplier.
+/// between grid bounding-box centers (or the planet position), independent of the sector distance multiplier.
 /// </summary>
 [Prototype]
 public sealed partial class RelativePoiPlacementPrototype : IPrototype
@@ -30,6 +31,10 @@ public sealed partial class RelativePoiPlacementPrototype : IPrototype
     /// <summary>Alternative anchor from the nebula POI spawner.</summary>
     [DataField]
     public ProtoId<NebulaPoiPrototype>? AnchorNebulaPoi { get; private set; }
+
+    /// <summary>Alternative anchor: an existing generated planet of this type on the same map.</summary>
+    [DataField]
+    public ProtoId<PlanetTypePrototype>? AnchorPlanet { get; private set; }
 
     /// <summary>Inclusive inner radius in world meters, measured between grid bounds centers.</summary>
     [DataField(required: true)]
