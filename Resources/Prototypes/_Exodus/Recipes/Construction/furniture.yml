@@ -203,3 +203,29 @@
   conditions:
   - !type:TileNotBlocked
   - !type:NoActiveCompanyTerritoryBannerOnGrid
+
+- type: construction
+  id: CompanyTerritoryBannerMMC
+  graph: CompanyTerritoryBannersGraph
+  startNode: start
+  targetNode: CompanyTerritoryBannerMMCNode
+  category: construction-category-furniture
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+  - !type:NoActiveCompanyTerritoryBannerOnGrid
+
+- type: construction
+  id: CompanyTerritoryBannerViper
+  graph: CompanyTerritoryBannersGraph
+  startNode: start
+  targetNode: CompanyTerritoryBannerViperNode
+  category: construction-category-furniture
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+  - !type:TileNotBlocked
+  - !type:NoActiveCompanyTerritoryBannerOnGrid

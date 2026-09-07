@@ -6,7 +6,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 07/07/2026 18:27:47
-  entityCount: 11875
+  entityCount: 11876
 maps: []
 grids:
 - 1
@@ -24933,6 +24933,15 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -28.5,25.5
       parent: 1
+# Movable corporate banner beside the Jackal suit storage; does not pre-claim the home station.
+- proto: CompanyTerritoryBannerViper
+  entities:
+  - uid: 11876
+    components:
+    - type: Transform
+      pos: 20.5,27.5
+      parent: 1
+      anchored: false
 - proto: ComputerCargoOrders
   entities:
   - uid: 1665

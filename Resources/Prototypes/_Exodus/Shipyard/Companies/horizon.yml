@@ -9,6 +9,10 @@
   requiredCompanies:
   - HorizonEnergy
   shuttlePath: /SharedMaps/_Exodus/Shuttles/Companies/horizont/siphon.yml
+  addComponents:
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
   class:
   - Mercenary
   engine:

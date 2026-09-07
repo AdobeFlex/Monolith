@@ -11,6 +11,10 @@
   requiredCompanies:
   - blackhawkpmc
   shuttlePath: /SharedMaps/_Exodus/Shuttles/Companies/blackhawk/kortic.yml
+  addComponents:
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
   class:
   - Mercenary
   engine:

@@ -255,3 +255,31 @@
     node: CompanyTerritoryBannerBratvaNode
   - type: CompanyTerritoryBanner
     company: paycheckbratva
+
+- type: entity
+  id: CompanyTerritoryBannerMMC
+  parent: CompanyTerritoryBannerBase
+  name: MMC banner
+  components:
+  - type: Sprite
+    sprite: _Exodus/Structures/Decoration/company-banner.rsi
+    state: mmc-banner
+  - type: Construction
+    graph: CompanyTerritoryBannersGraph
+    node: CompanyTerritoryBannerMMCNode
+  - type: CompanyTerritoryBanner
+    company: MMC
+
+- type: entity
+  id: CompanyTerritoryBannerViper
+  parent: CompanyTerritoryBannerBase
+  name: Viper Group banner
+  components:
+  - type: Sprite
+    sprite: _Exodus/Structures/Decoration/company-banner.rsi
+    state: viper-banner
+  - type: Construction
+    graph: CompanyTerritoryBannersGraph
+    node: CompanyTerritoryBannerViperNode
+  - type: CompanyTerritoryBanner
+    company: TheViperGroup

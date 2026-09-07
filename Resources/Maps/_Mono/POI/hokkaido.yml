@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 07/31/2026 15:41:36
-  entityCount: 5939
+  entityCount: 5940 # Exodus: added a movable MMC corporate banner.
 maps: []
 grids:
 - 1
@@ -14766,6 +14766,16 @@ entities:
     - type: Transform
       pos: -9.334713,7.8108687
       parent: 1
+# Exodus-begin movable corporate banner beside the MMC cart vendor, on clear floor.
+- proto: CompanyTerritoryBannerMMC
+  entities:
+  - uid: 5940
+    components:
+    - type: Transform
+      pos: -6.5,2.5
+      parent: 1
+      anchored: false
+# Exodus-end
 - proto: ComputerAlert
   entities:
   - uid: 2225
