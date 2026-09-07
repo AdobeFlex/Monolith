@@ -164,19 +164,28 @@ public sealed partial class LatheMenu : FancyWindow
             var adjustedAmount = SharedLatheSystem.AdjustMaterial(amount, prototype.MaterialDiscountScale, multiplier);
             var sheetVolume = _materialStorage.GetSheetVolume(proto);
 
-            var unit = Loc.GetString(proto.Unit);
-            var sheets = adjustedAmount / (float) sheetVolume;
+            var sheets = adjustedAmount / (float)sheetVolume;
+            // Exodus - Inflect material units by amount.
+            var unit = Loc.GetString(proto.Unit, ("amount", sheets));
 
             var availableAmount = _materialStorage.GetMaterialAmount(Entity, id);
             var missingAmount = Math.Max(0, adjustedAmount - availableAmount);
-            var missingSheets = missingAmount / (float) sheetVolume;
+            var missingSheets = missingAmount / (float)sheetVolume;
 
             var name = Loc.GetString(proto.Name);
 
             string tooltipText;
             if (missingSheets > 0)
             {
-                tooltipText = Loc.GetString("lathe-menu-material-amount-missing", ("amount", sheets), ("missingAmount", missingSheets), ("unit", unit), ("material", name));
+                // Exodus-begin - Inflect the missing amount independently.
+                var missingUnit = Loc.GetString(proto.Unit, ("amount", missingSheets));
+                tooltipText = Loc.GetString("lathe-menu-material-amount-missing",
+                    ("amount", sheets),
+                    ("missingAmount", missingSheets),
+                    ("unit", unit),
+                    ("missingUnit", missingUnit),
+                    ("material", name));
+                // Exodus-end
             }
             else
             {

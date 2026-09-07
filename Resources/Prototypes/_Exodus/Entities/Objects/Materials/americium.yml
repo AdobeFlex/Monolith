@@ -22,6 +22,9 @@
     - americium
     - americium_2
     - americium_3
+  - type: Tag
+    tags:
+    - RawMaterial
   - type: Material
   - type: PhysicalComposition
     materialComposition:

@@ -28,12 +28,13 @@
     Glass: 150
     Cloth: 100
 
-# --- Nosske-Eien R&D ---
+# --- Paycheck Bratva ---
 - type: latheRecipe
   id: NearestShuttleTeleporterMachineCircuitboard
   parent: BaseCircuitboardRecipe
   result: NearestShuttleTeleporterMachineCircuitboard
 
+# --- Nosske-Eien R&D ---
 - type: latheRecipe
   id: LifeInsuranceConsoleComputerCircuitboard
   parent: BaseGoldCircuitboardRecipe
@@ -321,7 +322,6 @@
 - type: latheRecipePack
   id: CompanyNosskeDynamic
   recipes:
-  - NearestShuttleTeleporterMachineCircuitboard
   - LifeInsuranceConsoleComputerCircuitboard
   - LifeInsuranceScannerMachineCircuitboard
   - LifeInsuranceClonerMachineCircuitboard
@@ -344,6 +344,11 @@
   - MagazinePistolMaco
 
 - type: latheRecipePack
+  id: CompanyMacoAmmoDynamic
+  recipes:
+  - MagazinePistolMaco
+
+- type: latheRecipePack
   id: CompanyUllmanDynamic
   recipes:
   - WeaponTurretDravonFlatpackUllman
@@ -352,8 +357,12 @@
 - type: latheRecipePack
   id: CompanyCdmDynamic
   recipes:
-  - ShieldGeneratorCdmMachineCircuitboard
   - CdmShieldReserveCartridge
+
+- type: latheRecipePack
+  id: CompanyCdmBoardsDynamic
+  recipes:
+  - ShieldGeneratorCdmMachineCircuitboard
 
 - type: latheRecipePack
   id: CompanyHiveDynamic
@@ -376,6 +385,11 @@
   id: CompanyBratvaDynamic
   recipes:
   - ClothingOuterHardsuitBratva
+
+- type: latheRecipePack
+  id: CompanyBratvaBoardsDynamic
+  recipes:
+  - NearestShuttleTeleporterMachineCircuitboard
 
 - type: latheRecipePack
   id: CompanyAetherionDynamic

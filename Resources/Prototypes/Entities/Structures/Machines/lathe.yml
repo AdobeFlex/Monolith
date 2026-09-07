@@ -365,6 +365,8 @@
     # Exodus-begin company-fleet
     - CompanyHorizonBoardsDynamic
     - CompanyNosskeDynamic
+    - CompanyBratvaBoardsDynamic
+    - CompanyCdmBoardsDynamic
     - CompanyAetherionDynamic
     - CompanyUnsaDynamic
     # Exodus-end
@@ -544,6 +546,10 @@
     - SmartGun #Smart SMG
     - NFMercenaryTechfabDeprecated
     # Mono end
+    # Exodus-begin company-fleet
+    - CompanyMacoDynamic
+    - CompanyDrakeDynamic
+    # Exodus-end
   - type: MaterialStorage
     whitelist:
       tags:
@@ -591,8 +597,7 @@
     - UniversalOrdinance
     # Mono end
     # Exodus-begin company-fleet
-    - CompanyMacoDynamic
-    - CompanyDrakeDynamic
+    - CompanyMacoAmmoDynamic
     # Exodus-end
   - type: MaterialStorage
     whitelist:

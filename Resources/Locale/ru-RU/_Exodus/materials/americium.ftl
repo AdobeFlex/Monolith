@@ -1,5 +1,11 @@
 materials-americium = америций
-materials-unit-cube = кубик
+materials-unit-cube =
+    { $amount ->
+        [one] кубик
+        [few] кубика
+        [many] кубиков
+       *[other] кубика
+    }
 stack-americium = кубик америция
 
 ent-MaterialAmericium = кубик америция

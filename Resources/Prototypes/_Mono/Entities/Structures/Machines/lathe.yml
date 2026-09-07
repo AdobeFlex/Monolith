@@ -59,6 +59,10 @@
     - ResearchedExplosives
     - SecurityEquipment
     - SmartGun
+    # Exodus-begin company-fleet
+    - CompanyMacoDynamic
+    - CompanyDrakeDynamic
+    # Exodus-end
   - type: MaterialStorage
     whitelist:
       tags:
@@ -347,6 +351,10 @@
     - ResearchedExplosives
     - SecurityEquipment
     - SmartGun
+    # Exodus-begin company-fleet
+    - CompanyMacoDynamic
+    - CompanyDrakeDynamic
+    # Exodus-end
   - type: MaterialStorage
     whitelist:
       tags:
@@ -408,6 +416,10 @@
     - ResearchedExplosives
     - SecurityEquipment
     - SmartGun
+    # Exodus-begin company-fleet
+    - CompanyMacoDynamic
+    - CompanyDrakeDynamic
+    # Exodus-end
   - type: MaterialStorage
     whitelist:
       tags:

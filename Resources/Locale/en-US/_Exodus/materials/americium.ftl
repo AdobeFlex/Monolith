@@ -1,5 +1,9 @@
 materials-americium = americium
-materials-unit-cube = cube
+materials-unit-cube =
+    { $amount ->
+        [one] cube
+       *[other] cubes
+    }
 stack-americium = americium cube
 
 ent-MaterialAmericium = americium cube
