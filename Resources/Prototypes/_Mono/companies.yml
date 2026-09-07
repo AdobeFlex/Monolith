@@ -268,14 +268,14 @@
   whitelisted: true
   atmDepositCommission: 0.15 # Exodus corporate ATM commission
 
-# Exodus: Viper Group is available for public job selection.
+# Exodus: Viper Group is assigned through dedicated jobs only.
 - type: company
   id: TheViperGroup
   name: viper-group-name # Ru-Localization
   description: viper-group-description
   color: "#B82121"
   image: /Textures/_Mono/Companies/thevipergroup.png
-  disabled: false # Exodus enable-viper-group
+  disabled: true # Exodus hide Viper Group from manual company selection.
   atmDepositCommission: 0.15 # Exodus corporate ATM commission
 
 - type: company

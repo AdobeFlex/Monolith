@@ -27,6 +27,14 @@
   minDistance: 1200
   maxDistance: 3900
 
+# The TSF carrier starts near Falcon with the same distance range as Jupiter near Helios.
+- type: relativePoiPlacement
+  id: ChengduNearFalcon
+  poi: Chengdu
+  anchorPoi: TSFMCHalcyon
+  minDistance: 1200
+  maxDistance: 3900
+
 # The required Hammer replaces its ordinary placement; no second copy or fallback spawn is added.
 - type: relativePoiPlacement
   id: HammerNearFervidus
