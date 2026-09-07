@@ -12,7 +12,7 @@ territory-faction-ussp = СССП
 # Normally-cased names for interfaces and announcements
 territory-faction-tsf-name = Транс-Солнечная Федерация
 territory-faction-phaeton-name = Династия Фаэтон
-territory-faction-khsira-name = Империя Кхси'ра
+territory-faction-khsira-name = Империя Кхси'Ра
 
 # Neutral / unclaimed state (used when no banner is actively claiming the grid)
 territory-unclaimed = НЕЗАНЯТО
