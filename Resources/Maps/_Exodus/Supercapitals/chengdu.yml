@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 09/07/2026 19:46:51
-  entityCount: 4480
+  entityCount: 4479
 maps: []
 grids:
 - 1
@@ -21616,13 +21616,6 @@ entities:
     components:
     - type: Transform
       pos: -5.5,-70.5
-      parent: 1
-- proto: SpawnPointObserver
-  entities:
-  - uid: 3258
-    components:
-    - type: Transform
-      pos: 0.5,-57.5
       parent: 1
 - proto: StairDark
   entities:
