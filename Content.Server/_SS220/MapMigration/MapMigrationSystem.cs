@@ -1,3 +1,4 @@
+using Content.Server._Exodus.MapMigration; // Exodus: preserve authored door rotations.
 using Content.Server.Shuttles.Components;
 using Content.Shared.Doors.Components;
 using Content.Shared.Tag;
@@ -87,16 +88,11 @@ public sealed partial class MapMigrationSystem_SS220 : EntitySystem
         if (proto?.ID == "FirelockEdge")
             return;
 
-        if (proto != null && proto.Parents != null)
-        {
-            if (Array.IndexOf(proto.Parents, "BaseWindoor") > -1 ||
-                Array.IndexOf(proto.Parents, "Windoor") > -1 ||
-                Array.IndexOf(proto.Parents, "BaseSecureWindoor") > -1 ||
-                Array.IndexOf(proto.Parents, "WindoorSecure") > -1)
-            {
-                return;
-            }
-        }
+        // Exodus-begin
+        // An inherited component also excludes indirect windoor variants from rotation.
+        if (HasComp<DoorAutoRotateDisabledComponent>(airlockUid))
+            return;
+        // Exodus-end
 
         if (transform.Anchored)
         {
