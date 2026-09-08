@@ -146,6 +146,7 @@
     tags:
     - Wall
     - Structure
+    - ShipArmorExcluded # Exodus - dynamic armor does not protect biomass walls.
   - type: Sprite
     sprite: Structures/Walls/meat.rsi
   - type: Icon

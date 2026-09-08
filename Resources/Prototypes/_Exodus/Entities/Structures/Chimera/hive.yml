@@ -44,6 +44,10 @@
   - type: Appearance
   - type: FireVisuals
   - type: AtmosExposed
+  - type: Tag
+    tags:
+    - Structure
+    - ShipArmorExcluded
   - type: TerritoryBanner
     faction: Chimera
     blipColor: "#FF6A00"
