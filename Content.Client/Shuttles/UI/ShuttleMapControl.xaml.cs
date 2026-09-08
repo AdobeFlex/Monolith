@@ -391,7 +391,6 @@ public sealed partial class ShuttleMapControl : BaseShuttleControl
                 var localPos = Vector2.Transform(coords.Position, matty);
                 localPos = localPos with { Y = -localPos.Y };
                 var beaconUiPos = ScalePosition(localPos);
-                var mapObject = GetMapObject(localPos, Angle.Zero, scale: 0.75f, scalePosition: true);
 
                 // Get company color if the beacon has it
                 var displayColor = beaconColor;
@@ -415,10 +414,20 @@ public sealed partial class ShuttleMapControl : BaseShuttleControl
                     displayColor = Color.FromSrgb(beaconCompanyProto.Color);
                 }
 
-                var existingVerts = _verts.GetOrNew(displayColor);
-                var existingEdges = _edges.GetOrNew(displayColor);
-
-                AddMapObject(existingEdges, existingVerts, mapObject);
+                // Exodus-begin planetary beacon icons use a hollow ring.
+                if (planetUid != null)
+                {
+                    var radius = GetMapObjectRadius(0.75f) * MinimapScale;
+                    handle.DrawCircle(beaconUiPos, radius, displayColor, filled: false);
+                }
+                else
+                {
+                    var mapObject = GetMapObject(localPos, Angle.Zero, scale: 0.75f, scalePosition: true);
+                    var existingVerts = _verts.GetOrNew(displayColor);
+                    var existingEdges = _edges.GetOrNew(displayColor);
+                    AddMapObject(existingEdges, existingVerts, mapObject);
+                }
+                // Exodus-end
                 _beacons.Add(mapO);
 
                 var existingStrings = _strings.GetOrNew(displayColor);
