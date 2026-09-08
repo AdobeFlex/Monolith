@@ -108,6 +108,8 @@ summoning-machine-banner-khsira-desc = A banner bearing the emblem of the Khsira
 
 summoning-machine-air-grenade-name = Air grenade
 summoning-machine-air-grenade-desc = A solid-state grenade that releases a large volume of breathable air when activated.
+summoning-machine-kudzu-grenade-name = Synthetic vine grenade
+summoning-machine-kudzu-grenade-desc = A VEF medical grenade that deploys a network of synthetic filaments. Treats oxygen deprivation in anyone on it without hindering movement.
 summoning-machine-cloning-kit-name = Cloning facility crate
 summoning-machine-cloning-kit-desc = A medical crate containing four machine flatpacks and one full stack of biomass.
 summoning-machine-omnimed-tool-name = Surgical multitool
