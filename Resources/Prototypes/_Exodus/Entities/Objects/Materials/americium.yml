@@ -28,7 +28,7 @@
   - type: Material
   - type: PhysicalComposition
     materialComposition:
-      Americium: 1
+      Americium: 100
 
 - type: entity
   parent: MaterialAmericium

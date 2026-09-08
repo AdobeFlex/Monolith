@@ -61,6 +61,8 @@
     recipes:
     - WeaponPistolMaco
     - MagazinePistolMaco
+    - WeaponLightPhaserMaco
+    - CartridgeLightPhaserMaco
 
 - type: entity
   parent: TechDiskBase
