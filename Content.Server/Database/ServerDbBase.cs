@@ -28,7 +28,7 @@ using Robust.Shared.Utility;
 
 namespace Content.Server.Database
 {
-    public abstract class ServerDbBase
+    public abstract partial class ServerDbBase // Exodus chat ban persistence
     {
         private readonly ISawmill _opsLog;
 
@@ -568,6 +568,10 @@ namespace Content.Server.Database
             if (type != BanType.Server)
                 list.Add(b => b.Roles!);
 
+            // SS220-begin chat bans
+            if (type is null or BanType.Chat)
+                list.Add(b => b.Chats!);
+            // SS220-end
             return list;
         }
 
@@ -1562,6 +1566,7 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({players[player]}, {id}
                 .Include(ban => ban.Addresses)
                 .Include(ban => ban.Players)
                 .Include(ban => ban.Roles)
+                .Include(ban => ban.Chats) // SS220 chat bans
                 .Include(ban => ban.Hwids)
                 .Include(ban => ban.CreatedBy)
                 .Include(ban => ban.LastEditedBy)
@@ -1594,7 +1599,8 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({players[player]}, {id}
                         ban.Unban.UnbanningAdmin.Value,
                         await dbContext.Player.SingleOrDefaultAsync(p => p.UserId == ban.Unban.UnbanningAdmin.Value)),
                 NormalizeDatabaseTime(ban.Unban?.UnbanTime),
-                [..ban.Roles!.Select(br => new BanRoleDef(br.RoleType, br.RoleId))]);
+                [..ban.Roles!.Select(br => new BanRoleDef(br.RoleType, br.RoleId))],
+                [..ban.Chats!.Select(b => b.Chat)]); // SS220 chat bans
         }
 
         // These two are here because they get converted into notes later
