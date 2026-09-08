@@ -24,6 +24,30 @@ public sealed partial class WarLevelComponent
     public TimeSpan DeclarationDelay = TimeSpan.FromHours(2);
 
     /// <summary>
+    /// Lockout for both factions of a pair after their war ends.
+    /// </summary>
+    [DataField]
+    public TimeSpan PostWarCooldown = TimeSpan.FromMinutes(10);
+
+    /// <summary>
+    /// Delay before either side may send another peace offer after a withdrawal.
+    /// </summary>
+    [DataField]
+    public TimeSpan PeaceOfferCooldown = TimeSpan.FromSeconds(30);
+
+    /// <summary>
+    /// Sector-wide offer sequence, preventing stale confirmations from accepting replacement offers.
+    /// </summary>
+    [DataField]
+    public int NextPeaceOfferId;
+
+    /// <summary>
+    /// Pairwise declaration lockouts, measured from round start.
+    /// </summary>
+    [DataField]
+    public List<FactionWarCooldown> WarCooldowns = new();
+
+    /// <summary>
     /// Active pairwise wars. Each unordered pair may occur at most once, while its original direction is retained.
     /// </summary>
     [DataField]

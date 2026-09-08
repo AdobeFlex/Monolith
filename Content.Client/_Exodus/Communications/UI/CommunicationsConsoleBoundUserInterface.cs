@@ -29,6 +29,9 @@ public sealed partial class CommunicationsConsoleBoundUserInterface : BoundUserI
         _menu.OnBroadcast += BroadcastButtonPressed;
         _menu.OnAlertLevel += AlertLevelSelected;
         _menu.OnDeclareWar += DeclareWar;
+        _menu.OnOfferPeace += OfferPeace;
+        _menu.OnAcceptPeace += AcceptPeace;
+        _menu.OnWithdrawPeace += WithdrawPeace;
     }
 
     public void AlertLevelSelected(string level)
@@ -55,6 +58,21 @@ public sealed partial class CommunicationsConsoleBoundUserInterface : BoundUserI
     private void DeclareWar(ProtoId<TerritoryFactionPrototype> targetFaction)
     {
         SendMessage(new CommunicationsConsoleDeclareWarMessage(targetFaction));
+    }
+
+    private void OfferPeace(ProtoId<TerritoryFactionPrototype> targetFaction)
+    {
+        SendMessage(new CommunicationsConsoleOfferPeaceMessage(targetFaction));
+    }
+
+    private void AcceptPeace(ProtoId<TerritoryFactionPrototype> targetFaction, int offerId)
+    {
+        SendMessage(new CommunicationsConsoleAcceptPeaceMessage(targetFaction, offerId));
+    }
+
+    private void WithdrawPeace(ProtoId<TerritoryFactionPrototype> targetFaction, int offerId)
+    {
+        SendMessage(new CommunicationsConsoleWithdrawPeaceMessage(targetFaction, offerId));
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)

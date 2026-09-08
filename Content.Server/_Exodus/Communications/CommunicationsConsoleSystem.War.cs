@@ -29,17 +29,33 @@ public sealed partial class CommunicationsConsoleSystem
                 continue;
 
             var direction = WarDeclarationDirection.None;
+            var peaceDirection = PeaceOfferDirection.None;
+            var peaceOfferId = 0;
+            var peaceAvailableAt = TimeSpan.Zero;
             if (_factionWar.TryGetDeclaration(warState, console.Faction, target, out var declaration))
             {
                 direction = declaration.DeclaringFaction == console.Faction
                     ? WarDeclarationDirection.Outgoing
                     : WarDeclarationDirection.Incoming;
+
+                peaceAvailableAt = _factionWar.GetPeaceOfferAvailableAt(declaration);
+                if (declaration.PeaceOffer is { } offer)
+                {
+                    peaceDirection = offer.OfferingFaction == console.Faction
+                        ? PeaceOfferDirection.Outgoing
+                        : PeaceOfferDirection.Incoming;
+                    peaceOfferId = offer.Id;
+                }
             }
 
             targets.Add(new WarDeclarationTargetState(
                 target,
                 targetPrototype.DisplayName ?? targetPrototype.RadarLabel,
-                direction));
+                direction,
+                _factionWar.GetDeclarationAvailableAt(warState, console.Faction, target),
+                peaceDirection,
+                peaceOfferId,
+                peaceAvailableAt));
         }
 
         return new WarDeclarationConsoleState(

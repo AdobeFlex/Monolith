@@ -5,8 +5,8 @@ using Robust.Shared.Prototypes;
 namespace Content.Server._Exodus.War;
 
 /// <summary>
-/// Marks a communications console as a declaration endpoint for a faction.
-/// War declaration authorization is configured separately from the console's ordinary communications access.
+/// Marks a communications console as a diplomacy endpoint for a faction.
+/// Diplomacy authorization is configured separately from ordinary communications access.
 /// </summary>
 [RegisterComponent]
 public sealed partial class WarDeclarationConsoleComponent : Component
@@ -15,14 +15,14 @@ public sealed partial class WarDeclarationConsoleComponent : Component
     public ProtoId<TerritoryFactionPrototype> Faction = default!;
 
     /// <summary>
-    /// Optional subset of factions this console can declare war on.
+    /// Optional subset of factions this console can declare war on or negotiate peace with.
     /// An empty list allows every configured faction other than <see cref="Faction"/>.
     /// </summary>
     [DataField]
     public List<ProtoId<TerritoryFactionPrototype>> Targets = new();
 
     /// <summary>
-    /// Any one of these access levels authorizes a user to declare war.
+    /// Any one of these access levels authorizes war declarations and peace negotiations.
     /// </summary>
     [DataField]
     public List<ProtoId<AccessLevelPrototype>> RequiredAccess = new();

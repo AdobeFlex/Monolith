@@ -13,7 +13,7 @@ namespace Content.Server._Exodus.War;
 /// <summary>
 /// Owns the sector-wide, pairwise war state and its announcements.
 /// </summary>
-public sealed class FactionWarSystem : EntitySystem
+public sealed partial class FactionWarSystem : EntitySystem
 {
     private static readonly SoundSpecifier DeclarationSound =
         new SoundPathSpecifier("/Audio/Misc/gamma.ogg");
@@ -123,12 +123,21 @@ public sealed class FactionWarSystem : EntitySystem
 
             if (_ticker.RoundDuration() < state.Comp.DeclarationDelay)
                 return WarDeclarationResult.TooEarly;
+
+            if (TryGetWarCooldown(state, declarer, target, out var cooldown) &&
+                _ticker.RoundDuration() < cooldown.AvailableAtRoundTime)
+            {
+                return WarDeclarationResult.PostWarCooldown;
+            }
         }
 
         var roundTime = _ticker.RunLevel == GameRunLevel.InRound
             ? _ticker.RoundDuration()
             : TimeSpan.Zero;
         var declaration = new FactionWarDeclaration(declarer, target, roundTime);
+
+        if (TryGetWarCooldown(state, declarer, target, out var previousCooldown))
+            state.Comp.WarCooldowns.Remove(previousCooldown);
 
         state.Comp.Declarations.Add(declaration);
 
@@ -159,6 +168,7 @@ public sealed class FactionWarSystem : EntitySystem
         if (!TryGetDeclaration(state, first, second, out var declaration))
             return WarDeclarationResult.NotAtWar;
 
+        StartWarCooldown(state, declaration);
         state.Comp.Declarations.Remove(declaration);
 
         if (announce)
@@ -175,6 +185,9 @@ public sealed class FactionWarSystem : EntitySystem
             return false;
 
         var declarationCount = state.Comp.Declarations.Count;
+        foreach (var declaration in state.Comp.Declarations)
+            StartWarCooldown(state, declaration);
+
         state.Comp.Declarations.Clear();
 
         if (announce)

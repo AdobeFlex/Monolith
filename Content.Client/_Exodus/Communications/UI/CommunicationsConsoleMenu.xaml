@@ -23,25 +23,30 @@
             Margin="0 4"
             Visible="False">
 
-            <BoxContainer Orientation="Vertical"
+            <Collapsible BodyVisible="False"
                 HorizontalExpand="True"
                 Margin="6">
 
-                <Label Text="{Loc 'war-declaration-console-title'}"
-                    StyleClasses="LabelHeading"
+                <CollapsibleHeading Name="WarHeading"
+                    Access="Public"
+                    Title="{Loc 'war-declaration-console-title'}"
                     HorizontalExpand="True"/>
 
-                <Label Name="WarUnlockLabel"
-                    Access="Public"
-                    HorizontalExpand="True"
-                    Margin="0 2"/>
+                <CollapsibleBody>
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+                        <Label Name="WarUnlockLabel"
+                            Access="Public"
+                            HorizontalExpand="True"
+                            Margin="0 2"/>
 
-                <BoxContainer Name="WarRows"
-                    Access="Public"
-                    Orientation="Vertical"
-                    HorizontalExpand="True"
-                    SeparationOverride="4"/>
-            </BoxContainer>
+                        <BoxContainer Name="WarRows"
+                            Access="Public"
+                            Orientation="Vertical"
+                            HorizontalExpand="True"
+                            SeparationOverride="4"/>
+                    </BoxContainer>
+                </CollapsibleBody>
+            </Collapsible>
         </PanelContainer>
 
         <!-- ButtonsPart -->

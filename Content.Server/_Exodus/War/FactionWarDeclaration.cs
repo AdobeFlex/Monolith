@@ -18,6 +18,18 @@ public sealed partial class FactionWarDeclaration
     [DataField]
     public TimeSpan DeclaredAtRoundTime;
 
+    /// <summary>
+    /// Pending offer. The war remains active until the other faction accepts it.
+    /// </summary>
+    [DataField]
+    public FactionPeaceOffer? PeaceOffer;
+
+    /// <summary>
+    /// Earliest round time for a new offer after the previous one was withdrawn.
+    /// </summary>
+    [DataField]
+    public TimeSpan NextPeaceOfferAtRoundTime;
+
     public FactionWarDeclaration()
     {
     }
@@ -43,4 +55,5 @@ public enum WarDeclarationResult : byte
     SameFaction,
     AlreadyAtWar,
     NotAtWar,
+    PostWarCooldown,
 }

@@ -59,9 +59,11 @@
   id: WarAlerts
   components:
   - type: WarLevel
-    # Exodus-begin: playable factions and the two-hour declaration lockout.
+    # Exodus-begin: faction wars, declaration lockouts and peace negotiations.
     factions: [TSFMC, PDV, Khsira]
     declarationDelay: 7200
+    postWarCooldown: 600
+    peaceOfferCooldown: 30
     # Exodus-end
 
 - type: sectorService

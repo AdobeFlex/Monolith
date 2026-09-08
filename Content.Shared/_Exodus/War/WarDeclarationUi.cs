@@ -13,6 +13,14 @@ public enum WarDeclarationDirection : byte
 }
 
 [Serializable, NetSerializable]
+public enum PeaceOfferDirection : byte
+{
+    None,
+    Outgoing,
+    Incoming,
+}
+
+[Serializable, NetSerializable]
 public sealed class WarDeclarationConsoleState
 {
     public ProtoId<TerritoryFactionPrototype> SourceFaction { get; }
@@ -40,11 +48,40 @@ public sealed class WarDeclarationConsoleState
 public readonly record struct WarDeclarationTargetState(
     ProtoId<TerritoryFactionPrototype> Faction,
     LocId Name,
-    WarDeclarationDirection Direction);
+    WarDeclarationDirection Direction,
+    TimeSpan DeclarationAvailableAt,
+    PeaceOfferDirection PeaceDirection,
+    int PeaceOfferId,
+    TimeSpan PeaceOfferAvailableAt);
 
 [Serializable, NetSerializable]
 public sealed class CommunicationsConsoleDeclareWarMessage(
     ProtoId<TerritoryFactionPrototype> targetFaction) : BoundUserInterfaceMessage
 {
     public ProtoId<TerritoryFactionPrototype> TargetFaction { get; } = targetFaction;
+}
+
+[Serializable, NetSerializable]
+public sealed class CommunicationsConsoleOfferPeaceMessage(
+    ProtoId<TerritoryFactionPrototype> targetFaction) : BoundUserInterfaceMessage
+{
+    public ProtoId<TerritoryFactionPrototype> TargetFaction { get; } = targetFaction;
+}
+
+[Serializable, NetSerializable]
+public sealed class CommunicationsConsoleAcceptPeaceMessage(
+    ProtoId<TerritoryFactionPrototype> targetFaction,
+    int offerId) : BoundUserInterfaceMessage
+{
+    public ProtoId<TerritoryFactionPrototype> TargetFaction { get; } = targetFaction;
+    public int OfferId { get; } = offerId;
+}
+
+[Serializable, NetSerializable]
+public sealed class CommunicationsConsoleWithdrawPeaceMessage(
+    ProtoId<TerritoryFactionPrototype> targetFaction,
+    int offerId) : BoundUserInterfaceMessage
+{
+    public ProtoId<TerritoryFactionPrototype> TargetFaction { get; } = targetFaction;
+    public int OfferId { get; } = offerId;
 }

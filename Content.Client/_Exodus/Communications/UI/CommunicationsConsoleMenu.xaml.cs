@@ -41,6 +41,9 @@ public sealed partial class CommunicationsConsoleMenu : FancyWindow
     public event Action<string>? OnAnnounce;
     public event Action<string>? OnBroadcast;
     public event Action<ProtoId<TerritoryFactionPrototype>>? OnDeclareWar;
+    public event Action<ProtoId<TerritoryFactionPrototype>>? OnOfferPeace;
+    public event Action<ProtoId<TerritoryFactionPrototype>, int>? OnAcceptPeace;
+    public event Action<ProtoId<TerritoryFactionPrototype>, int>? OnWithdrawPeace;
 
     public CommunicationsConsoleMenu()
     {
@@ -106,6 +109,7 @@ public sealed partial class CommunicationsConsoleMenu : FancyWindow
         _warRoundRunning = state.RoundRunning;
         _seenWarTargets.Clear();
 
+        var incomingOffers = 0;
         foreach (var target in state.Targets)
         {
             if (!_seenWarTargets.Add(target.Faction))
@@ -119,7 +123,13 @@ public sealed partial class CommunicationsConsoleMenu : FancyWindow
             }
 
             UpdateWarRow(row, target);
+            if (target.PeaceDirection == PeaceOfferDirection.Incoming)
+                incomingOffers++;
         }
+
+        WarHeading.Title = incomingOffers == 0
+            ? Loc.GetString("war-declaration-console-title")
+            : Loc.GetString("war-declaration-console-title-pending", ("count", incomingOffers));
 
         _staleWarTargets.Clear();
         foreach (var faction in _warRows.Keys)
@@ -153,21 +163,64 @@ public sealed partial class CommunicationsConsoleMenu : FancyWindow
         button.StyleClasses.Add(StyleNano.StyleClassButtonColorRed);
         button.OnPressed += _ => OnDeclareWar?.Invoke(faction);
 
+        var detail = new Label { HorizontalExpand = true };
+        var offerButton = new Button
+        {
+            HorizontalExpand = true,
+            Text = Loc.GetString("war-peace-offer-button"),
+        };
+        var acceptButton = new ConfirmButton
+        {
+            HorizontalExpand = true,
+            ResetTime = TimeSpan.FromSeconds(5),
+            CooldownTime = TimeSpan.FromSeconds(0.75),
+            Text = Loc.GetString("war-peace-accept-button"),
+        };
+        var withdrawButton = new Button
+        {
+            HorizontalExpand = true,
+            Text = Loc.GetString("war-peace-withdraw-button"),
+        };
+
         var container = new BoxContainer
         {
             Orientation = BoxContainer.LayoutOrientation.Vertical,
             HorizontalExpand = true,
         };
         container.AddChild(status);
+        container.AddChild(detail);
         container.AddChild(button);
+        container.AddChild(offerButton);
+        container.AddChild(acceptButton);
+        container.AddChild(withdrawButton);
 
-        return new WarDeclarationRow(container, status, button);
+        var row = new WarDeclarationRow(container, status, detail, button, offerButton, acceptButton, withdrawButton);
+        offerButton.OnPressed += _ => OnOfferPeace?.Invoke(faction);
+        acceptButton.OnPressed += _ => OnAcceptPeace?.Invoke(faction, row.PeaceOfferId);
+        withdrawButton.OnPressed += _ => OnWithdrawPeace?.Invoke(faction, row.PeaceOfferId);
+        return row;
     }
 
     private void UpdateWarRow(WarDeclarationRow row, WarDeclarationTargetState target)
     {
         var targetName = Loc.GetString(target.Name);
+        if (row.Direction != target.Direction)
+            ResetConfirmation(row.Button);
+
+        if (row.PeaceOfferId != target.PeaceOfferId || row.PeaceDirection != target.PeaceDirection)
+            ResetConfirmation(row.AcceptButton);
+
+        row.TargetName = targetName;
         row.Direction = target.Direction;
+        row.PeaceDirection = target.PeaceDirection;
+        row.PeaceOfferId = target.PeaceOfferId;
+        row.DeclarationAvailableAt = target.DeclarationAvailableAt;
+        row.PeaceOfferAvailableAt = target.PeaceOfferAvailableAt;
+        row.AcceptButton.ConfirmationText = Loc.GetString("war-peace-accept-confirm", ("target", targetName));
+        var atWar = target.Direction != WarDeclarationDirection.None;
+        row.OfferButton.Visible = atWar && target.PeaceDirection == PeaceOfferDirection.None;
+        row.AcceptButton.Visible = atWar && target.PeaceDirection == PeaceOfferDirection.Incoming;
+        row.WithdrawButton.Visible = atWar && target.PeaceDirection == PeaceOfferDirection.Outgoing;
         row.Button.ConfirmationText = Loc.GetString(
             "war-declaration-console-confirm",
             ("target", targetName));
@@ -210,11 +263,13 @@ public sealed partial class CommunicationsConsoleMenu : FancyWindow
         if (!_hasWarState)
             return;
 
-        var secondsRemaining = (long) Math.Ceiling(Math.Max(0, (_warAvailableAt - _timing.CurTime).TotalSeconds));
-        if (secondsRemaining == _lastWarCountdownSecond)
+        var now = _timing.CurTime;
+        var currentSecond = (long) now.TotalSeconds;
+        if (currentSecond == _lastWarCountdownSecond)
             return;
 
-        _lastWarCountdownSecond = secondsRemaining;
+        _lastWarCountdownSecond = currentSecond;
+        var secondsRemaining = (long) Math.Ceiling(Math.Max(0, (_warAvailableAt - now).TotalSeconds));
         var available = _warRoundRunning && secondsRemaining == 0;
         if (!_warRoundRunning)
         {
@@ -238,13 +293,80 @@ public sealed partial class CommunicationsConsoleMenu : FancyWindow
 
         foreach (var row in _warRows.Values)
         {
-            if (row.Direction != WarDeclarationDirection.None)
-                continue;
+            UpdateWarRowAvailability(row, now);
+        }
+    }
 
-            if (!available)
-                row.Button.Disabled = true;
-            else if (!row.Button.IsConfirming)
-                row.Button.Disabled = false;
+    private void UpdateWarRowAvailability(WarDeclarationRow row, TimeSpan now)
+    {
+        SetConfirmationAvailable(row.Button,
+            _warRoundRunning && row.Button.Visible && now >= row.DeclarationAvailableAt);
+        SetConfirmationAvailable(row.AcceptButton, _warRoundRunning && row.AcceptButton.Visible);
+        row.OfferButton.Disabled = !_warRoundRunning || now < row.PeaceOfferAvailableAt;
+        row.WithdrawButton.Disabled = !_warRoundRunning;
+        row.Detail.Visible = true;
+        row.Detail.FontColorOverride = Color.Gold;
+
+        if (row.Direction == WarDeclarationDirection.None)
+        {
+            if (row.DeclarationAvailableAt > _warAvailableAt && now < row.DeclarationAvailableAt)
+            {
+                row.Detail.Text = Loc.GetString("war-declaration-post-war-cooldown",
+                    ("time", FormatRemaining(row.DeclarationAvailableAt - now)));
+            }
+            else
+            {
+                row.Detail.Visible = false;
+            }
+
+            return;
+        }
+
+        switch (row.PeaceDirection)
+        {
+            case PeaceOfferDirection.Outgoing:
+                row.Detail.Text = Loc.GetString("war-peace-status-outgoing", ("target", row.TargetName));
+                break;
+            case PeaceOfferDirection.Incoming:
+                row.Detail.Text = Loc.GetString("war-peace-status-incoming", ("target", row.TargetName));
+                break;
+            default:
+                if (now < row.PeaceOfferAvailableAt)
+                {
+                    row.Detail.Text = Loc.GetString("war-peace-offer-cooldown",
+                        ("time", FormatRemaining(row.PeaceOfferAvailableAt - now)));
+                }
+                else
+                {
+                    row.Detail.Visible = false;
+                }
+
+                break;
+        }
+    }
+
+    private static string FormatRemaining(TimeSpan duration)
+    {
+        var remaining = TimeSpan.FromSeconds(Math.Max(0, Math.Ceiling(duration.TotalSeconds)));
+        return $"{(int)remaining.TotalHours:00}:{remaining.Minutes:00}:{remaining.Seconds:00}";
+    }
+
+    private static void ResetConfirmation(ConfirmButton button)
+    {
+        button.IsConfirming = false;
+        button.Label.Text = button.Text;
+        button.Disabled = true;
+    }
+
+    private static void SetConfirmationAvailable(ConfirmButton button, bool available)
+    {
+        if (!available)
+        {
+            ResetConfirmation(button);
+        }
+        else if (!button.IsConfirming)
+        {
+            button.Disabled = false;
         }
     }
 
@@ -265,6 +387,9 @@ public sealed partial class CommunicationsConsoleMenu : FancyWindow
         foreach (var row in _warRows.Values)
         {
             row.Button.Label.FontColorOverride = row.Button.IsConfirming
+                ? WarConfirmationTextColor
+                : null;
+            row.AcceptButton.Label.FontColorOverride = row.AcceptButton.IsConfirming
                 ? WarConfirmationTextColor
                 : null;
         }
@@ -310,11 +435,24 @@ public sealed partial class CommunicationsConsoleMenu : FancyWindow
     private sealed class WarDeclarationRow(
         BoxContainer container,
         Label status,
-        ConfirmButton button)
+        Label detail,
+        ConfirmButton button,
+        Button offerButton,
+        ConfirmButton acceptButton,
+        Button withdrawButton)
     {
         public BoxContainer Container { get; } = container;
         public Label Status { get; } = status;
+        public Label Detail { get; } = detail;
         public ConfirmButton Button { get; } = button;
+        public Button OfferButton { get; } = offerButton;
+        public ConfirmButton AcceptButton { get; } = acceptButton;
+        public Button WithdrawButton { get; } = withdrawButton;
+        public string TargetName { get; set; } = string.Empty;
         public WarDeclarationDirection Direction { get; set; }
+        public PeaceOfferDirection PeaceDirection { get; set; }
+        public int PeaceOfferId { get; set; }
+        public TimeSpan DeclarationAvailableAt { get; set; }
+        public TimeSpan PeaceOfferAvailableAt { get; set; }
     }
 }
