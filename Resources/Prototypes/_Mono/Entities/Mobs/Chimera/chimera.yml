@@ -98,7 +98,7 @@
     #   time: 180000 # 50 hrs
     requirements:
     - !type:OverallPlaytimeRequirement
-      time: 108000 # 30 hrs
+      time: 3600 # Exodus: 1 hour of overall playtime.
      # Exodus-Rework-Time-Roles-End
   - type: GhostTakeoverAvailable
 

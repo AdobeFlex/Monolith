@@ -51,7 +51,7 @@
     factions:
     - Chimera
   - type: TerritoryCore
-    spawnPrototype: MobLetoferolHorrorGhostrole # Uses the existing AI, raffle and 30-hour playtime requirement.
+    spawnPrototype: MobLetoferolHorrorGhostrole # Uses the existing AI, raffle and ghost-role requirements.
     substrateTag: ChimeraFloor
     spawnInterval: 420 # Seven minutes after activation and after each successful spawn, without population caps.
     retryInterval: 10 # Retry a blocked grid without accumulating missed spawns.
