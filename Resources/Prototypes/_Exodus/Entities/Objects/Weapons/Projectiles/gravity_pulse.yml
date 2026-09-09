@@ -38,7 +38,7 @@
     onlyCollideWhenShot: true
   - type: GravityPulse
   - type: ProjectileKnockback
-    knockback: 7200
+    knockback: 2160
     rotateMultiplier: 0
     affectGrids: false
   - type: DistanceFalloff
