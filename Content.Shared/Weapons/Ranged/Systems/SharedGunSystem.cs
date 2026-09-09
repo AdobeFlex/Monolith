@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+using Content.Shared._Exodus.Weapons.Projectiles; // Exodus projectile lifecycle hooks
 using Content.Shared.ActionBlocker;
 using Content.Shared.Actions;
 using Content.Shared.Administration.Logs;
@@ -594,6 +595,10 @@ public abstract partial class SharedGunSystem : EntitySystem
         projectile.Weapon = gunUid;
 
         TransformSystem.SetWorldRotation(uid, direction.ToWorldAngle() + projectile.Angle);
+
+        // Exodus: projectile effects initialize from the actual launch, independently of the ammo provider.
+        var shot = new ProjectileShotEvent();
+        RaiseLocalEvent(uid, ref shot);
     }
 
     // Mono - handle hitscan

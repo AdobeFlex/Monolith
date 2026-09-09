@@ -124,3 +124,14 @@ summoning-machine-air-grenade-box-name = Коробка воздушных гр�
 summoning-machine-air-grenade-box-desc = Коробка с шестью гранатами, выпускающими пригодный для дыхания воздух.
 summoning-machine-multitool-name = Мультитул
 summoning-machine-multitool-desc = Универсальный инструмент для работы с кабелями, сетями и механизмами.
+
+summoning-machine-khar-name = Штурмовой мех «Кхар»
+summoning-machine-khar-desc = Экзокостюм с батареей, гравитационным орудием, пулемётом «Куниса», тесла-пушкой и цепной пилой.
+summoning-machine-mech-gravity-name = Меховое гравитационное орудие
+summoning-machine-mech-gravity-desc = Сменный модуль ближнего боя. Отбрасывает пехоту и наносит значительный урон конструкциям.
+summoning-machine-mech-kunisa-name = Меховый пулемёт «Куниса»
+summoning-machine-mech-kunisa-desc = Скорострельный плазменный модуль с питанием от батареи меха.
+summoning-machine-gravity-projector-name = Гравитационный излучатель
+summoning-machine-gravity-projector-desc = Пехотное гравитационное оружие ближнего боя с передней рукояткой и выпуклым излучателем.
+summoning-machine-kunisa-machine-gun-name = Плазменный пулемёт «Куниса»
+summoning-machine-kunisa-machine-gun-desc = Пехотный пулемёт с увеличенным конденсатором. Стреляет быстрее стандартного автопульсера.
