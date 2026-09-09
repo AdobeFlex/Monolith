@@ -256,7 +256,7 @@ public sealed partial class GridTerritoryBannerSystem : EntitySystem
                 -ActiveBannerRadarBlipHalfSize,
                 ActiveBannerRadarBlipHalfSize,
                 ActiveBannerRadarBlipHalfSize),
-            Color = Color.White,
+            Color = banner.Comp.BlipColor,
             Shape = RadarBlipShape.Square,
             RespectZoom = true,
             Rotate = false,

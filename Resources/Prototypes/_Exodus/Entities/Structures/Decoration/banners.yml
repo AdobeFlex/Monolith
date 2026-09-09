@@ -75,6 +75,36 @@
     company: DrakeIndustries
 
 - type: entity
+  id: CompanyTerritoryBannerTSFCivilian
+  parent: CompanyTerritoryBannerBase
+  name: TSF civilian banner
+  description: A blue-and-white banner bearing the star of the Trans-Solar Federation.
+  components:
+  - type: Sprite
+    sprite: _Exodus/Structures/Decoration/civilian-banner.rsi
+    state: tsf-civilian
+  - type: Construction
+    graph: CompanyTerritoryBannersGraph
+    node: CompanyTerritoryBannerTSFCivilianNode
+  - type: CompanyTerritoryBanner
+    company: TSFCivilian
+
+- type: entity
+  id: CompanyTerritoryBannerPDVCivilian
+  parent: CompanyTerritoryBannerBase
+  name: PDV civilian banner
+  description: A burgundy banner with pale vertical stripes and the Phaethon Dynasty's golden sigil.
+  components:
+  - type: Sprite
+    sprite: _Exodus/Structures/Decoration/civilian-banner.rsi
+    state: pdv-civilian
+  - type: Construction
+    graph: CompanyTerritoryBannersGraph
+    node: CompanyTerritoryBannerPDVCivilianNode
+  - type: CompanyTerritoryBanner
+    company: PDVCivilian
+
+- type: entity
   id: CompanyTerritoryBannerSteelHammer
   parent: CompanyTerritoryBannerBase
   name: company-territory-banner-steel-hammer-name
@@ -255,3 +285,31 @@
     node: CompanyTerritoryBannerBratvaNode
   - type: CompanyTerritoryBanner
     company: paycheckbratva
+
+- type: entity
+  id: CompanyTerritoryBannerMMC
+  parent: CompanyTerritoryBannerBase
+  name: MMC banner
+  components:
+  - type: Sprite
+    sprite: _Exodus/Structures/Decoration/company-banner.rsi
+    state: mmc-banner
+  - type: Construction
+    graph: CompanyTerritoryBannersGraph
+    node: CompanyTerritoryBannerMMCNode
+  - type: CompanyTerritoryBanner
+    company: MMC
+
+- type: entity
+  id: CompanyTerritoryBannerViper
+  parent: CompanyTerritoryBannerBase
+  name: Viper Group banner
+  components:
+  - type: Sprite
+    sprite: _Exodus/Structures/Decoration/company-banner.rsi
+    state: viper-banner
+  - type: Construction
+    graph: CompanyTerritoryBannersGraph
+    node: CompanyTerritoryBannerViperNode
+  - type: CompanyTerritoryBanner
+    company: TheViperGroup

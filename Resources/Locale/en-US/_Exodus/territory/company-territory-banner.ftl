@@ -30,7 +30,17 @@ ent-CompanyTerritoryBannerHive = { The-Hive-name } Banner
 ent-CompanyTerritoryBannerBratva = { paycheck-bratva-name } Banner
     .desc = { company-territory-banner-description }
 
+ent-CompanyTerritoryBannerMMC = MMC Banner
+    .desc = A black-and-gold Mieyo Manufacturing Concern banner bearing its industrial insignia. { company-territory-banner-description }
+ent-CompanyTerritoryBannerViper = Viper Group Banner
+    .desc = A Viper Group corporate banner bearing a red geometric emblem and a gold stripe. { company-territory-banner-description }
+
 company-territory-banner-description = A corporate banner that establishes the company's presence inside a faction's territory.
+
+ent-CompanyTerritoryBannerTSFCivilian = TSF civilian banner
+    .desc = A blue-and-white banner bearing the star of the Trans-Solar Federation. { company-territory-banner-description }
+ent-CompanyTerritoryBannerPDVCivilian = PDV civilian banner
+    .desc = A burgundy banner with pale vertical stripes and the Phaethon Dynasty's golden sigil. { company-territory-banner-description }
 
 company-territory-banner-no-territory = A corporate banner can only be installed on a station territory.
 company-territory-banner-disabled = A corporate banner cannot be installed on this territory.

@@ -23,6 +23,12 @@
     regenDelay: 7
     regenInterval: 2
     chargeCostMultiplier: 1
+    # All vines (including synthetic vines) and tagged structures bypass armor. Inherited by Blackhawk armor.
+    targetBlacklist:
+      components:
+      - Kudzu
+      tags:
+      - ShipArmorExcluded
     # Empty absorbRatios = all positive damage types at 100%.
     # Example selective setup:
     # absorbRatios:

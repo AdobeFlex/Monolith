@@ -30,7 +30,17 @@ ent-CompanyTerritoryBannerHive = Знамя «{ The-Hive-name }»
 ent-CompanyTerritoryBannerBratva = Знамя «{ paycheck-bratva-name }»
     .desc = { company-territory-banner-description }
 
+ent-CompanyTerritoryBannerMMC = Знамя ММС
+    .desc = Чёрно-золотое знамя производственного концерна «Мэйё» с его промышленной эмблемой. { company-territory-banner-description }
+ent-CompanyTerritoryBannerViper = Знамя «{ viper-group-name }»
+    .desc = Корпоративное знамя «Вайперов» с красной геометрической эмблемой и золотой полосой. { company-territory-banner-description }
+
 company-territory-banner-description = Знамя корпорации, закрепляющее её присутствие на территории выбранной фракции.
+
+ent-CompanyTerritoryBannerTSFCivilian = гражданское знамя ТСФ
+    .desc = Сине-белое знамя со звездой Транс-Солнечной Федерации. { company-territory-banner-description }
+ent-CompanyTerritoryBannerPDVCivilian = гражданское знамя ДФ
+    .desc = Бордовое знамя со светлыми вертикальными полосами и золотой эмблемой Династии Фаэтон. { company-territory-banner-description }
 
 company-territory-banner-no-territory = Знамя можно устанавливать только на территории станции.
 company-territory-banner-disabled = На этой территории нельзя устанавливать корпоративное знамя.

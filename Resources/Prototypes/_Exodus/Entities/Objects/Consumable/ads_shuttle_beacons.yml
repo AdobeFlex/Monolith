@@ -16,6 +16,7 @@
       right:
       - state: inhand-right
   - type: ShuttleEventBeacon
+    shuttleFaction: Khsira
   - type: Tag
     tags:
     - Payload
@@ -187,6 +188,7 @@
   components:
   - type: ShuttleEventBeacon
     rule: MarsocArcturusArrival
+    shuttleFaction: TSFMC
 
 - type: entity
   id: TarkhanJupiterArrivalBeacon
@@ -195,3 +197,4 @@
   components:
   - type: ShuttleEventBeacon
     rule: TarkhanJupiterArrival
+    shuttleFaction: PDV

@@ -106,6 +106,8 @@ summoning-machine-beacon-kit-surplus-desc = Запечатанный ящик д
 summoning-machine-banner-khsira-name = знамя Империи Кхси'Ра
 summoning-machine-banner-khsira-desc = Знамя с эмблемой Империи Кхси'Ра. Закрепите на станции, чтобы заявить контроль над территорией.
 
+summoning-machine-kudzu-grenade-name = Граната с синтетической лозой
+summoning-machine-kudzu-grenade-desc = Медицинская граната ВЭФ, развёртывающая сеть синтетических волокон. Лечит кислородное голодание у находящихся на ней существ, не затрудняя передвижение.
 summoning-machine-air-grenade-name = Воздушная граната
 summoning-machine-air-grenade-desc = Твердотельная граната, выпускающая большой объём пригодного для дыхания воздуха после активации.
 summoning-machine-cloning-kit-name = Ящик для клонирования
@@ -122,3 +124,14 @@ summoning-machine-air-grenade-box-name = Коробка воздушных гр�
 summoning-machine-air-grenade-box-desc = Коробка с шестью гранатами, выпускающими пригодный для дыхания воздух.
 summoning-machine-multitool-name = Мультитул
 summoning-machine-multitool-desc = Универсальный инструмент для работы с кабелями, сетями и механизмами.
+
+summoning-machine-khar-name = Штурмовой мех «Кхар»
+summoning-machine-khar-desc = Экзокостюм с батареей, гравитационным орудием, пулемётом «Куниса», тесла-пушкой и цепной пилой.
+summoning-machine-mech-gravity-name = Меховое гравитационное орудие
+summoning-machine-mech-gravity-desc = Сменный модуль ближнего боя. Отбрасывает пехоту и наносит значительный урон конструкциям.
+summoning-machine-mech-kunisa-name = Меховый пулемёт «Куниса»
+summoning-machine-mech-kunisa-desc = Скорострельный плазменный модуль с питанием от батареи меха.
+summoning-machine-gravity-projector-name = Гравитационный излучатель
+summoning-machine-gravity-projector-desc = Пехотное гравитационное оружие ближнего боя с передней рукояткой и выпуклым излучателем.
+summoning-machine-kunisa-machine-gun-name = Плазменный пулемёт «Куниса»
+summoning-machine-kunisa-machine-gun-desc = Пехотный пулемёт с увеличенным конденсатором. Стреляет быстрее стандартного автопульсера.

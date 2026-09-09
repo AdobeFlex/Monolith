@@ -51,6 +51,7 @@
   name: nearest-shuttle-teleporter-board-name
   description: nearest-shuttle-teleporter-board-description
   components:
+  - type: SafetyDepositRestricted
   - type: MachineBoard
     prototype: NearestShuttleTeleporterPad
     stackRequirements:

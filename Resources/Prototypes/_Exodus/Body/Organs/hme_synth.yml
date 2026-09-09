@@ -7,6 +7,7 @@
   name: hme-synth-heart-name
   description: hme-synth-heart-description
   components:
+  - type: SafetyDepositRestricted
   # Asakim-style: stronger metabolizer on the organ itself (no custom body component).
   - type: Metabolizer
     maxReagents: 4
@@ -25,6 +26,7 @@
   name: hme-synth-heart-fortified-name
   description: hme-synth-heart-fortified-description
   components:
+  - type: SafetyDepositRestricted
   - type: Organ
     onAdd:
     - type: HealthThresholdModifier
@@ -36,6 +38,7 @@
   name: hme-synth-lungs-name
   description: hme-synth-lungs-description
   components:
+  - type: SafetyDepositRestricted
   - type: Organ
     onAdd:
     - type: StaminaModifier
@@ -55,6 +58,7 @@
   name: hme-synth-liver-name
   description: hme-synth-liver-description
   components:
+  - type: SafetyDepositRestricted
   - type: OrganDamageProtection
     modifiers:
       poison:
@@ -76,6 +80,7 @@
   name: hme-synth-eyes-name
   description: hme-synth-eyes-description
   components:
+  - type: SafetyDepositRestricted
   - type: Organ
     onAdd:
     - type: FlashImmunity
@@ -87,6 +92,7 @@
   name: hme-synth-left-leg-name
   description: hme-synth-left-leg-description
   components:
+  - type: SafetyDepositRestricted
   - type: MovementBodyPart
     walkSpeed: 2.7
     sprintSpeed: 4.85
@@ -97,6 +103,7 @@
   name: hme-synth-right-leg-name
   description: hme-synth-right-leg-description
   components:
+  - type: SafetyDepositRestricted
   - type: MovementBodyPart
     walkSpeed: 2.7
     sprintSpeed: 4.85

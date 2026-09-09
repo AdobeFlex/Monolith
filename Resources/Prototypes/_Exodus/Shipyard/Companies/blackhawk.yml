@@ -5,12 +5,16 @@
   parent: BaseVessel
   name: company-vessel-blackhawk-kortic-name
   description: company-vessel-blackhawk-kortic-description
-  price: 65000
+  price: 92300 # Exodus: appraised minimum + 5%, rounded up to 100.
   category: Small
   group: Shipyard
   requiredCompanies:
   - blackhawkpmc
   shuttlePath: /SharedMaps/_Exodus/Shuttles/Companies/blackhawk/kortic.yml
+  addComponents:
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
   class:
   - Mercenary
   engine:

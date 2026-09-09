@@ -26,6 +26,7 @@
   suffix: AI Remote, Colossus
   categories: [ HideSpawnMenu ]
   components:
+  # The map spawner uses this shell with the same station access as the commandant.
   - type: Access
     groups:
     - AllAccess
@@ -109,6 +110,11 @@
   suffix: AI Remote
   categories: [ HideSpawnMenu ]
   components:
+  # Grant full station access only to the AI shell, not to player security borgs.
+  - type: Access
+    groups:
+    - AllAccess
+    enabled: true
   - type: ContainerFill
     containers:
       borg_brain:

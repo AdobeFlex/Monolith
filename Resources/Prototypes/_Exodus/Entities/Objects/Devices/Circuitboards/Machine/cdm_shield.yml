@@ -4,5 +4,6 @@
   name: cdm-shield-generator-board-name
   description: cdm-shield-generator-board-description
   components:
+  - type: SafetyDepositRestricted
   - type: MachineBoard
     prototype: ShieldGeneratorCdm

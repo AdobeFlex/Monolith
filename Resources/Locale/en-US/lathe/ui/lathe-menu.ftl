@@ -23,3 +23,7 @@ lathe-menu-silo-linked-message = Silo Linked
 lathe-menu-fabricating-message = Fabricating...
 lathe-menu-materials-title = Materials
 lathe-menu-queue-title = Build Queue
+
+# Exodus: keep entity and reagent tooltips separate from material unit formatting.
+lathe-menu-entity-amount-missing = {$amount} of {$material} ([color=red]{$missingAmount} missing[/color])
+lathe-menu-reagent-amount-missing = {$amount}u of {$material} ([color=red]{$missingAmount}u missing[/color])

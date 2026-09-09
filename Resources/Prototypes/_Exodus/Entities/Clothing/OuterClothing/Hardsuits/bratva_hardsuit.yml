@@ -6,6 +6,7 @@
   name: paycheck-bratva-combat-suit-name
   description: paycheck-bratva-combat-suit-description
   components:
+  - type: SafetyDepositRestricted
   - type: Sprite
     sprite: _Exodus/Clothing/OuterClothing/Hardsuits/bratva.rsi
   - type: Clothing

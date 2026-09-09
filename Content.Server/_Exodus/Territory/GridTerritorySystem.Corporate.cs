@@ -17,7 +17,7 @@ public sealed partial class GridTerritorySystem
         EntityUid? actor = null)
     {
         if (!TryComp<GridTerritoryComponent>(grid, out var territory) ||
-            company is not null && !territory.Claimable)
+            company is not null && (!territory.Claimable || !AllowsCorporateControl(grid)))
         {
             return false;
         }
@@ -52,5 +52,15 @@ public sealed partial class GridTerritorySystem
     public bool ClearCorporateController(EntityUid grid, EntityUid? actor = null)
     {
         return TrySetCorporateController(grid, null, null, actor);
+    }
+
+    /// <summary>
+    /// Faction-configured gate shared by player, map and programmatic corporate claims.
+    /// </summary>
+    public bool AllowsCorporateControl(EntityUid grid)
+    {
+        return TryComp<GridTerritoryComponent>(grid, out var territory) &&
+               territory.ControllingFaction is { } faction &&
+               _proto.TryIndex(faction, out var prototype) && prototype.AllowCorporateControl;
     }
 }

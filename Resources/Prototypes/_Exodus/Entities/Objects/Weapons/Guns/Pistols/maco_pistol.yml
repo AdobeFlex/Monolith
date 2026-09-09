@@ -4,6 +4,7 @@
   name: maco-licensed-pistol-name
   description: maco-licensed-pistol-description
   components:
+  - type: SafetyDepositRestricted
   - type: Sprite
     sprite: _Exodus/Objects/Weapons/Guns/Pistols/maco.rsi
     layers:

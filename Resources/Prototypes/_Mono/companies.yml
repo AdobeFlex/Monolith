@@ -1,3 +1,4 @@
+# Exodus: retained localized company display names marked Ru-Localization below.
 # "None" - DO NOT REMOVE!
 - type: company
   id: None
@@ -10,11 +11,19 @@
 
 - type: company
   id: TSF
-  name: tsf-name # Ru-Localization
+  name: tsf-name # Exodus: localized display name
   color: "#00a1fc" # Exodus territory update
   disabled: true
   companyUplinkCurrency: FederationMilitaryCredit
   npcFaction: TSFMC # Exodus - company NPC faction
+
+- type: company
+  id: TSFCivilian
+  name: tsf-civilian-name # Exodus civilian contractor localization
+  description: tsf-civilian-description # Exodus civilian contractor localization
+  color: "#047ABD"
+  disabled: true
+  companyUplinkCurrency: FederationMilitaryCredit
 
 - type: company
   id: PDV
@@ -23,6 +32,14 @@
   disabled: true
   companyUplinkCurrency: Doubloon
   npcFaction: PirateNF # Exodus - company NPC faction (PDV)
+
+- type: company
+  id: PDVCivilian
+  name: pdv-civilian-name # Exodus civilian contractor localization
+  description: pdv-civilian-description # Exodus civilian contractor localization
+  color: "#D2B48C"
+  disabled: true
+  companyUplinkCurrency: Doubloon
 
 - type: company
   id: MD
@@ -50,6 +67,14 @@
   name: winter-solstice-name # Ru-Localization
   description: winter-solstice-description
   color: "#008CE3"
+  disabled: true
+  whitelisted: true
+
+- type: company
+  id: PDVHighComm
+  name: Dynasty High Command
+  description: pdv-highcomm-description
+  color: "#D2B48C"
   disabled: true
   whitelisted: true
 # DO NOT TOUCH
@@ -107,6 +132,13 @@
   image: /Textures/_Mono/Companies/USSP.png
   npcFaction: USSP # Exodus - company NPC faction
   atmDepositCommission: 0.15 # Exodus corporate ATM commission
+
+- type: company
+  id: MMC
+  name: mmc-company-name # Exodus MMC localization
+  description: mmc-company-description # Exodus MMC localization
+  color: "#FF8800" # Exodus: match the MMC communications console announcement color.
+  disabled: true
 
 # Major companies
 
@@ -236,16 +268,15 @@
   whitelisted: true
   atmDepositCommission: 0.15 # Exodus corporate ATM commission
 
-# Exodus disable-viper-group — prototype kept for job refs; hidden from lobby
+# Exodus: Viper Group is assigned through dedicated jobs only.
 - type: company
   id: TheViperGroup
   name: viper-group-name # Ru-Localization
   description: viper-group-description
   color: "#B82121"
   image: /Textures/_Mono/Companies/thevipergroup.png
-  disabled: true
+  disabled: true # Exodus hide Viper Group from manual company selection.
   atmDepositCommission: 0.15 # Exodus corporate ATM commission
-  # whitelisted: true
 
 - type: company
   id: RedSailCorsairs

@@ -108,6 +108,8 @@ summoning-machine-banner-khsira-desc = A banner bearing the emblem of the Khsira
 
 summoning-machine-air-grenade-name = Air grenade
 summoning-machine-air-grenade-desc = A solid-state grenade that releases a large volume of breathable air when activated.
+summoning-machine-kudzu-grenade-name = Synthetic vine grenade
+summoning-machine-kudzu-grenade-desc = A VEF medical grenade that deploys a network of synthetic filaments. Treats oxygen deprivation in anyone on it without hindering movement.
 summoning-machine-cloning-kit-name = Cloning facility crate
 summoning-machine-cloning-kit-desc = A medical crate containing four machine flatpacks and one full stack of biomass.
 summoning-machine-omnimed-tool-name = Surgical multitool
@@ -122,3 +124,14 @@ summoning-machine-air-grenade-box-name = Box of air grenades
 summoning-machine-air-grenade-box-desc = A box containing six grenades that release breathable air.
 summoning-machine-multitool-name = Multitool
 summoning-machine-multitool-desc = A versatile tool for working with cables, networks, and machinery.
+
+summoning-machine-khar-name = Khar assault mech
+summoning-machine-khar-desc = An exosuit supplied with a battery, gravitational cannon, Kunisa machine gun, Tesla cannon and chain sword.
+summoning-machine-mech-gravity-name = Mech gravitational cannon
+summoning-machine-mech-gravity-desc = An interchangeable close-range weapon that throws back infantry and heavily damages structures.
+summoning-machine-mech-kunisa-name = Mech Kunisa machine gun
+summoning-machine-mech-kunisa-desc = A rapid-fire plasma module powered by the mech's battery.
+summoning-machine-gravity-projector-name = Gravitational projector
+summoning-machine-gravity-projector-desc = A short-range infantry weapon with a forward grip and convex gravitational emitter.
+summoning-machine-kunisa-machine-gun-name = Kunisa plasma machine gun
+summoning-machine-kunisa-machine-gun-desc = An infantry machine gun with an enlarged capacitor. Fires faster than the standard autopulser.
