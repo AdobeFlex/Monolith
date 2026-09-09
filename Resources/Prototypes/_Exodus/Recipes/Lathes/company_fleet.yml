@@ -28,12 +28,13 @@
     Glass: 150
     Cloth: 100
 
-# --- Nosske-Eien R&D ---
+# --- Paycheck Bratva ---
 - type: latheRecipe
   id: NearestShuttleTeleporterMachineCircuitboard
   parent: BaseCircuitboardRecipe
   result: NearestShuttleTeleporterMachineCircuitboard
 
+# --- Nosske-Eien R&D ---
 - type: latheRecipe
   id: LifeInsuranceConsoleComputerCircuitboard
   parent: BaseGoldCircuitboardRecipe
@@ -44,7 +45,7 @@
     Gold: 100
     Silver: 100
     Plutonium: 500
-    Americium: 1
+    Americium: 100
 
 - type: latheRecipe
   id: LifeInsuranceScannerMachineCircuitboard
@@ -57,7 +58,7 @@
     Silver: 100
     Plasma: 150
     Plutonium: 500
-    Americium: 1
+    Americium: 100
 
 - type: latheRecipe
   id: LifeInsuranceClonerMachineCircuitboard
@@ -70,7 +71,7 @@
     Silver: 150
     Plasma: 250
     Plutonium: 500
-    Americium: 2
+    Americium: 200
 
 # --- HME organs ---
 - type: latheRecipe
@@ -147,6 +148,28 @@
   completetime: 3
   materials:
     Steel: 150
+
+- type: latheRecipe
+  id: WeaponLightPhaserMaco
+  result: WeaponLightPhaserMacoEmpty
+  completetime: 20
+  materials:
+    Steel: 2500
+    Plastic: 500
+    Glass: 500
+    Gold: 300
+    Plutonium: 100
+    Americium: 50
+
+- type: latheRecipe
+  id: CartridgeLightPhaserMaco
+  result: CartridgeLightPhaserMaco
+  completetime: 5
+  materials:
+    Steel: 100
+    Glass: 100
+    Plasma: 100
+    Plutonium: 5
 
 # --- Ullman Industries ---
 - type: latheRecipe
@@ -231,7 +254,7 @@
 # --- Drake Industries ---
 - type: latheRecipe
   id: SyndicateBombCerberus
-  result: SyndicateBomb
+  result: DrakeBomb
   completetime: 30
   materials:
     Steel: 5000
@@ -289,7 +312,7 @@
   categories:
   - Explosive
   materialResult:
-    Americium: 1
+    Americium: 100
   completetime: 180
   materials:
     Plutonium: 250
@@ -321,7 +344,6 @@
 - type: latheRecipePack
   id: CompanyNosskeDynamic
   recipes:
-  - NearestShuttleTeleporterMachineCircuitboard
   - LifeInsuranceConsoleComputerCircuitboard
   - LifeInsuranceScannerMachineCircuitboard
   - LifeInsuranceClonerMachineCircuitboard
@@ -342,6 +364,14 @@
   recipes:
   - WeaponPistolMaco
   - MagazinePistolMaco
+  - WeaponLightPhaserMaco
+  - CartridgeLightPhaserMaco
+
+- type: latheRecipePack
+  id: CompanyMacoAmmoDynamic
+  recipes:
+  - MagazinePistolMaco
+  - CartridgeLightPhaserMaco
 
 - type: latheRecipePack
   id: CompanyUllmanDynamic
@@ -352,8 +382,12 @@
 - type: latheRecipePack
   id: CompanyCdmDynamic
   recipes:
-  - ShieldGeneratorCdmMachineCircuitboard
   - CdmShieldReserveCartridge
+
+- type: latheRecipePack
+  id: CompanyCdmBoardsDynamic
+  recipes:
+  - ShieldGeneratorCdmMachineCircuitboard
 
 - type: latheRecipePack
   id: CompanyHiveDynamic
@@ -376,6 +410,11 @@
   id: CompanyBratvaDynamic
   recipes:
   - ClothingOuterHardsuitBratva
+
+- type: latheRecipePack
+  id: CompanyBratvaBoardsDynamic
+  recipes:
+  - NearestShuttleTeleporterMachineCircuitboard
 
 - type: latheRecipePack
   id: CompanyAetherionDynamic

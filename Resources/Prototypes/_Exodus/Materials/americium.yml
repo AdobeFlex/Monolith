@@ -7,7 +7,7 @@
     sprite: /Textures/_Exodus/Objects/Materials/americium.rsi
     state: americium
   color: "#F5BF28"
-  price: 44000
+  price: 880
 
 - type: stack
   id: Americium

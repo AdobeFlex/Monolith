@@ -495,7 +495,7 @@
 # The actual brain inside the core
 - type: entity
   id: StationAiBrain
-  parent: PositronicBrain
+  parent: BasePositronicBrain # Exodus: AI ghost roles reopen automatically instead of requiring manual activation.
   categories: [ HideSpawnMenu, DoNotMap ]
   components:
   - type: Sprite
