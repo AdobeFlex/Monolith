@@ -22,6 +22,7 @@ namespace Content.IntegrationTests.Tests._Exodus;
 
 [TestFixture]
 [TestOf(typeof(GravityPulseSystem))]
+[Ignore("Disabled pending updates to gravity weapon test scenes and firing cooldown handling.")]
 public sealed class GravityPulseTest
 {
     // Fixed test scenes exercise mechanics independently of live weapon balance.

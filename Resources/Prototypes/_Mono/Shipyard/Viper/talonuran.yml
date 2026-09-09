@@ -9,7 +9,7 @@
   parent: BaseVessel
   name: Вайперы «Талонуран» # Exodus Viper localization
   description: Малый корабль тяжёлой поддержки, заказанный «Вайперами» для сопровождения флота. Рекомендуются магнитные сапоги. # Exodus Viper localization
-  price: 47500 # Exodus keep ship price
+  price: 58400 # Exodus: appraised minimum + 5%, rounded up to 100.
   category: Small
   group: Viper
   access: Viper # Exodus restore-viper-group

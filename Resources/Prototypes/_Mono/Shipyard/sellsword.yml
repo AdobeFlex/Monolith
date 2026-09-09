@@ -11,7 +11,7 @@
   # Exodus-begin: preserve main-build localization and price.
   name: Селлсворд # Ru-Localization
   description: Шаттл сопровождения, представляющий собой клаустрофобический гроб из литого пластитана, внутри которого размещены 255-мм орудие и Вспеоа. Ожидаемая продолжительность жизни шаттла в бою - 4 минуты.  # Ru-Localization
-  price: 56000 # markup 15% from 48600.
+  price: 68400 # Exodus: appraised minimum + 5%, rounded up to 100.
   # Exodus-end
   category: Small
   group: Shipyard

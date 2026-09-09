@@ -36,7 +36,7 @@ public sealed class ShipArmorBlacklistTest
 
                 var armorUid = SpawnAnchored(armorPrototype, 0);
                 var vine = SpawnAnchored(vinePrototype, 1);
-                var wall = SpawnAnchored("WallSteel", 2);
+                var wall = SpawnAnchored("WallSolid", 2);
                 var armor = entities.GetComponent<ShipArmorComponent>(armorUid);
                 var incoming = FixedPoint2.New(10);
                 var charge = armor.CurrentCharge;

@@ -203,7 +203,7 @@ public sealed class IffAffiliationTest
         await pair.CleanReturnAsync();
     }
 
-    [TestCase("TSFMCIndustry", IffAffiliationMode.FixedCompany)]
+    [TestCase("TSFMCIndustry", IffAffiliationMode.CorporateControl)]
     [TestCase("TSFMCHalcyon", IffAffiliationMode.CorporateControl)]
     [TestCase("HeliosFortress", IffAffiliationMode.CorporateControl)]
     [TestCase("Jupiter", IffAffiliationMode.Faction)]

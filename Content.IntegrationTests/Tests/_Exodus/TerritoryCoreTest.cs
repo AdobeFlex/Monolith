@@ -79,7 +79,7 @@ public sealed class TerritoryCoreTest
 
                 for (var x = 1; x <= 6; x++)
                     entities.SpawnEntity("ChimeraFleshKudzu", At(x));
-                entities.SpawnEntity("WallSteel", At(1));
+                entities.SpawnEntity("WallSolid", At(1));
 
                 ForceSpawnCheck();
                 var first = SpawnedCreatures().Single();
