@@ -31,7 +31,7 @@ public sealed class ChatBanTest
         {
             InLobby = true,
             Fresh = true,
-            Dirty = true,
+            Destructive = true, // Ban records survive round cleanup, so this pair must not return to the pool.
         });
         var server = pair.Server;
         var db = server.ResolveDependency<IServerDbManager>();
@@ -155,6 +155,7 @@ public sealed class ChatBanTest
             Assert.That(mutes.IsChatBanned(player, BannableChats.OOC), Is.True);
             Assert.That(mutes.IsChatBanned(player, BannableChats.Dead), Is.True);
         });
+        await pair.Disconnect();
         await pair.CleanReturnAsync();
     }
 
@@ -166,7 +167,7 @@ public sealed class ChatBanTest
             Connected = true,
             DummyTicker = false,
             Fresh = true,
-            Dirty = true,
+            Destructive = true, // Ban records survive round cleanup, so this pair must not return to the pool.
         });
         var server = pair.Server;
         var admins = server.ResolveDependency<IAdminManager>();
@@ -192,6 +193,7 @@ public sealed class ChatBanTest
         await server.WaitPost(() => admins.DeAdmin(player));
         await pair.WaitClientCommand("looc blocked_redirected_looc");
         await AssertReceived(pair, ChatChannel.Dead, "blocked_redirected_looc", false);
+        await pair.Disconnect();
         await pair.CleanReturnAsync();
     }
 
