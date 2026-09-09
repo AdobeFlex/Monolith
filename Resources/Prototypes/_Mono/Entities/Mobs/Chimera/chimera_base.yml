@@ -160,6 +160,14 @@
     requiredLegs: 0
   - type: PlayerToolModifier
     pryTimeMultiplier: 0.4
+  # Exodus-begin restore permanent toggleable thermal vision.
+  - type: ThermalVision
+    toggleAction: ToggleThermalVision
+    pulseTime: 0
+    lightRadius: 15
+    activateSound: null
+    deactivateSound: null
+  # Exodus-end
   - type: NightVision
     relayOverlay: false
     goggleEffect: true
@@ -219,6 +227,22 @@
         type: StrippableBoundUserInterface
       enum.SurgeryUIKey.Key:
         type: SurgeryBui
+      # Exodus-begin built-in mass scanner.
+      enum.RadarConsoleUiKey.Key:
+        type: RadarConsoleBoundUserInterface
+      # Exodus-end
+  # Exodus-begin built-in mass scanner with handheld detection ranges.
+  - type: IntrinsicUI
+    uis:
+      enum.RadarConsoleUiKey.Key:
+        toggleAction: ActionObserverShowRadar
+  - type: RadarConsole
+    followEntity: true
+    noRotate: true
+  - type: DetectionRangeMultiplier
+    infraredMultiplier: 0.5
+    visualMultiplier: 0.75
+  # Exodus-end
   - type: Hands
   - type: ComplexInteraction
   - type: Ensnareable
