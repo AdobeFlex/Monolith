@@ -302,7 +302,7 @@ public sealed class TerritoryCoreTest
     [Test]
     public async Task InfestationIffIsOrangeAndItsStatusIsTransient()
     {
-        await using var pair = await PoolManager.GetServerClient();
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
         var client = pair.Client;
 
         await client.WaitAssertion(() =>

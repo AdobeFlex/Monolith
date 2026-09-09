@@ -141,14 +141,9 @@ public sealed partial class TailedEntitySystem : EntitySystem
 
     private void DisableTailJointNetworking(EntityUid uid)
     {
-        if (TryComp<JointComponent>(uid, out var joint))
-        {
-            joint.NetSyncEnabled = false;
-            return;
-        }
-
-        joint = new JointComponent { NetSyncEnabled = false };
-        AddComp(uid, joint);
+        // Register the component in NetComponents before disabling replication so removal can unregister it.
+        var joint = EnsureComp<JointComponent>(uid);
+        joint.NetSyncEnabled = false;
     }
 
     private void UpdateTailedMob(Entity<TailedEntityComponent> head, float frameTime)

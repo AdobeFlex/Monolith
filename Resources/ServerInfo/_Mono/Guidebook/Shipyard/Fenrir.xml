@@ -1,5 +1,5 @@
+<!-- Exodus: retained Russian ship guide terminology. -->
 <Document>
-  <!-- Exodus: retained Russian ship guide terminology. -->
   # ЭСМИНЕЦ КЛАССА FENRIR
   <Box>
   <GuideEntityEmbed Entity="WeaponTurretCharonReload"/>

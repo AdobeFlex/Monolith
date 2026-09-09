@@ -20,7 +20,7 @@ public sealed class IffAffiliationTest
     [Test]
     public async Task CorporateControlChangesLabelButNotFactionColor()
     {
-        await using var pair = await PoolManager.GetServerClient();
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
         var client = pair.Client;
 
         await client.WaitAssertion(() =>
@@ -119,7 +119,7 @@ public sealed class IffAffiliationTest
     [Test]
     public async Task ExplicitAffiliationPreservesIffVisibilityAndHubColor()
     {
-        await using var pair = await PoolManager.GetServerClient();
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
         var client = pair.Client;
 
         await client.WaitAssertion(() =>
@@ -177,7 +177,7 @@ public sealed class IffAffiliationTest
     [Test]
     public async Task UnconfiguredCompanyShipRetainsLegacyDisplay()
     {
-        await using var pair = await PoolManager.GetServerClient();
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true });
         var client = pair.Client;
 
         await client.WaitAssertion(() =>
