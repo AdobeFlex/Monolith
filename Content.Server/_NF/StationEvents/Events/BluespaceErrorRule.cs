@@ -265,6 +265,7 @@ public sealed partial class BluespaceErrorRule : StationEventSystem<BluespaceErr
                 }
 
                 var gridValue = _pricing.AppraiseGrid(gridUid, null);
+                RewardPreservedBluespaceGrid((uid, component), gridUid, gridValue); // Exodus: validate all required entities before deleting the grid.
 
                 // Deletion has to happen before grid traversal re-parents players.
                 Del(gridUid);
@@ -279,14 +280,6 @@ public sealed partial class BluespaceErrorRule : StationEventSystem<BluespaceErr
                     var reward = (int)(gridValue * rewardCoeff);
                     _bank.TrySectorDeposit(account, reward, LedgerEntryType.BluespaceReward);
                 }
-
-                // Mono: currency injections
-                if (TryComp<CurrencyInjectionOnBluespaceErrorComponent>(uid, out var comp))
-                {
-                    if (gridValue / component.StartingValue > comp.IntegrityRequirement) // good job!
-                        _currencyInjection.InjectCurrency(comp.Company, comp.Amount);
-                }
-                // Mono end
             }
         }
 
