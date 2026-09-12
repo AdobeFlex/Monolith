@@ -326,6 +326,9 @@ uplink-pdv-t4-saturn-voucher-desc = A small card that authorizes the procurement
 uplink-pirate-faction-ai-core-name = PDV Station AI Core
 uplink-pirate-faction-ai-core-desc = A screwable faction AI core aligned to PirateNF friend-or-foe logic.
 
+uplink-HardBomb-PDV-name = PDV "Adam" Bunker Buster
+uplink-HardBomb-PDV-desc = The PDV's answer to not enough boom
+
 # MARK: Materials
 
 uplink-pdv-composite5-name = 5 adamantite
