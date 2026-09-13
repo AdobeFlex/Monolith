@@ -285,6 +285,14 @@
 
 - type: entity
   parent: SheetUraniumFissile
+  id: SheetUraniumFissile3
+  suffix: 3 # Exodus: match the actual stack size.
+  components:
+  - type: Stack
+    count: 3
+
+- type: entity
+  parent: SheetUraniumFissile
   id: SheetUraniumFissile1
   suffix: 1
   components:
