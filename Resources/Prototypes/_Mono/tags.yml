@@ -788,3 +788,6 @@
 - type: Tag
   id: DoorAutorotate
 
+# Deposit box blacklist
+- type: Tag
+  id: SafetyDepositBlacklist

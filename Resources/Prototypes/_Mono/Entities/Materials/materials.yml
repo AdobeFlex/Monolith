@@ -398,6 +398,7 @@
   - type: Tag
     tags:
     - Sheet
+    - SafetyDepositBlacklist # lmao no
   - type: Item
     sprite: Objects/Materials/Sheets/glass.rsi
     heldPrefix: plastitaniumglass # Exodus: use the in-hand states provided by glass.rsi.
