@@ -12,13 +12,15 @@ research-technology-rogue-basic-guns = Базовое огнестрельное
 research-technology-rogue-thermals = Очки термального видения
 research-technology-pdv-basic-module = Базовый модуль борга ДФ
 # T2 rogue
-research-technology-rogue-advanced-guns = Продвинутое огнестрельное оружие
+# Exodus: names follow the approved PDV research changes.
+research-technology-rogue-advanced-guns = Противотанковое вооружение
 research-technology-rogue-cqc-guns = Оружие ближнего боя
 research-technology-rogue-hypospray = Быстрое введение реагентов
 research-technology-rogue-emag = Базовые методы взлома
 research-technology-rogue-hristov = Тяжёлое огнестрельное оружие
 research-technology-rogue-stealthsuit = Метаматериальные волокна
-research-technology-rogue-subsonic = Дозвуковое оружие
+# Exodus: research now unlocks ammunition rather than the weapons.
+research-technology-rogue-subsonic = Дозвуковые боеприпасы
 research-technology-rogue-saintie-voucher = Ваучер шаттла Сэнти
 research-technology-rogue-motley-anne-voucher = Ваучер шаттла Матерь Анна
 research-technology-rogue-motley-anne-fighters = Дроны для Матери Анна
