@@ -205,11 +205,41 @@
     - !type:TileNotBlocked
 
 - type: construction
+  id: TableBlack # Exodus: use localized entity name/description, as other furniture does.
+  graph: Table
+  startNode: start
+  targetNode: TableBlack
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Furniture/Tables/genericblack.rsi
+    state: full
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+    - !type:TileNotBlocked
+
+- type: construction
   id: TableReinforced
   graph: Table
   startNode: start
   targetNode: TableReinforced
   category: construction-category-furniture
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+    - !type:TileNotBlocked
+
+- type: construction
+  id: TableReinforcedBlack # Exodus: use localized entity name/description.
+  graph: Table
+  startNode: start
+  targetNode: TableReinforcedBlack
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Furniture/Tables/reinforcedblack.rsi
+    state: full
   objectType: Structure
   placementMode: SnapgridCenter
   canBuildInImpassable: false
@@ -234,6 +264,21 @@
   startNode: start
   targetNode: TableReinforcedGlass
   category: construction-category-furniture
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+    - !type:TileNotBlocked
+
+- type: construction
+  id: TableReinforcedGlassBlack # Exodus: use localized entity name/description.
+  graph: Table
+  startNode: start
+  targetNode: TableReinforcedGlassBlack
+  category: construction-category-furniture
+  icon:
+    sprite: Structures/Furniture/Tables/r_glassblack.rsi
+    state: full
   objectType: Structure
   placementMode: SnapgridCenter
   canBuildInImpassable: false
