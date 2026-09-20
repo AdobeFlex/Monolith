@@ -36,6 +36,8 @@
 - type: latheRecipePack
   id: MonoTSFVouchersDynamic
   recipes:
+  # Exodus: new upstream ships; all existing choices remain.
+  - ShipVoucherLudaRecipe
   - FlyssaVoucherTSF
   - FujianVoucherTSF
   - ZephyrVoucherTSF

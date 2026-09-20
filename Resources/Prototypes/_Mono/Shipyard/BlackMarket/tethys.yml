@@ -9,7 +9,7 @@
   category: Medium
   group: BlackMarket
   access: Pirate
-  shuttlePath: /SharedMaps/_Mono/Shuttles/BlackMarket/tethys.yml
+  shuttlePath: /SharedMaps/_Mono/Shuttles/PDV/tethys.yml # Exodus: upstream remap, existing vessel settings retained.
   addComponents: # Exodus faction-owned shuttle target filtering
   - type: NpcFactionMember
     factions:
@@ -23,7 +23,7 @@
 - type: gameMap
   id: Tethys
   mapName: 'Тефида' # Ru-Localization
-  mapPath: /SharedMaps/_Mono/Shuttles/BlackMarket/tethys.yml
+  mapPath: /SharedMaps/_Mono/Shuttles/PDV/tethys.yml # Exodus: upstream remap, existing vessel settings retained.
   minPlayers: 0
   stations:
     Tethys:
