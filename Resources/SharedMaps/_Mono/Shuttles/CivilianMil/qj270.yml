@@ -1352,7 +1352,7 @@ entities:
       parent: 1
     - type: DeltaPressure
       gridUid: 1
-- proto: WindoorSecureSecurityLocked
+- proto: WindoorSecure # Exodus: upstream fix, civilian ship has no security access requirement.
   entities:
   - uid: 144
     components:
