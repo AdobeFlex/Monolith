@@ -42,7 +42,6 @@
       # Exodus-end
       # Exodus-begin: approved upstream restrictions, alongside our existing restrictions.
       - Contraband
-      - Stamp
       - ThiefUndeterminedBackpack
       # Exodus-end
       tags:
