@@ -32,7 +32,7 @@
   minPlayers: 0
   stations:
     Pelican:
-      stationProto: StandardFrontierVessel
+      stationProto: StandardFrontierExpeditionVessel
       components:
         - type: StationNameSetup
           mapNameTemplate: 'Пеликан{1}'

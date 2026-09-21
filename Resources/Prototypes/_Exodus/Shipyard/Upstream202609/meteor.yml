@@ -28,7 +28,7 @@
   minPlayers: 0
   stations:
     Meteor:
-      stationProto: StandardFrontierVessel
+      stationProto: StandardFrontierExpeditionVessel
       components:
         - type: StationNameSetup
           mapNameTemplate: 'Метеор{1}'
