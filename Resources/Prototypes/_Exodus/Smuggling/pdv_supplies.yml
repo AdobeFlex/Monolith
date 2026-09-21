@@ -4,6 +4,11 @@
   name: Phaethon Dynasty supply crate
   description: Sealed Vanguard supplies. Selling the intact crate at a cargo depot pays the courier and funds PDV requisitions.
   components:
+  - type: ExtendDescription
+    descriptionList:
+    - description: exodus-sale-funds-pdv
+      color: "#4f94ad"
+      requireDetailRange: true
   - type: CurrencyInjectionOnSell
     company: PDV
     amount:
@@ -35,6 +40,11 @@
   name: Phaethon Dynasty supply crate
   description: Sealed Vanguard supplies. Selling the intact crate at a cargo depot pays the courier and funds PDV requisitions.
   components:
+  - type: ExtendDescription
+    descriptionList:
+    - description: exodus-sale-funds-pdv
+      color: "#4f94ad"
+      requireDetailRange: true
   - type: CurrencyInjectionOnSell
     company: PDV
     amount:
@@ -66,6 +76,11 @@
   name: Phaethon Dynasty supply crate
   description: Sealed Vanguard supplies. Selling the intact crate at a cargo depot pays the courier and funds PDV requisitions.
   components:
+  - type: ExtendDescription
+    descriptionList:
+    - description: exodus-sale-funds-pdv
+      color: "#4f94ad"
+      requireDetailRange: true
   - type: CurrencyInjectionOnSell
     company: PDV
     amount:
@@ -97,6 +112,11 @@
   name: Phaethon Dynasty supply crate
   description: Sealed Vanguard supplies. Selling the intact crate at a cargo depot pays the courier and funds PDV requisitions.
   components:
+  - type: ExtendDescription
+    descriptionList:
+    - description: exodus-sale-funds-pdv
+      color: "#4f94ad"
+      requireDetailRange: true
   - type: CurrencyInjectionOnSell
     company: PDV
     amount:
@@ -128,6 +148,11 @@
   name: Phaethon Dynasty supply crate
   description: Sealed Vanguard supplies. Selling the intact crate at a cargo depot pays the courier and funds PDV requisitions.
   components:
+  - type: ExtendDescription
+    descriptionList:
+    - description: exodus-sale-funds-pdv
+      color: "#4f94ad"
+      requireDetailRange: true
   - type: CurrencyInjectionOnSell
     company: PDV
     amount:

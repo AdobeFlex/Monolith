@@ -9,6 +9,9 @@ uplink-pirate-interdyne-defibrillator-desc = An elite compact defibrillator that
 uplink-pirate-chemical-synthesis-kit-name = Chemical Synthesis Kit
 uplink-pirate-chemical-synthesis-kit-desc = A starter kit for the aspiring chemist, includes toxin and vestine for all your bioweapon needs!
 
+uplink-pirate-vestine-vial-name = Vestine Vial (30u)
+uplink-pirate-vestine-vial-desc = A vial of expensive anomalous liquid, synthesized from the native fauna of Pizt. Useful for advanced chemical production.
+
 uplink-pirate-anti-poison-pen-name = Poison auto-injector
 uplink-pirate-anti-poison-pen-desc = A rapid dose of anti-poison. Contains ultravasculine and epinephrine.
 
