@@ -43,6 +43,9 @@
       # Exodus-begin: approved upstream restrictions, alongside our existing restrictions.
       - Contraband
       - ThiefUndeterminedBackpack
+      - AccessOverrider
+      - PDA
+      - Pill
       # Exodus-end
       tags:
       - Unstashable
