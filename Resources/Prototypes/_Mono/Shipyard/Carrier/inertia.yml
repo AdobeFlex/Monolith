@@ -17,6 +17,12 @@
   group: Custom
   mapchecker_group_override: Shipyard  # Treat this as a Shipyard vessel for mapchecker purposes
   shuttlePath: /SharedMaps/_Mono/Shuttles/PDV/MotleyAnne/inertia.yml # Exodus: upstream remap, existing vessel settings retained.
+  # Exodus-begin: identify the Motley Anne fighter as a friendly Dynasty vessel.
+  addComponents:
+  - type: NpcFactionMember
+    factions:
+    - PirateNF
+  # Exodus-end
   guidebookPage: Null
   class:
   - Fighter

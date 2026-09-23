@@ -11,7 +11,7 @@
   addComponents:
   - type: NpcFactionMember
     factions:
-    - NanoTrasen
+    - MD
   guidebookPage: null
   class:
   - Medical

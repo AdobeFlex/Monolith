@@ -1,4 +1,4 @@
-exodus-hardpoint-examine = Повышает скорострельность закреплённого орудия на { NUMBER($percent, maximumFractionDigits: 0) }%. Тип и размер оружия не ограничены. Заряжание и восстановление энергии не ускоряются. Орудие работает и без крепления.
+exodus-hardpoint-examine = Повышает скорострельность закреплённого орудия на { $percent }%. Тип и размер оружия не ограничены. Заряжание и восстановление энергии не ускоряются. Орудие работает и без крепления.
 exodus-uplink-pdv-osa-voucher-name = LPC «Оса-II» [T2]
 exodus-uplink-pdv-osa-voucher-desc = Позволяет заказать ракетно-артиллерийский корвет «Оса-II».
 research-technology-viper-group-shipyard-T3 = Элитная верфь «Вайперов»
@@ -13,8 +13,8 @@ shipyard-console-class-MechCarrier = Носитель мехов
 shipyard-console-class-EarlyWarning = Дальнее обнаружение
 shipyard-console-class-Stealth = Малозаметный
 
-ent-BaseHardpoint = оружейное крепление
-    .desc = Необязательная универсальная площадка для корабельного оружия. Повышает скорострельность любого закреплённого орудия на 25%, не ускоряя заряжание и восстановление энергии.
+ent-BaseHardpoint = орудийное крепление
+    .desc = Универсальная площадка для корабельного оружия.
 ent-WeaponTurretAC-35 = многоствольная пушка AC-35
     .desc = Четырёхствольная 35-мм пушка Armamenti Corvus для кораблей и истребителей. Поддерживает дистанционное управление и подключение к системе управления огнём.
 ent-Magazine35mm = загрузчик 35-мм бронебойных боеприпасов
@@ -36,64 +36,64 @@ ent-ShipVoucherVGLancehead = LPC «Лансхед» [T2]
 ent-ShipVoucherVGLeviathan = LPC «Левиафан» [T3]
     .desc = Позволяет заказать тяжёлый фрегат «Вайперов» «Левиафан».
 ent-ExodusShipVoucherOsa = LPC «Оса-II» [T2]
-    .desc = Позволяет заказать ракетно-артиллерийский корвет ПДВ «Оса-II».
+    .desc = Позволяет заказать ракетно-артиллерийский корвет ДФ «Оса-II».
 
-ent-HardpointDebugSuperlight = сверхлёгкое отладочное крепление
+ent-HardpointDebugSuperlight = { ent-BaseHardpoint }
     .desc = { ent-BaseHardpoint.desc }
 
-ent-HardpointDebugLight = лёгкое отладочное крепление
+ent-HardpointDebugLight = { ent-BaseHardpoint }
     .desc = { ent-BaseHardpoint.desc }
 
-ent-HardpointDebugMedium = среднее отладочное крепление
+ent-HardpointDebugMedium = { ent-BaseHardpoint }
     .desc = { ent-BaseHardpoint.desc }
 
-ent-HardpointDebugHeavy = тяжёлое отладочное крепление
+ent-HardpointDebugHeavy = { ent-BaseHardpoint }
     .desc = { ent-BaseHardpoint.desc }
 
-ent-HardpointDebugSuperheavy = сверхтяжёлое отладочное крепление
+ent-HardpointDebugSuperheavy = { ent-BaseHardpoint }
     .desc = { ent-BaseHardpoint.desc }
 
-ent-HardpointBallisticSuperlight = сверхлёгкое баллистическое крепление
+ent-HardpointBallisticSuperlight = { ent-BaseHardpoint }
     .desc = { ent-BaseHardpoint.desc }
 
-ent-HardpointBallisticLight = лёгкое баллистическое крепление
+ent-HardpointBallisticLight = { ent-BaseHardpoint }
     .desc = { ent-BaseHardpoint.desc }
 
-ent-HardpointBallisticMedium = среднее баллистическое крепление
+ent-HardpointBallisticMedium = { ent-BaseHardpoint }
     .desc = { ent-BaseHardpoint.desc }
 
-ent-HardpointBallisticHeavy = тяжёлое баллистическое крепление
+ent-HardpointBallisticHeavy = { ent-BaseHardpoint }
     .desc = { ent-BaseHardpoint.desc }
 
-ent-HardpointBallisticSuperheavy = сверхтяжёлое баллистическое крепление
+ent-HardpointBallisticSuperheavy = { ent-BaseHardpoint }
     .desc = { ent-BaseHardpoint.desc }
 
-ent-HardpointEnergySuperlight = сверхлёгкое энергетическое крепление
+ent-HardpointEnergySuperlight = { ent-BaseHardpoint }
     .desc = { ent-BaseHardpoint.desc }
 
-ent-HardpointEnergyLight = лёгкое энергетическое крепление
+ent-HardpointEnergyLight = { ent-BaseHardpoint }
     .desc = { ent-BaseHardpoint.desc }
 
-ent-HardpointEnergyMedium = среднее энергетическое крепление
+ent-HardpointEnergyMedium = { ent-BaseHardpoint }
     .desc = { ent-BaseHardpoint.desc }
 
-ent-HardpointEnergyHeavy = тяжёлое энергетическое крепление
+ent-HardpointEnergyHeavy = { ent-BaseHardpoint }
     .desc = { ent-BaseHardpoint.desc }
 
-ent-HardpointEnergySuperheavy = сверхтяжёлое энергетическое крепление
+ent-HardpointEnergySuperheavy = { ent-BaseHardpoint }
     .desc = { ent-BaseHardpoint.desc }
 
-ent-HardpointMissileSuperlight = сверхлёгкое ракетное крепление
+ent-HardpointMissileSuperlight = { ent-BaseHardpoint }
     .desc = { ent-BaseHardpoint.desc }
 
-ent-HardpointMissileLight = лёгкое ракетное крепление
+ent-HardpointMissileLight = { ent-BaseHardpoint }
     .desc = { ent-BaseHardpoint.desc }
 
-ent-HardpointMissileMedium = среднее ракетное крепление
+ent-HardpointMissileMedium = { ent-BaseHardpoint }
     .desc = { ent-BaseHardpoint.desc }
 
-ent-HardpointMissileHeavy = тяжёлое ракетное крепление
+ent-HardpointMissileHeavy = { ent-BaseHardpoint }
     .desc = { ent-BaseHardpoint.desc }
 
-ent-HardpointMissileSuperheavy = сверхтяжёлое ракетное крепление
+ent-HardpointMissileSuperheavy = { ent-BaseHardpoint }
     .desc = { ent-BaseHardpoint.desc }

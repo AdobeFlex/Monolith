@@ -3,7 +3,7 @@
   id: Gadfly
   parent: BaseVesselAntag
   name: Овод
-  description: Малый корабль поддержки ПДВ с двумя 57-мм автопушками AK570 и двумя 150-мм установками TARNYX.
+  description: Малый корабль поддержки ДФ с двумя 57-мм автопушками AK570 и двумя 150-мм установками TARNYX.
   price: 68000
   category: Small
   group: BlackMarket

@@ -11,6 +11,12 @@
   group: Custom
   mapchecker_group_override: Shipyard  # Treat this as a Shipyard vessel for mapchecker purposes
   shuttlePath: /SharedMaps/_Mono/Shuttles/CivilianMil/qj490.yml # Exodus: upstream remap, existing vessel settings retained.
+  # Exodus-begin: faction-owned fighter from the TSF carrier shipyard.
+  addComponents:
+  - type: NpcFactionMember
+    factions:
+    - TSFMC
+  # Exodus-end
   guidebookPage: Null
   class:
   - Pursuit
