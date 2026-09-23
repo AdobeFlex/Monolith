@@ -1,6 +1,5 @@
 using Content.Shared.Examine;
 using Content.Shared.Weapons.Ranged.Components;
-using Content.Shared.Weapons.Ranged.Events;
 using Robust.Shared.Map.Components;
 
 namespace Content.Shared._Exodus.Weapons.Hardpoints;
@@ -20,16 +19,18 @@ public sealed class ExodusHardpointSystem : EntitySystem
         _transformQuery = GetEntityQuery<TransformComponent>();
         _gridQuery = GetEntityQuery<MapGridComponent>();
 
-        SubscribeLocalEvent<GunComponent, QueryFireRateMultiplierEvent>(OnQueryFireRate);
         SubscribeLocalEvent<ExodusHardpointComponent, ExaminedEvent>(OnExamined);
     }
 
-    private void OnQueryFireRate(Entity<GunComponent> ent, ref QueryFireRateMultiplierEvent args)
+    /// <summary>
+    /// Returns the strongest hardpoint bonus on this gun's current tile, or 1 if none applies.
+    /// </summary>
+    public float GetFireIntervalMultiplier(Entity<GunComponent> ent)
     {
         if (!_transformQuery.TryGetComponent(ent, out var xform) || !xform.Anchored ||
             xform.GridUid is not { } gridUid || xform.ParentUid != gridUid ||
             !_gridQuery.TryGetComponent(gridUid, out var grid))
-            return;
+            return 1f;
 
         // Query only this gun's tile when it fires. Re-checking live components prevents
         // stale bonuses after unanchoring, deletion, grid splitting or snapshot restoration.
@@ -49,7 +50,7 @@ public sealed class ExodusHardpointSystem : EntitySystem
                 multiplier = hardpoint.FireIntervalMultiplier;
         }
 
-        args.ReloadTimeMul *= multiplier;
+        return multiplier;
     }
 
     private void OnExamined(Entity<ExodusHardpointComponent> ent, ref ExaminedEvent args)

@@ -3,6 +3,7 @@ using Robust.Shared.GameStates;
 namespace Content.Shared._Mono.MAWC.Shields;
 
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+[AutoGenerateComponentPause] // Exodus: pause the refresh timer declared in the extension.
 public sealed partial class ShieldLinkSourceComponent : Component
 {
     [DataField(required: true)]
