@@ -215,6 +215,10 @@
 - type: roleLoadout
   id: JobTsfMarsoc
   groups:
+  # Exodus-begin: equip the backpack before storage items and allow a faction camera.
+  - ExodusMarsocBackpack
+  - TsfmcNeck
+  # Exodus-end
   - TsfmcBalaclava
   - NfsdBoxSurvival
   - ContractorWallet

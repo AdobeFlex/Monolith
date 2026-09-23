@@ -42,9 +42,9 @@
 
 - type: startingGear
   id: MarsocOperativeGearHyperwarRole
+  # Exodus: backpack and neck equipment are supplied by the lobby loadout before its storage items.
   equipment:
     jumpsuit: ClothingUniformTsfmcMopp
-    back: ClothingBackpackERTLeader
     eyes: ClothingEyesHudNfsd
     ears: ClothingHeadsetAltTsfmcCommander # Exodus Colonel's headset without the CentCom channel; reinforcement gear is unchanged.
     gloves: ClothingHandsGlovesTacticalCombatBlack
@@ -54,6 +54,5 @@
     pocket1: CrowbarPocket
     pocket2: RadioHandheldNF
     belt: ClothingBeltWebbingsNormalTSFMC
-    neck: ClothingNeckIFFCyan
   inhand:
   - UndeterminedTSFMarsocKit

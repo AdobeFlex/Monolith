@@ -1,0 +1,40 @@
+# These mandatory backpacks must be the first groups in their role loadouts.
+# Storage loadouts are applied before job starting gear, so the backpack must already exist.
+- type: loadoutGroup
+  id: ExodusMarsocBackpack
+  name: loadout-group-contractor-backpack
+  hidden: true
+  minLimit: 1
+  maxLimit: 1
+  loadouts:
+  - ExodusMarsocBackpack
+  fallbacks:
+  - ExodusMarsocBackpack
+
+- type: loadout
+  id: ExodusMarsocBackpack
+  equipment:
+    back: ClothingBackpackERTLeader
+  storage:
+    back:
+    - BaseSecurityUplinkRadioOfficer
+    - BookTSFSOP
+
+- type: loadoutGroup
+  id: ExodusTarkhanBackpack
+  name: loadout-group-contractor-backpack
+  hidden: true
+  minLimit: 1
+  maxLimit: 1
+  loadouts:
+  - ExodusTarkhanBackpack
+  fallbacks:
+  - ExodusTarkhanBackpack
+
+- type: loadout
+  id: ExodusTarkhanBackpack
+  equipment:
+    back: ClothingBackpackPDVTarkhan
+  storage:
+    back:
+    - BasePirateUplinkPirateCrew
