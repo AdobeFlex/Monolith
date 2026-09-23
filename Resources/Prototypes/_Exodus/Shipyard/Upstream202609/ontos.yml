@@ -28,12 +28,12 @@
     Ontos:
       stationProto: StandardFrontierVessel
       components:
-      - type: StationNameSetup
-        mapNameTemplate: 'Онтос{1}'
-        nameGenerator:
-          !type:NanotrasenNameGenerator
-          prefixCreator: '14'
-      - type: StationJobs
-        availableJobs:
-          Pirate: [ 0, 0 ]
-          PdvBorg: [ 0, 0 ]
+        - type: StationNameSetup
+          mapNameTemplate: 'Онтос{1}'
+          nameGenerator:
+            !type:NanotrasenNameGenerator
+            prefixCreator: '14'
+        - type: StationJobs
+          availableJobs:
+            Pirate: [ 0, 0 ]
+            PdvBorg: [ 0, 0 ]
