@@ -1,3 +1,5 @@
+es-gun-attachment-examine-text = Установлены модули: [bold][color=gold]{ $attachments }[/color][/bold].
+
 es-gun-attachments-inspect-modifier-recovery = Базовое восстановление после отдачи: [bold][color={ $color }]{ NATURALFIXED($modifier, 2) }×[/color][/bold].
 es-gun-attachments-inspect-modifier-recoil = Базовый прирост отдачи: [bold][color={ $color }]{ NATURALFIXED($modifier, 2) }×[/color][/bold].
 es-gun-attachments-inspect-modifier-minspread = Базовый минимальный разброс: [bold][color={ $color }]{ NATURALFIXED($modifier, 2) }×[/color][/bold].

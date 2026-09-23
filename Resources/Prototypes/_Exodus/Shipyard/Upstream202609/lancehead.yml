@@ -37,13 +37,13 @@
     Lancehead:
       stationProto: StandardFrontierVessel
       components:
-        - type: StationNameSetup
-          mapNameTemplate: 'Вайперы «Лансхед»{1}'
-          nameGenerator:
-            !type:NanotrasenNameGenerator
-            prefixCreator: '14'
-        - type: StationJobs
-          availableJobs:
-            VGInfanteer: [ 0, 0 ]
-            VGLieutenant: [ 0, 0 ]
-            VGCommander: [ 0, 0 ]
+      - type: StationNameSetup
+        mapNameTemplate: 'Вайперы «Лансхед»{1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'
+      - type: StationJobs
+        availableJobs:
+          VGInfanteer: [ 0, 0 ]
+          VGLieutenant: [ 0, 0 ]
+          VGCommander: [ 0, 0 ]
