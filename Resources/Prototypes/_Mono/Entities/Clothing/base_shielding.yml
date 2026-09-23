@@ -37,10 +37,15 @@
 # If a shield is powerful enough, you can remove plates as a balance option by replacing ClothingOuterHardsuitBase
 - type: entity
   abstract: true
-  parent: [RecyclableItemClothHardsuit, ClothingOuterBase, GeigerCounterClothing, AllowSuitStorageClothing] # Frontier: added RecyclableItemClothHardsuit # Mono - armor plates.
+  parent: [RecyclableItemClothHardsuit, ClothingOuterBase, GeigerCounterClothing, AllowSuitStorageClothing, ClothingOuterRadioSlot] # Exodus: preserve the hardsuit radio slot.
   id: ClothingOuterHardsuitBaseNoPlateholder
   name: base hardsuit no plateholder
   components:
+  # Exodus-begin: preserve SS220 virology protection when changing the hardsuit base.
+  - type: VirusProtection
+    vectors: Contact, Proximity, Splash
+    blockChance: 0.9
+  # Exodus-end
   - type: PressureProtection
     highPressureMultiplier: 0.3
     lowPressureMultiplier: 1000
@@ -67,6 +72,7 @@
       toggleable-clothing: !type:Container {}
       storagebase: !type:Container
         ents: []
+      item: !type:ContainerSlot {} # Exodus: radio slot container.
   - type: UserInterface
     interfaces:
       enum.StorageUiKey.Key:
