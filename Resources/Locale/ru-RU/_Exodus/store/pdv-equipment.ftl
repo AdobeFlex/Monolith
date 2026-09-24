@@ -1,4 +1,4 @@
-research-technology-rogue-heavy-weapons = Тяжёлые баллистические боеприпасы
+research-technology-rogue-heavy-weapons = Тяжёлое огнестрельное оружие
 uplink-pirate-teleshield-name = Телескопический щит
 uplink-pirate-teleshield-desc = Складной ручной щит, обеспечивающий надёжную защиту.
 uplink-pirate-vympel-name = «Вымпел»
