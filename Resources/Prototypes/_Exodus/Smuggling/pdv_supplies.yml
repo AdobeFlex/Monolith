@@ -15,6 +15,7 @@
       Doubloon: 10
   - type: Icon
     sprite: _Exodus/Structures/Storage/Crates/pdv_supply_1.rsi
+    state: icon
   - type: Sprite
     sprite: _Exodus/Structures/Storage/Crates/pdv_supply_1.rsi
     layers:
@@ -51,6 +52,7 @@
       Doubloon: 10
   - type: Icon
     sprite: _Exodus/Structures/Storage/Crates/pdv_supply_2.rsi
+    state: icon
   - type: Sprite
     sprite: _Exodus/Structures/Storage/Crates/pdv_supply_2.rsi
     layers:
@@ -87,6 +89,7 @@
       Doubloon: 10
   - type: Icon
     sprite: _Exodus/Structures/Storage/Crates/pdv_supply_3.rsi
+    state: icon
   - type: Sprite
     sprite: _Exodus/Structures/Storage/Crates/pdv_supply_3.rsi
     layers:
@@ -123,6 +126,7 @@
       Doubloon: 10
   - type: Icon
     sprite: _Exodus/Structures/Storage/Crates/pdv_supply_4.rsi
+    state: icon
   - type: Sprite
     sprite: _Exodus/Structures/Storage/Crates/pdv_supply_4.rsi
     layers:
@@ -159,6 +163,7 @@
       Doubloon: 10
   - type: Icon
     sprite: _Exodus/Structures/Storage/Crates/pdv_supply_5.rsi
+    state: icon
   - type: Sprite
     sprite: _Exodus/Structures/Storage/Crates/pdv_supply_5.rsi
     layers:

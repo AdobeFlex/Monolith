@@ -205,14 +205,11 @@
     - !type:TileNotBlocked
 
 - type: construction
-  id: TableBlack # Exodus: use localized entity name/description, as other furniture does.
+  id: TableBlack # Exodus: use the target entity's localized name, description and icon.
   graph: Table
   startNode: start
   targetNode: TableBlack
   category: construction-category-furniture
-  icon:
-    sprite: Structures/Furniture/Tables/genericblack.rsi
-    state: full
   objectType: Structure
   placementMode: SnapgridCenter
   canBuildInImpassable: false
@@ -232,14 +229,11 @@
     - !type:TileNotBlocked
 
 - type: construction
-  id: TableReinforcedBlack # Exodus: use localized entity name/description.
+  id: TableReinforcedBlack # Exodus: use the target entity's localized name, description and icon.
   graph: Table
   startNode: start
   targetNode: TableReinforcedBlack
   category: construction-category-furniture
-  icon:
-    sprite: Structures/Furniture/Tables/reinforcedblack.rsi
-    state: full
   objectType: Structure
   placementMode: SnapgridCenter
   canBuildInImpassable: false
@@ -271,14 +265,11 @@
     - !type:TileNotBlocked
 
 - type: construction
-  id: TableReinforcedGlassBlack # Exodus: use localized entity name/description.
+  id: TableReinforcedGlassBlack # Exodus: use the target entity's localized name, description and icon.
   graph: Table
   startNode: start
   targetNode: TableReinforcedGlassBlack
   category: construction-category-furniture
-  icon:
-    sprite: Structures/Furniture/Tables/r_glassblack.rsi
-    state: full
   objectType: Structure
   placementMode: SnapgridCenter
   canBuildInImpassable: false
