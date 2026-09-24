@@ -15,3 +15,7 @@ company-vessel-blackhawk-kortic-name = Blackhawk "Kortic"
 company-vessel-blackhawk-kortic-description = A compact Blackhawk PMC ship for escort and contract operations.
 company-vessel-blackhawk-scarab-name = Blackhawk «Scarab»
 company-vessel-blackhawk-scarab-description = The PMC Blackhawk medium combat frigate, designed to dominate in space combat.
+
+# DME
+company-vessel-dme-umbra-name = DME «Umbra»
+company-vessel-dme-umbra-description = A heavy mining shuttle designed by Dark Matter Enterprises for autonomous resource extraction. The vessel is capable of processing entire asteroids thanks to a powerful system of industrial drills, plasma lasers, and a production department.
