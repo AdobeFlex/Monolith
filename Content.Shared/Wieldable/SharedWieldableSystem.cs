@@ -9,6 +9,7 @@ using Content.Shared.IdentityManagement;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Inventory.VirtualItem;
 using Content.Shared.Item;
+using Content.Shared.Item.ItemToggle.Components; // Exodus: independently powered wield damage.
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Popups;
@@ -368,14 +369,19 @@ public abstract partial class SharedWieldableSystem : EntitySystem
             TryUnwield(uid, component, args.User, force: true);
     }
 
-    private void OnGetMeleeDamage(EntityUid uid, IncreaseDamageOnWieldComponent component, ref GetMeleeDamageEvent args)
+    // Exodus-begin: keep the bonus component on both peers and gate it on the networked power state.
+    private void OnGetMeleeDamage(Entity<IncreaseDamageOnWieldComponent> ent, ref GetMeleeDamageEvent args)
     {
-        if (!TryComp<WieldableComponent>(uid, out var wield))
+        if (!TryComp<WieldableComponent>(ent, out var wield))
             return;
 
         if (!wield.Wielded)
             return;
 
-        args.Damage += component.BonusDamage;
+        if (ent.Comp.RequiresActivation && TryComp<ItemToggleComponent>(ent, out var toggle) && !toggle.Activated)
+            return;
+
+        args.Damage += ent.Comp.BonusDamage;
     }
+    // Exodus-end
 }

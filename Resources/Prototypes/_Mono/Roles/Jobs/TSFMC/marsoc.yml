@@ -49,6 +49,7 @@
     ears: ClothingHeadsetAltTsfmcCommander # Exodus Colonel's headset without the CentCom channel; reinforcement gear is unchanged.
     gloves: ClothingHandsGlovesTacticalCombatBlack
     outerClothing: ClothingOuterHardsuitM86Mk4
+    suitstorage: WeaponEnergyHalberdMARSOC # Exodus: issue the halberd on the lobby operative's rear armor mount.
     shoes: ClothingShoesBootsMagAdv
     id: MarsocPDA
     pocket1: CrowbarPocket
