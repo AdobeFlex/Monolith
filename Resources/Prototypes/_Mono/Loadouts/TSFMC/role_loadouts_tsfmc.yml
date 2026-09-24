@@ -215,20 +215,12 @@
 - type: roleLoadout
   id: JobTsfMarsoc
   groups:
-  # Exodus-begin: equip the backpack before storage items and allow a faction camera.
-  - ExodusMarsocBackpack
+  # Exodus-begin: keep wearable choices; backpack contents are fixed job gear, with species survival gear issued afterward.
   - TsfmcNeck
-  # Exodus-end
   - TsfmcBalaclava
-  - NfsdBoxSurvival
   - ContractorWallet
-  - ContractorCartridge
-  - ContractorTrinkets
-  - ContractorEncryptionKey
   - NfsdSpeciesSpecific
-  - TsfmcSidearm
-  - TsfmcSidearmAmmo
-  - FactionArmorPlates
+  # Exodus-end
   canCustomizeName: true
 
 - type: roleLoadout
