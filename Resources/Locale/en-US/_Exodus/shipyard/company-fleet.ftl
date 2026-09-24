@@ -7,3 +7,5 @@ company-vessel-horizon-siphon-description = A Horizon Energy gas barge optimized
 # HMI
 company-vessel-regenerator-name = Regenerator
 company-vessel-regenerator-description = This is a full‑fledged field hospital from Harmony Medical Enterprises, designed to treat all types of diseases in deep space. Suitable for autonomous operation by a large crew. Equipped with all the necessary medical equipment and the MS‑100 shield.
+company-vessel-HMI-pod-name = HMI «Hearse»
+company-vessel-HMI-pod-desc = A small-sized medical rapid response shuttle designed for evacuation and patient delivery.
