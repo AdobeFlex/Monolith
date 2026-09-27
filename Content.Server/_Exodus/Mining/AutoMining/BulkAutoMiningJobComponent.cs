@@ -1,3 +1,4 @@
+using System.Numerics;
 using Content.Shared._Exodus.Mining.AutoMining;
 
 namespace Content.Server._Exodus.Mining.AutoMining;
@@ -14,6 +15,12 @@ public sealed partial class BulkAutoMiningJobComponent : Component
     public readonly Dictionary<EntityUid, int> TileChecksRemaining = new();
     public int NextGridIndex;
 
+    /// <summary>Round-robin position among grid/emitter pairs for bounded range searches.</summary>
+    public int NextRangePairIndex;
+
+    [AutoPausedField]
+    public TimeSpan NextRangeCheckTime;
+
     [AutoPausedField]
     public TimeSpan NextProcessTime;
 
@@ -29,4 +36,18 @@ public sealed class BulkAutoMiningGridJob
     public EntityUid GridUid;
     public Queue<Vector2i> Tiles = new();
     public HashSet<Vector2i> RemainingTiles = new();
+
+    /// <summary>Immutable tile order, allowing range searches to resume while mining removes remaining tiles.</summary>
+    public List<Vector2i> RangeTiles = new();
+
+    /// <summary>One search per emitter in the job's fixed emitter list.</summary>
+    public BulkAutoMiningRangeSearch[] RangeSearches = [];
+}
+
+public struct BulkAutoMiningRangeSearch
+{
+    public Vector2i? CachedTile;
+    public int NextTileIndex;
+    public Vector2 Origin;
+    public float MinimumDistanceSquared;
 }
