@@ -15,7 +15,4 @@ public partial class EXCVars
 
     public static readonly CVarDef<float> BulkMiningTickInterval =
         CVarDef.Create("exds.bulk_mining_tick_interval", 10f, CVar.SERVERONLY);
-
-    public static readonly CVarDef<int> BulkMiningMaxActiveJobs =
-        CVarDef.Create("exds.bulk_mining_max_active_jobs", 16, CVar.SERVERONLY);
 }
