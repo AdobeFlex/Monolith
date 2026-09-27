@@ -20,9 +20,16 @@ public sealed partial class BulkAutoMiningSystem
             return;
         }
 
+        var now = _timing.CurTime;
+        if (now >= job.NextRangeCheckTime)
+        {
+            job.NextRangeCheckTime = now + RangeCheckInterval;
+            if (!CheckTargetRange(console, job))
+                return;
+        }
+
         var budget = console.Comp.TilesPerTick > 0 ? console.Comp.TilesPerTick : _cfg.GetCVar(EXCVars.BulkMiningTilesPerTick);
         budget = Math.Clamp(budget, 1, MaxTileChecksPerEmitter);
-        var now = _timing.CurTime;
         var interval = GetProcessInterval(console.Comp);
         job.NextProcessTime = now + TargetSearchInterval;
 
@@ -106,6 +113,9 @@ public sealed partial class BulkAutoMiningSystem
             if (!console.Comp.Active)
                 return;
         }
+
+        // The aiming pass has just validated every surviving beam; avoid raycasting them again this tick.
+        job.NextBeamCheckTime = now + BeamCheckInterval;
 
         foreach (var grid in job.GridJobs)
         {
