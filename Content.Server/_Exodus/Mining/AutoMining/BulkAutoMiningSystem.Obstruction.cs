@@ -7,7 +7,7 @@ namespace Content.Server._Exodus.Mining.AutoMining;
 
 public sealed partial class BulkAutoMiningSystem
 {
-    private static readonly TimeSpan BeamCheckInterval = TimeSpan.FromSeconds(0.2);
+    private static readonly TimeSpan BeamCheckInterval = TimeSpan.FromSeconds(0.4);
 
     private void CheckActiveBeams(Entity<BulkAutoMiningConsoleComponent> console, BulkAutoMiningJobComponent job)
     {
