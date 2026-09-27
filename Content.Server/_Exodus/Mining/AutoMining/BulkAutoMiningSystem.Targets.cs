@@ -91,6 +91,7 @@ public sealed partial class BulkAutoMiningSystem
 
         var tiles = new Queue<Vector2i>();
         var remaining = new HashSet<Vector2i>();
+        var rangeTiles = new List<Vector2i>();
         var enumerator = _map.GetAllTilesEnumerator(target, grid);
         while (enumerator.MoveNext(out var tile))
         {
@@ -98,13 +99,20 @@ public sealed partial class BulkAutoMiningSystem
             {
                 tiles.Enqueue(tileRef.GridIndices);
                 remaining.Add(tileRef.GridIndices);
+                rangeTiles.Add(tileRef.GridIndices);
             }
         }
 
         if (tiles.Count == 0)
             return false;
 
-        job = new BulkAutoMiningGridJob { GridUid = target, Tiles = tiles, RemainingTiles = remaining };
+        job = new BulkAutoMiningGridJob
+        {
+            GridUid = target,
+            Tiles = tiles,
+            RemainingTiles = remaining,
+            RangeTiles = rangeTiles,
+        };
         return true;
     }
 
