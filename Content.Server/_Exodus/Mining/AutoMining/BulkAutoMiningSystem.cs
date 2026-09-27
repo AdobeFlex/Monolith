@@ -81,30 +81,6 @@ public sealed partial class BulkAutoMiningSystem : SharedBulkAutoMiningSystem
         SubscribeLocalEvent<BulkAutoMiningEmitterComponent, EntParentChangedMessage>(OnEmitterParentChanged);
     }
 
-    public override void Update(float frameTime)
-    {
-        base.Update(frameTime);
-        var now = _timing.CurTime;
-        var query = EntityQueryEnumerator<BulkAutoMiningJobComponent, BulkAutoMiningConsoleComponent>();
-        while (query.MoveNext(out var uid, out var job, out var console))
-        {
-            if (console.Active && now >= job.NextProcessTime)
-            {
-                ProcessMiningTick((uid, console), job);
-            }
-            if (console.Active && now >= job.NextBeamCheckTime)
-            {
-                CheckActiveBeams((uid, console), job);
-            }
-
-            if (now < job.NextUiTime || !_ui.IsUiOpen(uid, BulkAutoMiningUiKey.Key))
-                continue;
-
-            job.NextUiTime = now + UiInterval;
-            UpdateUi((uid, console));
-        }
-    }
-
     private TimeSpan GetProcessInterval(BulkAutoMiningConsoleComponent console)
     {
         var seconds = console.ProcessInterval > TimeSpan.Zero
@@ -199,20 +175,6 @@ public sealed partial class BulkAutoMiningSystem : SharedBulkAutoMiningSystem
             return false;
         }
 
-        var active = 0;
-        var consoles = EntityQueryEnumerator<BulkAutoMiningConsoleComponent>();
-        while (consoles.MoveNext(out _, out var console))
-        {
-            if (console.Active)
-                active++;
-        }
-
-        if (active >= _cfg.GetCVar(EXCVars.BulkMiningMaxActiveJobs))
-        {
-            Popup(ent, "bulk-auto-mining-start-too-many-jobs");
-            return false;
-        }
-
         ResolveEmitters(ent, job);
         if (job.Emitters.Count == 0)
         {
@@ -234,6 +196,8 @@ public sealed partial class BulkAutoMiningSystem : SharedBulkAutoMiningSystem
         }
 
         job.GridJobs.Clear();
+        job.NextRangePairIndex = 0;
+        job.NextRangeCheckTime = _timing.CurTime;
         ent.Comp.TotalTiles = 0;
         ent.Comp.ProcessedTiles = 0;
         foreach (var target in ent.Comp.SelectedGrids)
@@ -242,6 +206,7 @@ public sealed partial class BulkAutoMiningSystem : SharedBulkAutoMiningSystem
                 continue;
 
             job.GridJobs.Add(gridJob);
+            gridJob.RangeSearches = new BulkAutoMiningRangeSearch[job.Emitters.Count];
             ent.Comp.TotalTiles += gridJob.Tiles.Count;
         }
 
@@ -265,7 +230,7 @@ public sealed partial class BulkAutoMiningSystem : SharedBulkAutoMiningSystem
         ent.Comp.Active = true;
         ProcessMiningTick(ent, job);
         UpdateUi(ent);
-        return true;
+        return ent.Comp.Active || ent.Comp.ProcessedTiles > 0;
     }
 
     public void StopMining(Entity<BulkAutoMiningConsoleComponent> ent, string? popupLocale = null)
