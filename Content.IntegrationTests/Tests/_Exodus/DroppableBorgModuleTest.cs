@@ -1,6 +1,7 @@
 using Content.Shared._NF.Interaction.Components;
 using Content.Shared._NF.Silicons.Borgs;
 using Content.Shared.Hands.Components;
+using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Silicons.Borgs.Components;
 using Robust.Shared.GameObjects;
 
@@ -49,7 +50,7 @@ public sealed class DroppableBorgModuleTest
             }
 
             em.DeleteEntity(module);
-            Assert.That(hands.Hands.ContainsKey(handId!), Is.False);
+            Assert.That(em.System<SharedHandsSystem>().TryGetHand(chassis, handId!, out _, hands), Is.False);
             Assert.That(borg.SelectedModule, Is.Null);
         });
         await server.WaitRunTicks(1);
