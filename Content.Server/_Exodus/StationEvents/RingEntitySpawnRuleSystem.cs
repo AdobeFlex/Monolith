@@ -27,7 +27,7 @@ public sealed partial class RingEntitySpawnRuleSystem : StationEventSystem<RingE
 
         if (!MapSystem.TryGetMap(GameTicker.DefaultMap, out _))
         {
-            Sawmill.Error($"Primary map was unavailable while starting {ToPrettyString(uid):rule}");
+            // Rules can be spawned outside a running round, when no primary map exists.
             ForceEndSelf(uid, gameRule);
             return;
         }
