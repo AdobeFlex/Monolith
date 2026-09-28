@@ -47,6 +47,8 @@ public sealed partial class RotIntelligentSystem
     {
         if (ent.Comp.Core is { } core && IsLivingCore(core))
             Join(ent, core);
+        else
+            RefreshVision(ent);
     }
 
     private void OnMemberShutdown(Entity<RotColonyMemberComponent> ent, ref ComponentShutdown args)
@@ -153,6 +155,10 @@ public sealed partial class RotIntelligentSystem
 
     private void RefreshVision(Entity<RotColonyMemberComponent> ent)
     {
+        // Parent and mob-state events also fire while loading uninitialized maps.
+        if (LifeStage(ent) != EntityLifeStage.MapInitialized)
+            return;
+
         if (ent.Comp.VisionRange <= 0 && !_visionQuery.HasComp(ent))
             return;
         var enabled = ent.Comp.VisionRange > 0 && ent.Comp.Core is { } core && IsActiveCore(core)

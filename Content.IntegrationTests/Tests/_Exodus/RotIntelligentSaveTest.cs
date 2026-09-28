@@ -1,10 +1,13 @@
 using Content.Shared._Exodus.Shuttles; // Exodus
 using System;
 using System.IO;
+using Content.Server.Body.Systems;
 using Content.Server._Exodus.Virology.Intelligent;
 using Content.Server._NF.Shuttles.Components;
 using Content.Server.Shuttles.Components;
 using Content.Shared._Exodus.Virology.Intelligent;
+using Content.Shared.Chemistry.Components.SolutionManager;
+using Content.Shared.StationAi;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.GameObjects;
@@ -15,6 +18,36 @@ namespace Content.IntegrationTests.Tests._Exodus;
 
 public sealed partial class RotIntelligentTest
 {
+    [Test]
+    public async Task UninitializedColonyDefersBloodAndVisionUntilMapInit()
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var server = pair.Server;
+        var em = server.EntMan;
+        var map = await pair.CreateTestMap(false, "FloorSteel");
+        await server.WaitAssertion(() =>
+        {
+            var maps = em.System<SharedMapSystem>();
+            maps.SetTile(map.Grid.Owner, map.Grid.Comp, new Vector2i(1, 0), map.Tile.Tile);
+            var core = em.SpawnEntity("MobRotIntelligent", new EntityCoordinates(map.Grid, .5f, .5f));
+            var eyeball = em.SpawnEntity("RotEyeball", new EntityCoordinates(map.Grid, 1.5f, .5f));
+            Assert.That(em.GetComponent<SolutionContainerManagerComponent>(core).Solutions, Is.Null);
+            Assert.That(em.HasComponent<StationAiVisionComponent>(core), Is.False);
+            Assert.That(em.HasComponent<StationAiVisionComponent>(eyeball), Is.False);
+
+            maps.InitializeMap(map.MapId);
+
+            Assert.That(em.System<BloodstreamSystem>().GetBloodLevelPercentage(core), Is.EqualTo(1f));
+            var coreVision = em.GetComponent<StationAiVisionComponent>(core);
+            Assert.That(coreVision.Network, Is.EqualTo(core));
+            Assert.That(coreVision.Enabled, Is.True);
+            var detachedVision = em.GetComponent<StationAiVisionComponent>(eyeball);
+            Assert.That(detachedVision.Network, Is.EqualTo(eyeball));
+            Assert.That(detachedVision.Enabled, Is.False);
+        });
+        await pair.CleanReturnAsync();
+    }
+
     [Test]
     public async Task SavedColonyKeepsOwnershipBiomassNurseryResultAndReleasedGrid()
     {

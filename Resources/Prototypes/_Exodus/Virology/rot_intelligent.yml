@@ -91,6 +91,13 @@
   name: intelligent rot
   description: A rooted intelligence that grows a colony through living tissue.
   components:
+  - type: Physics
+    bodyType: Static
+  - type: Bloodstream
+    initializeOnMapInit: true
+  - type: ContainerContainer
+    containers:
+      body_root_part: !type:ContainerSlot {}
   - type: RotSpread
   - type: RotRootVisuals
   - type: MovementSpeedModifier
@@ -156,6 +163,16 @@
     - ActionRotIntelligentRally
   - type: ShuttleConsole
     zoom: 1, 1
+  - type: DeviceLinkSource
+    ports:
+    - device-button-1
+    - device-button-2
+    - device-button-3
+    - device-button-4
+    - device-button-5
+    - device-button-6
+    - device-button-7
+    - device-button-8
   - type: RadarConsole
   - type: UserInterface
     interfaces:
