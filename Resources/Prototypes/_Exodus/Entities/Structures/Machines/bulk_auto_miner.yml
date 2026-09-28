@@ -17,8 +17,8 @@
         Heat: 400
     slurryMaterial: MiningSlurry
     slurryPerTile:
-      min: 300
-      max: 700
+      min: 400
+      max: 900
     muzzleOffset: 0.375 # Main lens is 12 pixels south of the pivot in the 96x96 head.
     startSound:
       path: /Audio/_Exodus/Machines/BulkMining/laser_start.ogg
@@ -140,7 +140,7 @@
   components:
   - type: BulkAutoMiningConsole
     maxRange: 512
-    processInterval: 5
+    processInterval: 4
     clearableWhitelist:
       components:
       - Gatherable
