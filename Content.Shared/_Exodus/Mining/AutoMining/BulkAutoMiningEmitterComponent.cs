@@ -1,6 +1,6 @@
 using Content.Shared.Damage;
+using Content.Shared.Destructible.Thresholds;
 using Content.Shared.Materials;
-using Content.Shared.Whitelist;
 using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
@@ -15,18 +15,16 @@ public sealed partial class BulkAutoMiningEmitterComponent : Component
     [DataField]
     public LocId? ConsoleName;
 
-    [DataField]
-    public EntityWhitelist? ForbiddenTargets;
-
+    /// <summary>Damage to the emitter when firing at a grid without a generated natural deposit.</summary>
     [DataField]
     public DamageSpecifier ForbiddenTileDamage = new();
 
     [DataField]
     public ProtoId<MaterialPrototype> SlurryMaterial = "MiningSlurry";
 
-    /// <summary>Material volume produced by clearing one intact tile.</summary>
+    /// <summary>Inclusive range of material volume produced by clearing one intact tile.</summary>
     [DataField]
-    public int SlurryPerTile = 200;
+    public MinMax SlurryPerTile = new(200, 200);
 
     /// <summary>Distance from the head pivot to the forward lens, in world units.</summary>
     [DataField]

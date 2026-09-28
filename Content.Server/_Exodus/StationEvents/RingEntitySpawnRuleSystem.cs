@@ -10,7 +10,7 @@ namespace Content.Server._Exodus.StationEvents;
 /// <summary>
 /// Handles game rules that create a single entity in a configurable ring around the primary map origin.
 /// </summary>
-public sealed class RingEntitySpawnRuleSystem : StationEventSystem<RingEntitySpawnRuleComponent>
+public sealed partial class RingEntitySpawnRuleSystem : StationEventSystem<RingEntitySpawnRuleComponent>
 {
     [Dependency] private IRobustRandom _random = default!;
 
