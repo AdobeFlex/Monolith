@@ -109,7 +109,7 @@
   description: drake-industries-description
   color: "#C97D7D"
   image: /Textures/_Mono/Companies/drake_industries.png
-  atmDepositCommission: 0.15 # Exodus corporate ATM commission
+  atmDepositCommission: 0.10 # Exodus corporate ATM commission
 
 - type: company
   id: SteelHammerManufacturing
