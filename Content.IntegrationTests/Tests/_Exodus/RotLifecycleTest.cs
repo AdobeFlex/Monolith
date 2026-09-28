@@ -7,6 +7,7 @@ using Content.Server.Body.Components;
 using Content.Server.Body.Systems;
 using Content.Server.Fluids.EntitySystems;
 using Content.Server.NPC.HTN;
+using Content.Server.NPC.Pathfinding;
 using Content.Shared._Exodus.Virology.Lifecycle;
 using Content.Shared.Body.Organ;
 using Content.Shared.Chemistry.Components;
@@ -320,6 +321,12 @@ public sealed class RotLifecycleTest
             var occupied = em.SpawnEntity("MobRotLarva", new EntityCoordinates(map.Grid, -2.5f, 0.5f));
             em.RemoveComponent<HTNComponent>(occupied);
             em.GetComponent<RotLarvaComponent>(occupied).HatchAt = server.ResolveDependency<IGameTiming>().CurTime + TimeSpan.FromMinutes(2);
+        });
+        // Navmesh updates are deferred. Wait until the new floor replaces space in the preferred alcove.
+        await PoolManager.WaitUntil(server, () =>
+            em.System<PathfindingSystem>().GetPoly(new EntityCoordinates(map.Grid, 3.5f, 0.5f))?.Data.IsFreeSpace == true);
+        await server.WaitAssertion(() =>
+        {
             larva = em.SpawnEntity("MobRotLarva", new EntityCoordinates(map.Grid, 0.5f, 0.5f));
             var comp = em.GetComponent<RotLarvaComponent>(larva);
             comp.Satiety = comp.MaxSatiety;

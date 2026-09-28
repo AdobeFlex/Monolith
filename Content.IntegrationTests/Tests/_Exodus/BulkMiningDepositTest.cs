@@ -249,6 +249,8 @@ public sealed class BulkMiningDepositTest
             var emitterUid = em.SpawnEntity("BulkAutoMiningEmitter", map.GridCoords);
             emitter = (emitterUid, em.GetComponent<BulkAutoMiningEmitterComponent>(emitterUid));
             emitter.Comp.SlurryPerTile = new MinMax(10, 10);
+            // Deposit accounting requires a fixed yield independent of beam warmup.
+            emitter.Comp.MaxWarmupYieldBonus = 0;
             emitter.Comp.ForbiddenTileDamage = new DamageSpecifier { DamageDict = new() { ["Heat"] = 1 } };
             var power = em.System<PowerReceiverSystem>();
             power.SetNeedsPower(console, false);

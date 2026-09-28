@@ -167,6 +167,8 @@ public sealed partial class BulkMiningConnectivityTest
                 uid = em.SpawnEntity("BulkAutoMiningEmitter", new EntityCoordinates(map.Grid, .5f, -.5f + i * 2));
                 var emitter = em.GetComponent<BulkAutoMiningEmitterComponent>(uid);
                 emitter.SlurryPerTile = new MinMax(10, 10);
+                // Connectivity checks arrange beams directly and require a fixed yield independent of warmup.
+                emitter.MaxWarmupYieldBonus = 0;
                 emitter.NextMiningTime = TimeSpan.MaxValue;
                 setup.Emitters.Add((uid, emitter));
                 power.SetNeedsPower(uid, false);

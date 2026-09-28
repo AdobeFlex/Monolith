@@ -281,6 +281,8 @@ public sealed class BulkAutoMiningTargetLossTest
                 var uid = em.SpawnEntity("BulkAutoMiningEmitter", new EntityCoordinates(map.Grid, .5f, .5f + i * 5));
                 var emitter = em.GetComponent<BulkAutoMiningEmitterComponent>(uid);
                 emitter.SlurryPerTile = new MinMax(10, 10);
+                // Target-loss checks require a fixed yield independent of beam warmup.
+                emitter.MaxWarmupYieldBonus = 0;
                 setup.Emitters[i] = (uid, emitter);
                 power.SetNeedsPower(uid, false);
             }
