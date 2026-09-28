@@ -24,8 +24,6 @@ namespace Content.IntegrationTests.Tests._Exodus;
 [TestOf(typeof(ShipShieldsSystem))]
 public sealed class LibertyShipShieldTest
 {
-    private static readonly ProtoId<ShaderPrototype> _rippleShaderPrototype = "ShipShieldRipple";
-
     [TestPrototypes]
     private const string Prototypes = """
         - type: entity
@@ -84,7 +82,8 @@ public sealed class LibertyShipShieldTest
             Assert.That(visuals.RippleWidth, Is.EqualTo(8f));
             Assert.That(visuals.RippleSpeed, Is.EqualTo(0.75f));
             var prototypes = pair.Client.ResolveDependency<IPrototypeManager>();
-            using var shader = prototypes.Index(_rippleShaderPrototype).InstanceUnique();
+            ProtoId<ShaderPrototype> rippleShaderPrototype = "ShipShieldRipple";
+            using var shader = prototypes.Index(rippleShaderPrototype).InstanceUnique();
             shader.SetParameter("waveSpeed", visuals.RippleSpeed);
         });
         await pair.CleanReturnAsync();
