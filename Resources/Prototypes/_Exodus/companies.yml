@@ -30,7 +30,7 @@
   lobbyImage:
     sprite: _Exodus/Interface/SideSelection/banners.rsi
     state: drake-black-arms-usa-banner
-  atmDepositCommission: 0.15
+  atmDepositCommission: 0.10
   startingItems:
   - CompanyTechDiskCaseDrakeBlackArmsUSA
 
