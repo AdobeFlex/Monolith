@@ -55,7 +55,7 @@ jobs:
 
     - name: Run Content.IntegrationTests
       shell: pwsh
-      # Exodus-begin: report test progress and collect diagnostics before a hung test stalls CI.
+      # Exodus-begin: include full test names and persist test-start/collector diagnostics for hangs.
       env:
         DOTNET_gcServer: '1'
       # Exodus: temporarily exclude genetics tests while diagnosing integration test hangs.
@@ -65,8 +65,10 @@ jobs:
         --logger "console;verbosity=normal"
         --logger "trx;LogFileName=integration-tests.trx"
         --results-directory "$(pwd)/test_results/integration"
+        --diag "$(pwd)/test_results/integration/vstest.log"
         --blame-hang-timeout 10m --blame-hang-dump-type mini
-        -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed NUnit.TestOutputXml="logs" NUnit.WorkDirectory="$(pwd)/test_results"
+        -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed NUnit.DisplayName=FullName
+        NUnit.InternalTraceLevel=Debug NUnit.TestOutputXml="logs" NUnit.WorkDirectory="$(pwd)/test_results"
       # Exodus-end
 
     - name: Archive NUnit3 test results.
