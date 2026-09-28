@@ -242,8 +242,13 @@ public sealed partial class RotIntelligentSystem : EntitySystem
         if (ent.Comp.Eye is { } eye)
             QueueDel(eye);
         ent.Comp.Eye = null;
-        _eyes.SetTarget(ent, null);
-        _eyes.SetDrawFov(ent, true);
+
+        if (TryComp<EyeComponent>(ent, out var eyeComponent))
+        {
+            _eyes.SetTarget(ent, null, eyeComponent);
+            _eyes.SetDrawFov(ent, true, eyeComponent);
+        }
+
         RemCompDeferred<Content.Shared.Movement.Components.RelayInputMoverComponent>(ent);
         Dirty(ent);
     }
