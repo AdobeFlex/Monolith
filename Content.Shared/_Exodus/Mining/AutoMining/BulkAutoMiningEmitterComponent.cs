@@ -22,9 +22,29 @@ public sealed partial class BulkAutoMiningEmitterComponent : Component
     [DataField]
     public ProtoId<MaterialPrototype> SlurryMaterial = "MiningSlurry";
 
-    /// <summary>Inclusive range of material volume produced by clearing one intact tile.</summary>
+    /// <summary>Inclusive range of base material volume per intact tile, before the warmup bonus.</summary>
     [DataField]
     public MinMax SlurryPerTile = new(200, 200);
+
+    /// <summary>Time spent firing to warm up from zero to full output bonus.</summary>
+    [DataField]
+    public TimeSpan WarmupTime = TimeSpan.FromSeconds(60);
+
+    /// <summary>Time spent idle to cool down from full warmup to zero.</summary>
+    [DataField]
+    public TimeSpan CooldownTime = TimeSpan.FromSeconds(30);
+
+    /// <summary>Additional slurry yield at full warmup, as a fraction of the base yield.</summary>
+    [DataField]
+    public double MaxWarmupYieldBonus = 0.35;
+
+    /// <summary>Warmup fraction at the last beam start or stop. Current warmup is calculated on demand.</summary>
+    [ViewVariables]
+    public double WarmupProgress;
+
+    /// <summary>Pause-aware timestamp of the warmup snapshot; persists between mining jobs.</summary>
+    [ViewVariables, AutoPausedField]
+    public TimeSpan WarmupLastUpdate;
 
     /// <summary>Distance from the head pivot to the forward lens, in world units.</summary>
     [DataField]

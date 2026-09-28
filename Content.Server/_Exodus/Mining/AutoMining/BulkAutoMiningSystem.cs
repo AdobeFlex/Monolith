@@ -46,6 +46,7 @@ public sealed partial class BulkAutoMiningSystem : SharedBulkAutoMiningSystem
     [Dependency] private EntityLookupSystem _lookup = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedAmbientSoundSystem _ambient = default!;
+    [Dependency] private MetaDataSystem _metadata = default!;
 
     private readonly HashSet<Entity<BulkAutoMiningEmitterComponent>> _emitterBuffer = new();
 
@@ -277,6 +278,7 @@ public sealed partial class BulkAutoMiningSystem : SharedBulkAutoMiningSystem
         if (ent.Comp.BeamGrid == null)
             return;
 
+        SnapshotWarmup(ent);
         ent.Comp.BeamGrid = null;
         StopEmitterAudio(ent);
         Dirty(ent);
@@ -304,8 +306,9 @@ public sealed partial class BulkAutoMiningSystem : SharedBulkAutoMiningSystem
         if (comp.Controller is { } controller && controller != console.Owner && !TerminatingOrDeleted(controller))
             return BulkAutoMiningLaserStatus.Busy;
 
-        // Only start a cycle when the buffer can hold any yield from the configured range.
-        if (!_materials.CanChangeMaterialAmount(emitter, comp.SlurryMaterial, Math.Max(0, comp.SlurryPerTile.Max), localOnly: true))
+        // Reserve enough room for the largest possible yield, including the current warmup bonus.
+        var maxYield = GetSlurryYield((emitter, comp), comp.SlurryPerTile.Max);
+        if (!_materials.CanChangeMaterialAmount(emitter, comp.SlurryMaterial, maxYield, localOnly: true))
             return BulkAutoMiningLaserStatus.Full;
 
         return BulkAutoMiningLaserStatus.Ready;

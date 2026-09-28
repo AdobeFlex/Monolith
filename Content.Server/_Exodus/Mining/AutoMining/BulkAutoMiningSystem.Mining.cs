@@ -269,7 +269,7 @@ public sealed partial class BulkAutoMiningSystem
         if (!_deposits.CanMine(grid, tile) || _map.GetTileRef(grid, grid.Comp, tile).Tile.IsEmpty)
             return false;
 
-        var amount = emitter.Comp.SlurryPerTile.Next(_random);
+        var amount = GetSlurryYield(emitter, emitter.Comp.SlurryPerTile.Next(_random));
         if (amount <= 0 || !_materials.TryChangeMaterialAmount(emitter, emitter.Comp.SlurryMaterial, amount, localOnly: true))
         {
             job.Statuses[emitter] = BulkAutoMiningLaserStatus.Full;
@@ -319,6 +319,7 @@ public sealed partial class BulkAutoMiningSystem
 
         if (emitter.Comp.BeamGrid == null)
         {
+            SnapshotWarmup(emitter);
             emitter.Comp.StartupStream = _audio.PlayPvs(emitter.Comp.StartSound, emitter)?.Entity;
             _ambient.SetAmbience(emitter, true);
         }
