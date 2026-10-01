@@ -4,8 +4,8 @@ meta:
   engineVersion: 277.2.1
   forkId: ""
   forkVersion: ""
-  time: 09/30/2026 02:46:44
-  entityCount: 1298
+  time: 10/01/2026 15:03:46
+  entityCount: 1300
 maps: []
 grids:
 - 1
@@ -106,10 +106,10 @@ entities:
     - type: SpreaderGrid
       spreadQueues:
         Puddle: []
-        ExodusBiohazardFoam: []
         Kudzu: []
-        MetalFoam: []
         Smoke: []
+        MetalFoam: []
+        ExodusBiohazardFoam: []
     - type: Shuttle
       dampingModifier: 0.25
     - type: GridPathfinding
@@ -3083,21 +3083,28 @@ entities:
         immutable: False
         temperature: 293.14923
         moles:
-          Oxygen: 1.7459903
-          Nitrogen: 6.568249
+          Oxygen: 1.8856695
+          Nitrogen: 7.0937095
     - type: ContainerContainer
       containers:
         entity_storage: !type:Container
           showEnts: False
           occludes: True
           ents:
-          - 418
           - 416
           - 417
+          - 418
         paper_label: !type:ContainerSlot
           showEnts: False
           occludes: True
           ent: null
+- proto: CrateVirologyResponse
+  entities:
+  - uid: 1230
+    components:
+    - type: Transform
+      pos: 3.5,-13.5
+      parent: 1
 - proto: CryoPod
   entities:
   - uid: 419
@@ -6859,13 +6866,6 @@ entities:
     - type: Transform
       pos: 1.4648442,-13.190033
       parent: 1
-- proto: RollerBedSpawnFolded
-  entities:
-  - uid: 1230
-    components:
-    - type: Transform
-      pos: 3.5467427,-13.370983
-      parent: 1
 - proto: SheetGlass
   entities:
   - uid: 418
@@ -7050,6 +7050,20 @@ entities:
     components:
     - type: Transform
       pos: -0.5,-0.5
+      parent: 1
+- proto: SpawnPointLatejoin
+  entities:
+  - uid: 1299
+    components:
+    - type: Transform
+      pos: 0.5,-1.5
+      parent: 1
+- proto: SpawnPointMdMedic
+  entities:
+  - uid: 1300
+    components:
+    - type: Transform
+      pos: 3.5,-10.5
       parent: 1
 - proto: SpawnPointMercenary
   entities:
