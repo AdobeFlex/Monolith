@@ -1,8 +1,10 @@
+# Exodus-begin: restore the recipe packs required by the original PDV research tree.
 - type: latheRecipePack
   id: MonoRogueGearDynamic
   recipes:
   - ClothingOuterHardsuitPirateScafRogue
   - ClothingOuterVestWebRogue
+  - ClothingOuterVestWebEliteRogue
   - ClothingOuterHardsuitPDVMedic
   - ClothingShoesBootsMagSyndieRogue
   - ClothingMaskGasSyndicateRogue
@@ -22,17 +24,18 @@
   recipes:
   - EnergySwordRogue
   - EnergyDaggerRogue
-  - EnergyShieldRogue
+  - HeavyBallisticShield
+  - TelescopicShield
   - HFSwordVT7
 
 - type: latheRecipePack
   id: MonoRogueWeaponsDynamicRanged
   recipes:
   - WeaponRifleWSPRRogue
+  - WeaponRifleVympelRogue
   - WeaponSubMachineGunC20rRogue
   - WeaponRevolverPythonRogue
   - WeaponRifleM90Rogue
-  - WeaponSubMachineGunWt550Rogue
   - WeaponSubMachineGunAtreidesRogue
   - WeaponLauncherPanzeroRogue
   - WeaponShotgunBulldogRogue
@@ -40,6 +43,9 @@
   - WeaponSubMachineGunMla73Rogue
   - WeaponDEWBasilisk
   - WeaponShotgunSultanPulsar
+  - WeaponLightMachineGunL6Rogue
+  - WeaponRifleBurnerRogue
+
 
 - type: latheRecipePack
   id: MonoRogueVouchersDynamic
@@ -48,10 +54,12 @@
   - ShipVoucherPdvT1Recipe
   - ShipVoucherPdvT2Recipe
   - SaintieVoucherRogue
+  - KortikVoucherRogue
   - SaturnVoucherRogue
   - SnakeletVoucherRogue
   - InertiaVoucherRogue
   - MockVoucherRogue
+# Exodus-end
 
 - type: latheRecipePack
   id: MonoRogueMiscDynamic
@@ -64,3 +72,6 @@
   - BasicBorgCombatModulePDV
   - AdvancedBorgCombatModulePDV
   - PrintableDirtyBomb
+  - AutosurgeonIASPDV
+  - AutosurgeonAdvHeartPDV
+  - AutosurgeonDermalArmorPDV

@@ -193,7 +193,7 @@ namespace Content.Shared.Damage
             // Shitmed Change
             bool? canSever = true, bool? canEvade = false, float? partMultiplier = 1.00f, TargetBodyPart? targetPart = null, EntityUid? tool = null,
             // Mono: arg to ID indirect damage sources
-            DamageOriginFlag? originFlag = null)
+            DamageOriginFlag? originFlag = null, EntityUid? damageSource = null) // Exodus: beam/projectile properties without losing weapon attribution.
         {
             if (!uid.HasValue || !_damageableQuery.Resolve(uid.Value, ref damageable, false))
             {
@@ -208,7 +208,7 @@ namespace Content.Shared.Damage
             }
 
             var before = new BeforeDamageChangedEvent(damage, origin, targetPart, //Shitmed Change
-                false, originFlag); // Mono: originFlag
+                false, originFlag, tool, damageSource); // Exodus: keep the damage tool and ammunition distinct.
             RaiseLocalEvent(uid.Value, ref before);
 
             if (before.Cancelled)
@@ -339,7 +339,40 @@ namespace Content.Shared.Damage
             // Shitmed Change End
         }
 
-        public void SetDamageModifierSetId(EntityUid uid, string damageModifierSetId, DamageableComponent? comp = null)
+        /// <summary>
+        ///     Changes all damage types supported by a <see cref="DamageableComponent"/> by the specified value.
+        /// </summary>
+        /// <remakrs>
+        ///     Will not lower damage to a negative value.
+        /// </remakrs>
+        public void ChangeAllDamage(EntityUid uid, DamageableComponent component, FixedPoint2 addedValue)
+        {
+            foreach (var type in component.Damage.DamageDict.Keys)
+            {
+                component.Damage.DamageDict[type] += addedValue;
+                if (component.Damage.DamageDict[type] < 0)
+                    component.Damage.DamageDict[type] = 0;
+            }
+
+            // Changing damage does not count as 'dealing' damage, even if it is set to a larger value, so we pass an
+            // empty damage delta.
+            DamageChanged(uid, component, new DamageSpecifier());
+
+            // Shitmed Change Start
+            if (!HasComp<TargetingComponent>(uid))
+                return;
+
+            foreach (var (part, _) in _body.GetBodyChildren(uid))
+            {
+                if (!TryComp(part, out DamageableComponent? damageComp))
+                    continue;
+
+                ChangeAllDamage(part, damageComp, addedValue);
+            }
+            // Shitmed Change End
+        }
+
+        public void SetDamageModifierSetId(EntityUid uid, string? damageModifierSetId, DamageableComponent? comp = null)
         {
             if (!_damageableQuery.Resolve(uid, ref comp))
                 return;
@@ -439,7 +472,12 @@ namespace Content.Shared.Damage
         EntityUid? Origin = null,
         TargetBodyPart? TargetPart = null, // Shitmed Change
         bool Cancelled = false,
-        DamageOriginFlag? OriginFlag = null); // Mono: OriginFlag
+        DamageOriginFlag? OriginFlag = null,
+        EntityUid? Tool = null,
+        EntityUid? DamageSource = null) : IInventoryRelayEvent // Exodus: ammunition metadata; preserve the original damage tool.
+    {
+        public SlotFlags TargetSlots => ~SlotFlags.POCKET;
+    }
 
     /// <summary>
     ///     Shitmed Change: Raised on parts before damage is done so we can cancel the damage if they evade.

@@ -26,11 +26,17 @@
   - Frontier
   - StationTrafficController
   special:
+  # Exodus-begin medical service coverage
+  - !type:AddImplantSpecial
+    implants: [ MedicalTrackingImplantGold ]
+  # Exodus-end
   - !type:AddComponentSpecial
     components:
     - type: NpcFactionMember # Exodus SecColossus faction
       factions:
       - SecColossus
+    - type: ChatRank # Exodus upstream chat prefix
+      rank: cc-stc
   - !type:GiveItemOnHolidaySpecial
     holiday: FrontierBirthday
     prototype: FrontierBirthdayGift

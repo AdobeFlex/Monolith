@@ -37,6 +37,9 @@ namespace Content.Client.Viewport
 
         private readonly List<CopyPixelsDelegate<Rgba32>> _queuedScreenshots = new();
 
+        // Exodus: allow world systems to consume wheel input while the pointer is over the viewport.
+        public event Action<GUIMouseWheelEventArgs>? WheelScrolled;
+
         // Fire edit start
         public ShaderInstance? Shader;
         // Fire edit end
@@ -128,6 +131,13 @@ namespace Content.Client.Viewport
             RectClipContent = true;
         }
 
+        // Exodus: forward world viewport wheel input to systems such as rot construction.
+        protected override void MouseWheel(GUIMouseWheelEventArgs args)
+        {
+            base.MouseWheel(args);
+            WheelScrolled?.Invoke(args);
+        }
+
         protected override void KeyBindDown(GUIBoundKeyEventArgs args)
         {
             base.KeyBindDown(args);
@@ -154,7 +164,12 @@ namespace Content.Client.Viewport
 
             DebugTools.AssertNotNull(_viewport);
 
-            _viewport!.Render();
+            // Exodus-begin disable-z-levels
+            if (Content.Shared._CE.ZLevels.Core.EntitySystems.CESharedZLevelsSystem.ZLevelsEnabled)
+                RenderZLevels(handle, _viewport!); // CrystallEdge Process multi-Z rendering
+            else
+                _viewport!.Render();
+            // Exodus-end
 
             if (_queuedScreenshots.Count != 0)
             {

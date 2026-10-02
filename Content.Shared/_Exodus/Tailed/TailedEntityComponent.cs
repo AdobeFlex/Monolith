@@ -13,6 +13,12 @@ namespace Content.Shared._Exodus.Tailed;
 public sealed partial class TailedEntityComponent : Component
 {
     /// <summary>
+    ///     Whether explosion damage dealt to tail segments is applied to the head once per explosion.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public bool AggregateSegmentExplosionDamage;
+
+    /// <summary>
     /// amount of entities in between the tail and the head
     /// </summary>
     [DataField, AutoNetworkedField]
@@ -75,4 +81,11 @@ public sealed partial class TailedEntityComponent : Component
     /// </summary>
     [DataField, AutoNetworkedField]
     public List<EntityUid> TailSegments = new();
+
+    /// <summary>
+    /// Whether the server must restore the tail after a map transfer has finished.
+    /// This is transient state and must not be saved or networked.
+    /// </summary>
+    [ViewVariables]
+    public bool TailJointsDirty;
 }

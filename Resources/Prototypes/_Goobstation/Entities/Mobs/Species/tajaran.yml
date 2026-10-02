@@ -43,6 +43,17 @@
   #  activateSound: null
   #  deactivateSound: null
   # Exodus-Change-End 
+  # Exodus-begin upstream PNV Gen 3
+  - type: NightVision
+    relayOverlay: false
+    goggleEffect: false # Exodus: natural night vision without tint or goggle mask.
+    viewCircleRadius: 450
+    viewCircleCount: 4
+    viewCircleSpacing: 280
+    action: ActionToggleNightVision
+    phosphorColor: "#E6E6E6" # Exodus: colorless Tajaran PNV
+    lightingColor: "#FFFFFF32"
+  # Exodus-end
   - type: MeleeWeapon
     soundHit:
       collection: Punch

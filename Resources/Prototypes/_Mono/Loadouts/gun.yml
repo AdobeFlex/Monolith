@@ -56,6 +56,29 @@
     back:
     - SurvivalKnife
 
+# Exodus-begin add melee-weapon to loadout
+- type: loadout # Crusher Dagger
+  id: ContractorWeaponCrusherDaggerLoadout
+  price: 600
+  storage:
+    back:
+    - WeaponCrusherDagger
+
+- type: loadout # Stunbaton
+  id: ContractorStunbatonLoadout
+  price: 1600
+  storage:
+    back:
+    - Stunbaton
+
+- type: loadout # Truncheon
+  id: ContractorTruncheonLoadout
+  price: 2400
+  storage:
+    back:
+    - Truncheon
+# Exodus-end
+
 # Shotguns
 
 - type: loadout #Double Barrel Beanbag
@@ -139,6 +162,20 @@
   storage:
     back:
     - WeaponRifleVulcanFCMC
+
+- type: loadout # Basic Lever Action
+  id: MercenaryLeverActionloadout
+  price: 15000
+  storage:
+    back:
+    - WeaponSniperRepeater
+
+- type: loadout #.45 Magnum Ammo
+  id: MercenaryMagnum357Loadout
+  price: 1000
+  storage:
+    back:
+    - AmmoBox357_magnumFMJ
 
 - type: loadout #Lee Enfield
   id: MercenaryLeeEnfieldLoadout
@@ -395,13 +432,43 @@
     back:
     - CombatKnife
 
+# Exodus-begin add melee-weapon to loadout
+- type: loadout # Crusher Dagger
+  id: MercenaryWeaponCrusherDaggerLoadout
+  price: 900
+  storage:
+    back:
+    - WeaponCrusherDagger
+
+- type: loadout # Plasteel Arming Sword
+  id: MercenaryPlasteelArmingSwordEngraveableLoadout
+  price: 7000
+  storage:
+    back:
+    - PlasteelArmingSwordEngraveable
+
+- type: loadout # Stunbaton
+  id: MercenaryStunbatonLoadout
+  price: 2400
+  storage:
+    back:
+    - Stunbaton
+
+- type: loadout # Truncheon
+  id: MercenaryTruncheonLoadout
+  price: 3200
+  storage:
+    back:
+    - Truncheon
+# Exodus-end
+
 #region Security Guard
 
 # Rifles
 
 - type: loadout #Iroh
   id: SecurityGuardIrohLoadout
-  name: iroh gun case
+  name: HWL FG.J "Iroh" (5.56x45mm) # Exodus change name
   price: 0
   inhand:
   - WeaponCaseLongIrohSecurity
@@ -507,9 +574,53 @@
     back:
     - WeaponRifleAk
 
+# Exodus-begin add melee-weapon to loadout
+- type: loadout # Stunbaton
+  id: StationRepStunbatonLoadout
+  price: 0
+  storage:
+    back:
+    - Stunbaton
+
+- type: loadout # Truncheon
+  id: StationRepTruncheonLoadout
+  price: 0
+  storage:
+    back:
+    - Truncheon
+
+- type: loadout # Combat Knife
+  id: StationRepCombatKnifeLoadout
+  price: 0
+  storage:
+    back:
+    - CombatKnife
+# Exodus-end
+
 #region Factions
 
 # Rifles
+
+- type: loadout #Riversong
+  id: FactionRiversongLoadout
+  price: 0
+  storage:
+    back:
+    - WeaponRifleRiversong
+
+- type: loadout #Dragonfang
+  id: FactionDragonfangLoadout
+  price: 0
+  storage:
+    back:
+    - WeaponRifleDragonfang
+
+- type: loadout #M90
+  id: FactionM90Loadout
+  price: 0
+  storage:
+    back:
+    - WeaponRifleM90
 
 - type: loadout #Lecter
   id: FactionLecterLoadout
@@ -518,7 +629,21 @@
     back:
     - WeaponRifleLecter
 
-- type: loadout #Lecter Ammo
+- type: loadout #Lecter
+  id: FactionWSPRLoadout
+  price: 0
+  storage:
+    back:
+    - WeaponRifleWSPR
+
+- type: loadout #Vympel
+  id: FactionVympelLoadout
+  price: 0
+  storage:
+    back:
+    - WeaponRifleVympel
+
+- type: loadout #Vympel Ammo
   id: Faction556x45mmAmmoLoadout
   price: 0
   storage:
@@ -573,6 +698,13 @@
   storage:
     back:
     - BoxMagazine762x39mmFMJ
+
+- type: loadout #Wespr
+  id: Faction762x39mmSubsonicAmmoLoadout
+  price: 0
+  storage:
+    back:
+    - BoxMagazine762x39mmSubsonic
 
 - type: loadout #Mosin
   id: FactionMosinLoadout
@@ -715,7 +847,7 @@
     back:
     - BoxMagazine45_ACPFMJ
 
-- type: loadout #MK58 Ammo
+- type: loadout
   id: FactionHawk4Pistol
   price: 0
   storage:
@@ -736,12 +868,12 @@
     back:
     - WeaponRevolverInspector
 
-- type: loadout #.45 Magnum Ammo
-  id: FactionMagnum45Loadout
+- type: loadout #.357 Magnum Ammo
+  id: FactionMagnum357Loadout
   price: 0
   storage:
     back:
-    - AmmoBox45_magnumFMJ
+    - AmmoBox357_magnumFMJ
 
 - type: loadout # Laser Pistol
   id: FactionLaserPistolLoadout
@@ -756,3 +888,12 @@
   storage:
     back:
     - WeaponPistolViper
+
+# Exodus-begin add melee-weapon to loadout
+- type: loadout # Energy Dagger Loud
+  id: FactionEnergyDaggerLoudLoadout
+  price: 10000
+  storage:
+    back:
+    - EnergyDaggerLoud
+# Exodus-end

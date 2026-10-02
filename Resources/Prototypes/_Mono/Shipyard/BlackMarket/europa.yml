@@ -7,12 +7,13 @@
   description: Переоборудованный медицинский шаттл с акцентом на бортовую огневую мощь и броню. # Ru-Localization
   limit: 3
   hyperwarLimit: 5
+  hyperwarTimelock: 1800
   price: 280650
   purchasable: false # voucher only
   category: Large
   group: BlackMarket
   access: Pirate
-  shuttlePath: /SharedMaps/_Mono/Shuttles/BlackMarket/europa.yml
+  shuttlePath: /SharedMaps/_Mono/Shuttles/PDV/europa.yml # Exodus: upstream remap, existing vessel settings retained.
   addComponents: # Exodus faction-owned shuttle target filtering
   - type: NpcFactionMember
     factions:
@@ -27,7 +28,7 @@
 - type: gameMap
   id: Europa
   mapName: 'Европа' # Ru-Localization
-  mapPath: /SharedMaps/_Mono/Shuttles/BlackMarket/europa.yml
+  mapPath: /SharedMaps/_Mono/Shuttles/PDV/europa.yml # Exodus: upstream remap, existing vessel settings retained.
   minPlayers: 0
   stations:
     Europa:

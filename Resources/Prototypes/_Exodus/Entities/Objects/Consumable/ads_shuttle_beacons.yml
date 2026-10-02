@@ -16,6 +16,7 @@
       right:
       - state: inhand-right
   - type: ShuttleEventBeacon
+    shuttleFaction: Khsira
   - type: Tag
     tags:
     - Payload
@@ -66,6 +67,21 @@
   components:
   - type: ShuttleEventBeacon
     rule: UnknownShuttleWyrm
+
+- type: entity
+  id: SpaceLeviathanEmergencyBeacon
+  parent: BaseADSShuttleEmergencyBeaconTier3
+  components:
+  - type: Sprite
+    sprite: _Exodus/Objects/Consumable/Beacons/leviathan_chitin_beacon.rsi
+    layers:
+    - state: beacon
+    - state: beacon_emission
+      shader: unshaded
+  - type: ShuttleEventBeacon
+    rule: LeviathanArrival
+  - type: StaticPrice
+    price: 95000
 
 - type: entity
   id: ADSShuttleEmergencyBeaconNebula
@@ -138,6 +154,13 @@
     rule: UnknownShuttleAzimuth
 
 - type: entity
+  id: AsakimShuttleEmergencyBeaconHorizont
+  parent: BaseADSShuttleEmergencyBeaconTier3
+  components:
+  - type: ShuttleEventBeacon
+    rule: UnknownShuttleHorizont
+
+- type: entity
   id: AsakimShuttleEmergencyBeaconSmall
   parent: BaseADSShuttleEmergencyBeaconTier1
   components:
@@ -157,3 +180,21 @@
   components:
   - type: ShuttleEventBeacon
     rule: UnknownShuttleStratostar
+
+- type: entity
+  id: MarsocArcturusArrivalBeacon
+  parent: BaseADSShuttleEmergencyBeaconTier3
+  suffix: ADMIN ONLY
+  components:
+  - type: ShuttleEventBeacon
+    rule: MarsocArcturusArrival
+    shuttleFaction: TSFMC
+
+- type: entity
+  id: TarkhanJupiterArrivalBeacon
+  parent: BaseADSShuttleEmergencyBeaconTier3
+  suffix: ADMIN ONLY
+  components:
+  - type: ShuttleEventBeacon
+    rule: TarkhanJupiterArrival
+    shuttleFaction: PDV

@@ -1,5 +1,10 @@
 - type: vendingMachineInventory
   id: HospitalMedVendInventory
+  revenueAccounts:
+    MedicalTrackingImplanterBasic: Medical
+    MedicalTrackingImplanterSilver: Medical
+    MedicalTrackingImplanterGold: Medical
+    MedicalTrackingImplanterPlatinum: Medical
   startingInventory:
     HandheldHealthAnalyzer: 4294967295 # Infinite
     Brutepack: 4294967295 # Infinite
@@ -8,14 +13,17 @@
     Gauze: 4294967295 # Infinite
     EmergencyMedipen: 4294967295 # Infinite
     PillCanisterTricordrazine: 4294967295 # Infinite
-    JugOmnizine: 10 # Limited to 10 
+    JugHomeostatin: 10 # Limited to 10
     HypoMini: 4294967295 # Infinite
     HypoMiniLimitedEdition: 10 # Limited because its a direct upgrade, and can be found on expeds 
     Hypospray: 1 # only one in stock. its supposed to be really rare to use these, but still findable. 
     BodyBagFolded: 4294967295 # Infinite
     ClothingEyesHudMedical: 4294967295 # Infinite
     ClothingEyesEyepatchHudMedical: 4294967295 # Infinite
-    MedicalTrackingImplanterLabeled: 4294967295 # Infinite
+    MedicalTrackingImplanterBasic: 4294967295
+    MedicalTrackingImplanterSilver: 4294967295
+    MedicalTrackingImplanterGold: 4294967295
+    MedicalTrackingImplanterPlatinum: 4294967295
     SadTromboneImplanterLabeled: 4294967295 # Infinite
     BikeHornImplanterLabeled: 4294967295 # Infinite
     LightImplanterLabeled: 4294967295 # Infinite

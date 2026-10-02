@@ -4,8 +4,19 @@
 # Biome source is opt-in; static sector biome sources handle default space rings.
 
 - type: territoryProfile
+  id: PoiDefensivePlatform
+  radius: 256
+  radialDamageFieldProfile: Tower8G
+  minClaimRepairIntegrity: 0.65
+  colorPoiByFaction: true
+  neutralPoiColor: "#A6A6A6"
+  gameMapPrototypes:
+  - AdsDefensivePlatform
+
+- type: territoryProfile
   id: PoiSmall
   radius: 1000
+  radialDamageFieldProfile: Tower8G
   minClaimRepairIntegrity: 0.65
   colorPoiByFaction: true
   neutralPoiColor: "#A6A6A6"
@@ -21,6 +32,8 @@
   - Omnichurch
   - ThePit
   - TSFMCOutpost
+  - TSFMCIndustry
+  - PDVCivilianOutpost
   - Tinnia
   - Mining
 
@@ -28,11 +41,13 @@
   id: PoiMedium
   default: true
   radius: 2500
+  radialDamageFieldProfile: Tower8G
   minClaimRepairIntegrity: 0.65
   colorPoiByFaction: true
   neutralPoiColor: "#A6A6A6"
   gameMapPrototypes:
   - AdsCitadel
+  - Hokkaido
   - Sevastopol
   - TradeMall
   - Zvezda
@@ -40,6 +55,7 @@
 - type: territoryProfile
   id: PoiLarge
   radius: 4000
+  radialDamageFieldProfile: Tower8G
   minClaimRepairIntegrity: 0.65
   colorPoiByFaction: true
   neutralPoiColor: "#A6A6A6"
@@ -51,6 +67,7 @@
 - type: territoryProfile
   id: ColossusCentral
   radius: 5000
+  radialDamageFieldProfile: Tower8G
   claimable: false
   colorPoiByFaction: false
   neutralPoiColor: "#A6A6A6"
@@ -60,6 +77,7 @@
 - type: territoryProfile
   id: Hospital
   radius: 2500
+  radialDamageFieldProfile: Tower8G
   claimable: false
   colorPoiByFaction: false
   neutralPoiColor: "#A6A6A6"

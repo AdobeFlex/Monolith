@@ -48,10 +48,10 @@
   loadouts:
   - MercenaryClothingOuterVestWebMercenary
   - MercenaryClothingOuterVestWebMercenaryBlack
-  - MercenaryClothingOuterArmorPunkGreen # Punkish (Static visuals)
-  - MercenaryClothingOuterArmorPunkOrange # Punkish (Static visuals)
-  - MercenaryClothingOuterArmorPunkRed # Punkish (Static visuals)
-  - MercenaryClothingOuterArmorPunkRandomized # Punkish (Randomized visuals)
+  #- MercenaryClothingOuterArmorPunkGreen # Punkish (Static visuals)
+  #- MercenaryClothingOuterArmorPunkOrange # Punkish (Static visuals)
+  #- MercenaryClothingOuterArmorPunkRed # Punkish (Static visuals)
+  #- MercenaryClothingOuterArmorPunkRandomized # Punkish (Randomized visuals) > Commented out by Monolith
   - MercenaryClothingOuterArmorCaptainCarapace
   subgroups:
   - MonoMercenaryOuterClothing # Mono
@@ -114,6 +114,7 @@
   - MercenaryClothingHandsGlovesMercFingerless
   - MercenaryClothingHandsMercenaryGlovesCombat
   - MercenaryClothingHandsGlovesCombat
+  - MercenaryClothingHandsConcussiveGauntlets # Exodus add Concussive Gauntlets
   subgroups:
   - MonoMercenaryGloves # Mono
   - PilotGloves
@@ -137,6 +138,7 @@
   loadouts:
   - MercenaryClothingEyesGlassesMercenary
   - MercenaryClothingEyesGlassesSunglasses
+  - MercenaryClothingEyesGlassesMesonTray # Exodus add Meson Tray
   subgroups:
   - MonoMercenaryBallisticGoggles # Mono
   - PilotGlasses
@@ -148,7 +150,10 @@
   loadouts:
   - MercenaryClothingMaskGasMercenary
   - MercenaryClothingMaskGasSecurity
-  - MercenaryClothingMaskDrakeIndustriesWatchdog
+  - MercenaryClothingMaskDrakeIndustriesWatchdog #Mono
+  - MercenaryClothingMaskSOM40 #Mono
+  - MercenaryClothingMaskSOM41 #Mono
+  - MercenaryClothingMaskSOM42 #Mono
   subgroups:
   - PilotFace
   - ContractorFace

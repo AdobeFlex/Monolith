@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Numerics;
 using Content.Client.Mind;
 using Content.Shared._Mono.Shipyard;
 using Content.Shared._NF.Shipyard.Prototypes;
@@ -15,7 +16,7 @@ namespace Content.Client._Mono.Shipyard;
 /// <summary>
 /// This handles spawning client-side grid and getting data from it.
 /// </summary>
-public sealed class ShipyardPreviewSystem : SharedShipyardPreviewSystem
+public sealed partial class ShipyardPreviewSystem : SharedShipyardPreviewSystem // Exodus: generated dependency injection.
 {
     [Dependency] private MapSystem _map = default!;
     [Dependency] private MapLoaderSystem _loader = default!;
@@ -41,6 +42,7 @@ public sealed class ShipyardPreviewSystem : SharedShipyardPreviewSystem
                 opts))
             return false;
 
+        _xform.SetMapCoordinates(grid.Value, new MapCoordinates(Vector2.Zero, _previewMap));
         _meta.SetEntityName(grid.Value, vessel.Name);
         CurrentGrid = grid.Value;
         return true;

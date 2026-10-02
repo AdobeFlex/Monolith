@@ -40,6 +40,8 @@
       - PirateNF
     - type: SpecialSectorStationRecord # Exodus
       recordGeneration: NoRecord
+    - type: ChatRank # Exodus upstream chat prefix
+      rank: pdv-vizier
   - !type:AddImplantSpecial
     implants: [ FreelanceTrackingImplant ]
   - !type:AddLanguageSpecial # Monolith - Languages
@@ -61,6 +63,7 @@
   storage:
     back:
     - RadioHandheldNF # mono
-    - PhoneInstrumentHigh
     - ShipVoucherFerz # Exodus
+    - PDVHandheldOverwatchConsole
     - RubberStampPDVVizier # mono
+    - PhoneInstrumentHigh

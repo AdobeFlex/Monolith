@@ -119,6 +119,10 @@ public sealed partial class DoAfterArgs
     [DataField]
     public bool BreakOnMove;
 
+    // Exodus do-after-movement-slowdown
+    [DataField]
+    public bool ApplyMovementSlowdown;
+
     /// <summary>
     ///     Whether to break on movement when the user is weightless.
     ///     This does nothing if <see cref="BreakOnMove"/> is false.
@@ -272,9 +276,12 @@ public sealed partial class DoAfterArgs
         BreakOnHandChange = other.BreakOnHandChange;
         BreakOnDropItem = other.BreakOnDropItem;
         BreakOnMove = other.BreakOnMove;
+        ApplyMovementSlowdown = other.ApplyMovementSlowdown; // Exodus do-after-movement-slowdown
         BreakOnWeightlessMove = other.BreakOnWeightlessMove;
         MovementThreshold = other.MovementThreshold;
         DistanceThreshold = other.DistanceThreshold;
+        RangeProvider = other.RangeProvider; // Exodus - preserve the extended-range requirement across state copies.
+        PredictSound = other.PredictSound; // Exodus: preserve sound routing for server-only interactions.
         BreakOnDamage = other.BreakOnDamage;
         DamageThreshold = other.DamageThreshold;
         RequireCanInteract = other.RequireCanInteract;

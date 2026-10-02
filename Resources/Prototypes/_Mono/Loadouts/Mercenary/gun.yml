@@ -21,11 +21,13 @@
   - MercenaryDisablerSMGLoadout
   - MercenaryLaserCarbineLoadout
   - MercenaryEnergyGunLoadout
+  - MercenaryLeverActionloadout
 
 - type: loadoutGroup
   id: MercenaryPistol
   name: loadout-group-pistol
   minLimit: 0
+  maxLimit: 2 # Exodus 1 > 2
   loadouts:
   - MercenaryPollockLoadout
   - MercenaryMk58Loadout
@@ -39,6 +41,10 @@
   - MercenaryKukriKnifeLoadout
   - MercenaryThrowingKnifeLoadout
   - MercenaryMacheteLoadout
+  - MercenaryWeaponCrusherDaggerLoadout # Exodus add Crusher Dagger
+  - MercenaryPlasteelArmingSwordEngraveableLoadout # Exodus add Plasteel Arming Sword Engraveable
+  - MercenaryStunbatonLoadout # Exodus add Stunbaton
+  - MercenaryTruncheonLoadout # Exodus add Truncheon
   fallbacks:
   - MercenaryPollockLoadout
 
@@ -58,6 +64,7 @@
   - Mercenary762x51mmAmmoLoadout #Vulcan-C / Lee Enfield
   - MercenaryBuckshotAmmoLoadout #Kammerer / Sawn Buckshot
   - MercenarySlugAmmoLoadout #Kammerer / Sawn Slugs
+  - MercenaryMagnum357Loadout # .45 Magnum
   # - Mercenary46x30mmTopAmmoLoadout #WT550
   - Mercenary762x54mmRAmmoLoadout #Mosin / SVS42
   - MercenaryRechargerLoadout #Energy

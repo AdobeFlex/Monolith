@@ -1,0 +1,45 @@
+# Author Info
+# Discord: marcell6469
+
+# Shuttle Notes:
+#
+- type: vessel
+  id: Venom
+  parent: BaseVessel
+  name: Вайперы «Веном» # Exodus Viper localization
+  description: Средний эсминец с возможностями задержания. Вооружён главным орудием CYREXA, четырьмя 90-мм автопушками DRAVON и двумя АК-570. # Exodus Viper localization
+  price: 144700 # Exodus: appraised minimum, rounded up to 100.
+  category: Medium
+  group: Viper
+  access: Viper
+  shuttlePath: /SharedMaps/_Mono/Shuttles/VG/venom.yml # Exodus: upstream remap, existing vessel settings retained.
+  addComponents:
+  - type: NpcFactionMember # Exodus NanoTrasen faction
+    factions:
+    - NanoTrasen
+  guidebookPage: Null
+  class:
+  - Destroyer
+  - Detainment
+  engine:
+  - AME
+
+- type: gameMap
+  id: Venom
+  mapName: 'Вайперы «Веном»' # Exodus Viper localization
+  mapPath: /SharedMaps/_Mono/Shuttles/VG/venom.yml # Exodus: upstream remap, existing vessel settings retained.
+  minPlayers: 0
+  stations:
+    Venom:
+      stationProto: StandardFrontierVessel
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Веном MIL{1}' # Exodus Viper localization
+          nameGenerator:
+            !type:NanotrasenNameGenerator
+            prefixCreator: '14'
+        - type: StationJobs
+          availableJobs:
+            VGInfanteer: [ 0, 0 ]
+            VGLieutenant: [ 0, 0 ]
+            VGCommander: [ 0, 0 ]

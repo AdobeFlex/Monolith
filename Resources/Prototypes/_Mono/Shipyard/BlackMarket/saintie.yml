@@ -7,7 +7,8 @@
   description: Дорогостоящий фрегат, разработанный верфью Династии Фаэтона. Используется для стремительных атак на вражеские шаттлы. # Ru-Localization
   limit: 2
   hyperwarLimit: 4
-  price: 345000
+  hyperwarTimelock: 3600
+  price: 345000 # Exodus: retain main-build ship price.
   purchasable: false # Voucher only
   category: Large
   group: BlackMarket

@@ -1,6 +1,7 @@
 using System.Numerics;
 using Content.Client._Exodus.Nebula;
 using Content.Client._Exodus.NPC;
+using Content.Client._Exodus.Territory; // Exodus corporate territory rings
 using Content.Client._Mono.Radar;
 using Content.Shared._Exodus.Territory;
 using Content.Shared._Mono.Detection;
@@ -22,12 +23,21 @@ public sealed partial class ShuttleMapControl
     private const float TerritoryMediumIconThreshold = 1750f;
     private const float TerritoryLargeIconThreshold = 3750f;
     private const float TerritoryHugeIconThreshold = 4500f;
+    private const float ExclusionHatchSpacing = 9f;
+    private const float ExclusionHatchAlpha = 0.45f;
+    private static readonly Vector2 ExclusionHatchNormal = Vector2.Normalize(new Vector2(1f, 1f));
+    private static readonly Vector2 ExclusionHatchDirection = Vector2.Normalize(new Vector2(1f, -1f));
 
     private readonly RadarBlipsSystem _blips;
     private readonly NebulaSystem _nebula;
 
     private Vector2[] _nebulaFillBuffer = [];
     private Vector2[] _nebulaLineBuffer = [];
+    private readonly Vector2[] _bluespaceMapBlipVertices = new Vector2[6];
+    private readonly Vector2[] _bluespaceMapBlipEdges = new Vector2[8];
+    private readonly List<Vector2> _exclusionHatch = new();
+    private readonly CorporateTerritoryRingRenderer _corporateTerritoryRings = new(); // Exodus corporate territory rings
+    private readonly TerritoryCaptureDisplaySystem _territoryCapture; // Exodus contested territories
 
     private bool CanFTLToNebulaPreview(EntityUid shuttleUid, EntityCoordinates targetCoordinates, Angle targetAngle)
     {
@@ -67,6 +77,45 @@ public sealed partial class ShuttleMapControl
         return new Box2(-margin, -margin, PixelSize.X + margin, PixelSize.Y + margin);
     }
 
+    /// <summary>
+    /// Fills a circle with diagonal hatching anchored to its centre, so the pattern pans and zooms with the zone.
+    /// Only the lines crossing the visible part of the control are built.
+    /// </summary>
+    private void DrawHatchedCircle(DrawingHandleScreen handle, Vector2 center, float radius, Color color, Box2 viewBounds)
+    {
+        var spacing = ExclusionHatchSpacing * UIScale;
+        if (radius < spacing || !CircleIntersectsBox(center, radius, viewBounds))
+            return;
+
+        var offsetA = HatchOffset(viewBounds.BottomLeft, center);
+        var offsetB = HatchOffset(viewBounds.BottomRight, center);
+        var offsetC = HatchOffset(viewBounds.TopLeft, center);
+        var offsetD = HatchOffset(viewBounds.TopRight, center);
+        var from = MathF.Max(-radius, MathF.Min(MathF.Min(offsetA, offsetB), MathF.Min(offsetC, offsetD)));
+        var to = MathF.Min(radius, MathF.Max(MathF.Max(offsetA, offsetB), MathF.Max(offsetC, offsetD)));
+        if (from > to)
+            return;
+
+        _exclusionHatch.Clear();
+        var last = (int) MathF.Floor(to / spacing);
+        for (var i = (int) MathF.Ceiling(from / spacing); i <= last; i++)
+        {
+            var offset = i * spacing;
+            var halfLength = MathF.Sqrt(MathF.Max(radius * radius - offset * offset, 0f));
+            var middle = center + ExclusionHatchNormal * offset;
+            _exclusionHatch.Add(middle - ExclusionHatchDirection * halfLength);
+            _exclusionHatch.Add(middle + ExclusionHatchDirection * halfLength);
+        }
+
+        if (_exclusionHatch.Count > 0)
+            handle.DrawPrimitives(DrawPrimitiveTopology.LineList, _exclusionHatch, color.WithAlpha(ExclusionHatchAlpha));
+    }
+
+    private static float HatchOffset(Vector2 point, Vector2 center)
+    {
+        return Vector2.Dot(point - center, ExclusionHatchNormal);
+    }
+
     private void DrawTerritoryRings(DrawingHandleScreen handle, List<IMapObject> mapObjects, Matrix3x2 matty, Box2 viewBounds)
     {
         foreach (var mapObj in mapObjects)
@@ -82,12 +131,21 @@ public sealed partial class ShuttleMapControl
                 continue;
 
             var ringRadius = terrRing.Radius * MinimapScale;
+            // Exodus-begin corporate territory rings
+            _corporateTerritoryRings.Draw(handle, _font, gridUiPos, ringRadius,
+                terrRing.CorporateController, PrototypeManager, UIScale, viewBounds);
+            // Exodus-end
             if (!CircleIntersectsBox(gridUiPos, ringRadius, viewBounds))
                 continue;
 
-            var ringBase = GetTerritoryRingColor(terrRing);
-            handle.DrawCircle(gridUiPos, ringRadius, ringBase.WithAlpha(0.035f));
-            handle.DrawCircle(gridUiPos, ringRadius, ringBase.WithAlpha(0.28f), filled: false);
+            // Exodus-begin contested territories
+            var contested = _territoryCapture.TryGetCapture(gridObj.Entity, out var endsAt, out var captureColor);
+            var ringBase = contested ? captureColor : GetTerritoryRingColor(terrRing);
+            handle.DrawCircle(gridUiPos, ringRadius, ringBase.WithAlpha(contested ? 0.06f : 0.035f));
+            handle.DrawCircle(gridUiPos, ringRadius, ringBase.WithAlpha(contested ? 0.5f : 0.28f), filled: false);
+            if (contested)
+                DrawMapObjectLabel(handle, gridUiPos - new Vector2(0f, 30f * UIScale), _territoryCapture.GetCountdown(endsAt), captureColor);
+            // Exodus-end
         }
     }
 
@@ -222,7 +280,7 @@ public sealed partial class ShuttleMapControl
         }
     }
 
-    private void DrawNebulaBlips(DrawingHandleScreen handle, Matrix3x2 mapTransform)
+    private void DrawBluespaceMapBlips(DrawingHandleScreen handle, Matrix3x2 mapTransform)
     {
         if (_console != null)
             _blips.RequestNebulaMapBlips(_console.Value, ViewingMap);
@@ -230,20 +288,55 @@ public sealed partial class ShuttleMapControl
         var blips = _blips.GetCurrentNebulaMapBlips();
         foreach (var blip in blips)
         {
-            if (blip.Config.Shape != RadarBlipShape.NebulaPolygon ||
-                blip.Config.Points == null ||
-                blip.Config.Points.Count < 3)
-            {
-                continue;
-            }
-
             var mapCoords = _xformSystem.ToMapCoordinates(blip.Position);
             if (mapCoords.MapId != ViewingMap)
                 continue;
 
             var relativePos = Vector2.Transform(mapCoords.Position, mapTransform);
             var uiPosition = ScalePosition(relativePos with { Y = -relativePos.Y });
-            DrawNebulaPolygon(handle, uiPosition, blip.Config);
+            if (blip.Config.Shape == RadarBlipShape.NebulaPolygon)
+            {
+                if (blip.Config.Points == null || blip.Config.Points.Count < 3)
+                    continue;
+
+                DrawNebulaPolygon(handle, uiPosition, blip.Config);
+                continue;
+            }
+
+            var scale = MathF.Max(blip.Config.Bounds.Width, blip.Config.Bounds.Height) * 0.5f;
+            if (blip.Config.Shape == RadarBlipShape.Ring)
+            {
+                var radius = GetMapObjectRadius(scale) * MinimapScale;
+                handle.DrawCircle(uiPosition, radius, blip.Config.Color.WithAlpha(0.05f));
+                handle.DrawCircle(uiPosition, radius, blip.Config.Color, filled: false);
+            }
+            else
+            {
+                var mapObject = GetMapObject(relativePos with { Y = -relativePos.Y }, blip.Rotation, scale, scalePosition: true);
+                var bottom = mapObject[0];
+                var right = mapObject[1];
+                var top = mapObject[2];
+                var left = mapObject[3];
+                _bluespaceMapBlipVertices[0] = bottom;
+                _bluespaceMapBlipVertices[1] = right;
+                _bluespaceMapBlipVertices[2] = top;
+                _bluespaceMapBlipVertices[3] = bottom;
+                _bluespaceMapBlipVertices[4] = top;
+                _bluespaceMapBlipVertices[5] = left;
+                _bluespaceMapBlipEdges[0] = bottom;
+                _bluespaceMapBlipEdges[1] = right;
+                _bluespaceMapBlipEdges[2] = right;
+                _bluespaceMapBlipEdges[3] = top;
+                _bluespaceMapBlipEdges[4] = top;
+                _bluespaceMapBlipEdges[5] = left;
+                _bluespaceMapBlipEdges[6] = left;
+                _bluespaceMapBlipEdges[7] = bottom;
+                handle.DrawPrimitives(DrawPrimitiveTopology.TriangleList, _bluespaceMapBlipVertices, blip.Config.Color.WithAlpha(0.05f));
+                handle.DrawPrimitives(DrawPrimitiveTopology.LineList, _bluespaceMapBlipEdges, blip.Config.Color);
+            }
+
+            if (blip.Label != null)
+                DrawMapObjectLabel(handle, uiPosition, Loc.GetString(blip.Label), blip.Config.Color);
         }
     }
 

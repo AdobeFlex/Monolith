@@ -55,6 +55,7 @@ namespace Content.Server.Chat.Systems;
 /// </summary>
 public sealed partial class ChatSystem : SharedChatSystem
 {
+    [Dependency] private Content.Server.Administration.Managers.IBanManager _chatBans = default!; // SS220 chat bans
     [Dependency] private IReplayRecordingManager _replay = default!;
     [Dependency] private IConfigurationManager _configurationManager = default!;
     [Dependency] private IChatManager _chatManager = default!;
@@ -347,6 +348,12 @@ public sealed partial class ChatSystem : SharedChatSystem
         if (!_critLoocEnabled && _mobStateSystem.IsCritical(source))
             return;
 
+        // Exodus-begin: check the final channel after dead-player LOOC routing.
+        var channel = sendType == InGameOOCChatType.Dead ? ChatChannel.Dead : ChatChannel.LOOC;
+        if (!_chatBans.CanSendChat(player, channel))
+            return;
+        // Exodus-end
+
         switch (sendType)
         {
             case InGameOOCChatType.Dead:
@@ -617,6 +624,7 @@ public sealed partial class ChatSystem : SharedChatSystem
         else
         {
             var nameEv = new TransformSpeakerNameEvent(source, Name(source));
+            nameEv.FromRadio = true; //Mono
             RaiseLocalEvent(source, nameEv);
             name = nameEv.VoiceName;
             // Check for a speech verb override

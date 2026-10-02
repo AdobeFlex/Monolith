@@ -1,3 +1,4 @@
+using Content.Server._Exodus.Hazards.RadialDamageField;
 using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
 using Content.Shared._Exodus.Territory;
@@ -39,6 +40,7 @@ public sealed partial class GridTerritorySystem : EntitySystem
 
         SubscribeLocalEvent<GridTerritoryComponent, ComponentStartup>(OnGridTerritoryStartup);
         SubscribeLocalEvent<GridTerritoryComponent, ComponentShutdown>(OnGridTerritoryShutdown);
+        InitializeCapture();
         // Future: could subscribe to changes if we use dirty or a directed event.
     }
 
@@ -52,6 +54,29 @@ public sealed partial class GridTerritorySystem : EntitySystem
 
     private void OnGridTerritoryShutdown(Entity<GridTerritoryComponent> ent, ref ComponentShutdown args)
     {
+        ClearCaptureState(ent);
+        // Release the score and notify claim dependents even if the grid shuts down before its physical claim source.
+        // Do not call SetController here: it applies profiles and may add visual components to a terminating grid.
+        if (ent.Comp.ControllingFaction != null || ent.Comp.ActiveClaimBanner != null)
+        {
+            var ev = new GridTerritoryControllerChangedEvent(
+                ent.Owner, ent.Comp.ControllingFaction, null, ent.Comp.ActiveClaimBanner, null, null);
+            ent.Comp.ControllingFaction = null;
+            ent.Comp.ActiveClaimBanner = null;
+            RaiseLocalEvent(ent.Owner, ref ev, true);
+        }
+
+        // Faction listeners may have already released corporate control. Also handle claims without a faction or banner.
+        if (ent.Comp.CorporateController != null || ent.Comp.ActiveCorporateBanner != null)
+        {
+            var ev = new GridTerritoryCorporateControllerChangedEvent(
+                ent.Owner, ent.Comp.CorporateController, null, ent.Comp.ActiveCorporateBanner, null, null);
+            ent.Comp.CorporateController = null;
+            ent.Comp.ActiveCorporateBanner = null;
+            RaiseLocalEvent(ent.Owner, ref ev, true);
+        }
+
+        RemCompDeferred<RadialDamageFieldComponent>(ent);
         DeleteTerritoryBiomeSource(ent);
     }
 
@@ -68,6 +93,22 @@ public sealed partial class GridTerritorySystem : EntitySystem
             profile.MinClaimRepairIntegrity ?? _claimRules.GetDefaultMinClaimRepairIntegrity();
         ent.Comp.ColorPoiByFaction = profile.ColorPoiByFaction;
         ent.Comp.NeutralPoiColor = profile.NeutralPoiColor;
+        ApplyRadialDamageField(ent, profile);
+    }
+
+    private void ApplyRadialDamageField(
+        Entity<GridTerritoryComponent> ent,
+        TerritoryProfilePrototype profile)
+    {
+        if (profile.RadialDamageFieldProfile is not { } fieldProfile)
+        {
+            RemCompDeferred<RadialDamageFieldComponent>(ent);
+            return;
+        }
+
+        var field = EnsureComp<RadialDamageFieldComponent>(ent);
+        field.Profile = fieldProfile;
+        field.RangeOverride = ent.Comp.Radius;
     }
 
     private TerritoryProfilePrototype? ResolveProfile(Entity<GridTerritoryComponent> ent)
@@ -143,7 +184,13 @@ public sealed partial class GridTerritorySystem : EntitySystem
 
         // # Exodus start - apply faction color to territory rings (BSS map + nav radar)
         // Main claim factions: TSFMC, PDV, Khsira. Side claim faction: Syndicate.
-        if (ent.Comp.ControllingFaction is { } factionId &&
+        if (TryComp<TerritoryCaptureComponent>(ent, out var capture) && capture.Faction != null)
+        {
+            label = "territory-contested";
+            marker.FillColor = capture.Color.WithAlpha(0.06f);
+            marker.BorderColor = capture.Color.WithAlpha(0.5f);
+        }
+        else if (ent.Comp.ControllingFaction is { } factionId &&
             _proto.TryIndex(factionId, out var factionProto))
         {
             label = factionProto.RadarLabel;
@@ -195,6 +242,7 @@ public sealed partial class GridTerritorySystem : EntitySystem
         if (!terr.Claimable && faction != null)
             return;
 
+        ClearCaptureState(grid);
         var oldFaction = terr.ControllingFaction;
         var oldClaimBanner = terr.ActiveClaimBanner;
         var controllerChanged =
@@ -206,41 +254,7 @@ public sealed partial class GridTerritorySystem : EntitySystem
 
         Dirty(grid, terr); // # Exodus - ensure profile-derived values are replicated to client for map icons etc.
 
-        // Resolve the label from the prototype (or fall back to default for neutral)
-        LocId effectiveLabel = terr.DefaultLabel;
-        TerritoryFactionPrototype? factionProto = null;
-        if (faction is { } factionId && _proto.TryIndex(factionId, out factionProto))
-        {
-            effectiveLabel = factionProto.RadarLabel;
-        }
-
-        // Update the visual marker's text/radius and ensure blip is refreshed.
-        if (TryComp<TerritoryMarkerComponent>(grid, out var marker))
-        {
-            marker.Text = effectiveLabel;
-            marker.Radius = terr.Radius;
-
-            // # Exodus start - apply faction color to territory rings (BSS map + nav radar)
-            if (factionProto != null)
-            {
-                marker.FillColor = factionProto.Color.WithAlpha(0.02f);
-                marker.BorderColor = factionProto.Color.WithAlpha(0.28f);
-            }
-            else
-            {
-                // Unclaimed
-                marker.FillColor = new Color(0.65f, 0.65f, 0.65f, 0.02f);
-                marker.BorderColor = new Color(0.70f, 0.70f, 0.70f, 0.085f);
-            }
-            // # Exodus end - faction color for rings
-
-            _marker.SyncBlip((grid, marker));
-        }
-        else
-        {
-            // Ensure visual if it wasn't present (e.g. set via yaml or admin).
-            EnsureVisual((grid, terr));
-        }
+        EnsureVisual((grid, terr));
 
         // Extensibility hook for future capture mechanics, alerts, etc.
         if (!controllerChanged)

@@ -1,5 +1,6 @@
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
+using Robust.Shared.Localization; // Exodus-loc-changes
 
 namespace Content.Shared._Funkystation.Atmos.Prototypes
 {
@@ -10,7 +11,7 @@ namespace Content.Shared._Funkystation.Atmos.Prototypes
         public string ID { get; private set; } = default!;
 
         [DataField("name")]
-        public string Name { get; private set; } = default!;
+        public LocId Name { get; private set; } // Exodus-loc-changes
 
         [DataField("minimumTemperature")]
         public float MinimumTemperature { get; private set; }
@@ -23,6 +24,12 @@ namespace Content.Shared._Funkystation.Atmos.Prototypes
 
         [DataField("energyRelease")]
         public float EnergyRelease { get; private set; }
+
+        // Exodus-begin: optional duration for recipes that need a fixed production time.
+        /// <summary>Required processing time under valid conditions. Zero uses the legacy gas-volume-based progress.</summary>
+        [DataField]
+        public TimeSpan CraftDuration { get; private set; } = TimeSpan.Zero;
+        // Exodus-end
 
         [DataField("products")]
         public Dictionary<string, int> Products { get; private set; } = new();

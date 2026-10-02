@@ -103,8 +103,6 @@
     clothingVisuals:
       head:
       - state: equipped-HEAD-sealed
-      head-resomi:
-      - state: equipped-HEAD-sealed-resomi
       head-vox:
       - state: equipped-HEAD-sealed-vox
   - type: Armor
@@ -120,8 +118,8 @@
     spriteLayer: light
   - type: PointLight
     enabled: false
-    radius: 3
-    energy: 2
+    radius: 10 # Exodus: match the PDV SCAF flashlight.
+    energy: 5 # Exodus: match the PDV SCAF flashlight.
     mask: /Textures/Effects/LightMasks/cone.png
     autoRot: true
     netsync: false
@@ -159,8 +157,6 @@
     clothingVisuals:
       head:
       - state: equipped-HEAD
-      head-resomi:
-      - state: equipped-HEAD-resomi
       head-vox:
       - state: equipped-HEAD-vox
   - type: Sprite
@@ -170,8 +166,6 @@
     clothingVisuals:
       head:
       - state: equipped-HEAD-sealed
-      head-resomi:
-      - state: equipped-HEAD-sealed-resomi
       head-vox:
       - state: equipped-HEAD-sealed-vox
   - type: Armor
@@ -187,8 +181,8 @@
     spriteLayer: light
   - type: PointLight
     enabled: false
-    radius: 5
-    energy: 3
+    radius: 10 # Exodus: match the PDV SCAF flashlight.
+    energy: 5 # Exodus: match the PDV SCAF flashlight.
     mask: /Textures/Effects/LightMasks/cone.png
     autoRot: true
     netsync: false
@@ -226,8 +220,6 @@
     clothingVisuals:
       head:
       - state: equipped-HEAD
-      head-resomi:
-      - state: equipped-HEAD-resomi
       head-vox:
       - state: equipped-HEAD-vox
   - type: Sprite
@@ -237,8 +229,6 @@
     clothingVisuals:
       head:
       - state: equipped-HEAD-sealed
-      head-resomi:
-      - state: equipped-HEAD-sealed-resomi
       head-vox:
       - state: equipped-HEAD-sealed-vox
   - type: Armor
@@ -254,8 +244,8 @@
     spriteLayer: light
   - type: PointLight
     enabled: false
-    radius: 5
-    energy: 3
+    radius: 10 # Exodus: match the PDV SCAF flashlight.
+    energy: 5 # Exodus: match the PDV SCAF flashlight.
     mask: /Textures/Effects/LightMasks/cone.png
     autoRot: true
     netsync: false
@@ -304,8 +294,8 @@
     spriteLayer: light
   - type: PointLight
     enabled: false
-    radius: 5
-    energy: 3
+    radius: 10 # Exodus: match the PDV SCAF flashlight.
+    energy: 5 # Exodus: match the PDV SCAF flashlight.
     mask: /Textures/Effects/LightMasks/cone.png
     autoRot: true
     netsync: false
@@ -354,8 +344,8 @@
     spriteLayer: light
   - type: PointLight
     enabled: false
-    radius: 5
-    energy: 3
+    radius: 10 # Exodus: match the PDV SCAF flashlight.
+    energy: 5 # Exodus: match the PDV SCAF flashlight.
     mask: /Textures/Effects/LightMasks/cone.png
     autoRot: true
     netsync: false
@@ -395,8 +385,6 @@
     clothingVisuals:
       head:
       - state: equipped-HEAD
-      head-resomi:
-      - state: equipped-HEAD-resomi
       head-vox:
       - state: equipped-HEAD-vox
   - type: SealableClothingVisuals
@@ -404,8 +392,6 @@
     clothingVisuals:
       head:
       - state: equipped-HEAD-sealed
-      head-resomi:
-      - state: equipped-HEAD-sealed-resomi
       head-vox:
       - state: equipped-HEAD-sealed-vox
   - type: Armor
@@ -421,8 +407,8 @@
     spriteLayer: light
   - type: PointLight
     enabled: false
-    radius: 5
-    energy: 3
+    radius: 10 # Exodus: match the PDV SCAF flashlight.
+    energy: 5 # Exodus: match the PDV SCAF flashlight.
     mask: /Textures/Effects/LightMasks/cone.png
     autoRot: true
     netsync: false
@@ -471,8 +457,8 @@
     spriteLayer: light
   - type: PointLight
     enabled: false
-    radius: 5
-    energy: 3
+    radius: 10 # Exodus: match the PDV SCAF flashlight.
+    energy: 5 # Exodus: match the PDV SCAF flashlight.
     mask: /Textures/Effects/LightMasks/cone.png
     autoRot: true
     netsync: false
@@ -510,8 +496,6 @@
     clothingVisuals:
       head:
       - state: equipped-HEAD
-      head-resomi:
-      - state: equipped-HEAD-resomi
       head-vox:
       - state: equipped-HEAD-vox
   - type: Sprite
@@ -521,8 +505,6 @@
     clothingVisuals:
       head:
       - state: equipped-HEAD-sealed
-      head-resomi:
-      - state: equipped-HEAD-sealed-resomi
       head-vox:
       - state: equipped-HEAD-sealed-vox
       head-vulpkanin:
@@ -540,8 +522,8 @@
     spriteLayer: light
   - type: PointLight
     enabled: false
-    radius: 5
-    energy: 3
+    radius: 10 # Exodus: match the PDV SCAF flashlight.
+    energy: 5 # Exodus: match the PDV SCAF flashlight.
     mask: /Textures/Effects/LightMasks/cone.png
     autoRot: true
     netsync: false

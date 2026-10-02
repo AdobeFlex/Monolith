@@ -1,0 +1,61 @@
+- type: job
+  id: PDVTarkhan
+  name: job-name-pdv-tarkhan
+  description: job-description-pdv-tarkhan
+  playTimeTracker: JobPDVTarkhan
+  requirements:
+  # Exodus-begin: faction veteran requirements use existing job playtime.
+  - !type:DepartmentTimeRequirement
+    department: ExodusPDVPlaytime
+    time: 360000 # 100 hours in PDV roles
+  - !type:OverallPlaytimeRequirement
+    time: 720000 # 200 hours overall, including faction playtime
+  # Exodus-end
+  startingGear: ExodusPDVTarkhanLobbyGear # Exodus: lobby equipment uses loadouts; reinforcement gear stays separate.
+  icon: JobIconPDVTarkhan
+  supervisors: job-supervisors-exodus-tarkhan # Exodus dynasty hierarchy
+  alwaysUseSpawner: true # Exodus use the base's dedicated marker for late joins too.
+  weight: 45
+  displayWeight: 45
+  assignedCompany: PDV
+  canBeAntag: false
+  setPreference: true
+  access:
+  - Pirate
+  - GrandVizier
+  - PDVCommand
+  - Mercenary
+  accessGroups:
+  - GeneralAccess
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: NpcFactionMember
+      factions:
+      - PirateNF
+    - type: ChatRank
+      rank: exodus-tarkhan-rank # Exodus localized base role; reinforcement ranks are unchanged.
+  - !type:AddImplantSpecial
+    implants: [ FreelanceTrackingImplant ]
+  - !type:AddLanguageSpecial
+    languagesSpoken:
+    - Freespeak
+    languagesUnderstood:
+    - Freespeak
+
+- type: startingGear
+  id: PDVTarkhanGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitNfsdTacCream
+    back: ClothingBackpackPDVTarkhan
+    ears: ClothingHeadsetAltVanguardCommand
+    gloves: ClothingHandsGlovesTacticalCombatBlack
+    outerClothing: ClothingOuterHardsuitTarkhan
+    shoes: ClothingShoesBootsMagAshen
+    id: PDVTarkhanPDA
+    pocket1: CrowbarPocket
+    pocket2: RadioHandheldNF
+    belt: ClothingBeltWebbingsPDVTarkhan
+    neck: ClothingNeckIFFOrange
+  inhand:
+  - UndeterminedPDVTarkhanKit

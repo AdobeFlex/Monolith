@@ -10,6 +10,9 @@
   suffix: Medium, T2
   description: A dual-barrel, heavy 57mm autocannon firing general-purpose APHE rounds, effective for sustained fire against medium targets. Can be remotely activated or linked up to a GCS.
   components:
+  - type: ExodusHardpointWeapon # Exodus hardpoint compatibility
+    class: Ballistic
+    size: Light
   - type: StaticPrice
     price: 650
   - type: Sprite
@@ -29,10 +32,10 @@
   - type: Gun
     fireRate: 3
     recoil: 10 # 2/5x
-    projectileSpeed: 204
+    projectileSpeed: 320
     minAngle: 0
     maxAngle: 3
-    burstCooldown: 0.4
+    burstCooldown: 0.4 # Exodus: retain main-build balance outside M25/Scylla.
     burstFireRate: 10
     shotsPerBurst: 2
     selectedMode: Burst
@@ -86,6 +89,9 @@
   suffix: Medium, T2
   description: A single-barrel autocannon made by Aetherion Dynamics. Medium artillery piece with high impact but relatively low fire rate, firing HEAT shells to damage ship armor and systems. Can be remotely activated or linked up to a GCS.
   components:
+  - type: ExodusHardpointWeapon # Exodus hardpoint compatibility
+    class: Ballistic
+    size: Medium
   - type: StaticPrice
     price: 900
   - type: Sprite
@@ -100,14 +106,14 @@
   - type: WirelessNetworkConnection
     range: 500
   - type: Gun
-    fireRate: 1.5
+    fireRate: 1.5 # Exodus: retain main-build balance outside M25/Scylla.
     recoil: 10 # 2/5x
     projectileSpeed: 300
     minAngle: 0
     maxAngle: 2
     shootThermalSignature: 2000000 # ~3.5km signature if firing continuously
     soundGunshot:
-      path: /Audio/_Mono/Weapons/Guns/Gunshots/mortar.ogg
+      collection: ShipGunGenericSmallAlt
     soundEmpty:
       path: /Audio/Weapons/Guns/Empty/lmg_empty.ogg
   - type: SpaceArtillery
@@ -138,3 +144,21 @@
   - type: ShipRepairable
     repairTime: 15
     repairCost: 60
+
+- type: entity
+  id: WeaponTurretDravonFlak
+  parent: WeaponTurretDravon
+  suffix: Medium, T2, Flak
+  components:
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: 90mmMagazineFlak
+        insertSound: /Audio/Weapons/Guns/MagIn/hpistol_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/sfrifle_magout.ogg
+        priority: 2
+        whitelist:
+          tags:
+          - Magazine90mm
+        whitelistFailPopup: gun-magazine-whitelist-fail

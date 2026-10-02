@@ -407,6 +407,8 @@
   - ContractorClothingBeltMedicalFilled
   - ContractorClothingBeltMedicalEMT
   - ContractorClothingBeltMedicalEMTFilled
+  - ContractorCombatWebbingMedical # Exodus add Webbing Medical
+  - ContractorClothingBeltMilitaryWebbing # Exodus add Webbing Military
   - ContractorClothingBeltUtility
   - ContractorClothingBeltUtilityFilled
   - ContractorClothingBeltSalvageWebbing
@@ -773,6 +775,8 @@
   loadouts:
   - ContractorAppraisalTool
   - ContractorPickaxe
+  - ContractorWeaponGrapplingGun # Exodus add Grapple Gun
+  - ContractorToolboxMechanicalFilled # Exodus add Mechanical Toolbox
   - ContractorHandheldGPSBasic
   - ContractorRadioHandheld
   - ContractorNetworkConfigurator
@@ -781,6 +785,7 @@
   - ContractorBucket
   - ContractorGeigerCounter
   - ContractorBinoculars
+  - ContractorTapeRecorder # Mono - Moved from ContractorTrinkets.
   - ContractorWeaponProtoKineticAccelerator
   - ContractorPinpointerUniversal
   - ContractorShipyardRCD
@@ -862,6 +867,7 @@
   - ContractorCigPackGreen
   - ContractorCigarCase
   - ContractorNFAshtray
+  #- ContractorTapeRecorder # Mono - Moved to ContractorUtility.
   - ContractorSmokingPipeFilledTobacco
   - ContractorTobaccoPouchBrownFilled
   - ContractorTobaccoPouchBlueFilled
@@ -905,6 +911,7 @@
   - ClothingNeckTransPin
   - ClothingNeckAutismPin
   - ClothingNeckGoldAutismPin
+  - BikeHorn #Mono
 
 - type: loadoutGroup # Mono - removed standard supply boxes.
   id: ContractorBoxSurvival
@@ -914,9 +921,11 @@
   loadouts:
   - ContractorBoxSurvivalNFOxygenExtended
   - ContractorBoxSurvivalNFNitrogenExtended
+  - ContractorBoxSurvivalNFVaporExtended
   fallbacks:
   - ContractorBoxSurvivalNFOxygenExtended
   - ContractorBoxSurvivalNFNitrogenExtended
+  - ContractorBoxSurvivalNFVaporExtended
 
 - type: loadoutGroup
   id: ContractorEncryptionKey
@@ -959,12 +968,16 @@
   maxLimit: 2
   loadouts:
   - ContractorMedicalTrackingImplanter
+  # Exodus-begin medical service tiers
+  - ContractorMedicalTrackingImplanterSilver
+  - ContractorMedicalTrackingImplanterGold
+  - ContractorMedicalTrackingImplanterPlatinum
+  # Exodus-end
   - ContractorLightImplanter
   - ContractorBikeHornImplanter
   - ContractorSadTromboneImplanter
   - ContractorMimePowersImplanter
-  fallbacks:
-  - ContractorMedicalTrackingImplanter
+  # Exodus: optional paid implants have no free fallback.
 
 - type: loadoutGroup
   id: ContractorBureaucracy

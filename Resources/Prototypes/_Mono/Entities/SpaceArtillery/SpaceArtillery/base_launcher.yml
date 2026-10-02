@@ -6,6 +6,9 @@
   placement:
     mode: SnapgridCenter
   components:
+  - type: ExodusHardpointWeapon # Exodus hardpoint compatibility
+    class: Ballistic
+    size: Medium
   - type: Damageable
     damageContainer: StructuralInorganic
     damageModifierSet: WallDefense2
@@ -73,6 +76,7 @@
   - type: Repairable
     qualities:
     - Applicating
+  - type: GravityAffected # gravrefactor
 
 - type: entity
   id: BallisticArtilleryUnanchorable
@@ -98,6 +102,9 @@
   placement:
     mode: SnapgridCenter
   components:
+  - type: ExodusHardpointWeapon # Exodus hardpoint compatibility
+    class: Ballistic
+    size: Medium
   - type: Damageable
     damageContainer: StructuralInorganic
     damageModifierSet: StructuralMetallic
@@ -196,6 +203,9 @@
   placement:
     mode: SnapgridCenter
   components:
+  - type: ExodusHardpointWeapon # Exodus hardpoint compatibility
+    class: Ballistic
+    size: Medium
   - type: Damageable
     damageContainer: StructuralInorganic
     damageModifierSet: StructuralMetallic

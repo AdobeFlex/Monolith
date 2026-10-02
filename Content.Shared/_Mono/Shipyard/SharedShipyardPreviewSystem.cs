@@ -7,7 +7,7 @@ using Robust.Shared.Utility;
 
 namespace Content.Shared._Mono.Shipyard;
 
-public abstract class SharedShipyardPreviewSystem : EntitySystem
+public abstract partial class SharedShipyardPreviewSystem : EntitySystem // Exodus: generated dependency injection.
 {
     [Dependency] private IMapManager _mapManager = default!;
     [Dependency] private SharedTransformSystem _xform = default!;
@@ -24,8 +24,7 @@ public abstract class SharedShipyardPreviewSystem : EntitySystem
         if (_mind.GetMind(player) is not { } mind)
             return false;
 
-        var observer = Spawn("PreviewObserver", _xform.GetMapCoordinates(player));
-        _xform.SetMapCoordinates(observer, new MapCoordinates(0, 0, _previewMap));
+        var observer = Spawn("PreviewObserver", new MapCoordinates(0, 0, _previewMap));
 
         _mind.Visit(mind, observer);
 
@@ -34,7 +33,7 @@ public abstract class SharedShipyardPreviewSystem : EntitySystem
 
     public void CachePreviewMap()
     {
-        if (_previewMap != MapId.Nullspace)
+        if (_previewMap != MapId.Nullspace && _mapManager.MapExists(_previewMap))
             return;
 
         var eQe = AllEntityQuery<PreviewMapComponent, MapComponent>();

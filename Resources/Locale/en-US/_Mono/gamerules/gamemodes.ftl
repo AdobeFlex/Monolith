@@ -4,6 +4,9 @@ mono-roguetsf-description = Native PDV imperials threaten the local TSFMC detach
 mono-roguetsf-hyperwar-title = Hyperwar (TSF|PDV)
 mono-roguetsf-hyperwar-description = PDV and TSF declared total war, all civilians have been evacuated from the sector.
 
+mono-roguetsf-hyperwar-nuclear-title = Nuclear Hyperwar (TSF|PDV)
+mono-roguetsf-hyperwar-nuclear-description = PDV and TSF declared total war, all civilians have been evacuated from the sector. Round winner is decided by who detonates the bomb.
+
 mono-mixed-title = Mixed (TSF|PDV)
 mono-mixed-description = Native PDV imperials threaten TSF colonial expansion into the sector. The sector seems ripe with a variety of danger.
 
@@ -21,3 +24,5 @@ mono-chimera-description = Native PDV imperials threaten TSF colonial expansion 
 
 mono-allatonce-title = Apocalypse (ALL, 3hr)
 mono-allatonce-description = A battleground between PDV, and TSF forces alike, with ancient ADS systems and Chimera bioweapons seeping in.
+
+# Exodus: retain the main-build preset set; MonoSecret remains disabled.

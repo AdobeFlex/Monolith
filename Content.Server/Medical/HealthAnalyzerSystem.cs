@@ -40,6 +40,7 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
     [Dependency] private UserInterfaceSystem _uiSystem = default!;
     [Dependency] private TransformSystem _transformSystem = default!;
     [Dependency] private SharedPopupSystem _popupSystem = default!;
+    [Dependency] private Content.Server._Exodus.Virology.VirologySystem _virology = default!; // Exodus: incubation-aware detection.
 
     public override void Initialize()
     {
@@ -65,7 +66,7 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
             if (component.NextUpdate > _timing.CurTime)
                 continue;
 
-            if (component.ScannedEntity is not {} patient)
+            if (component.ScannedEntity is not { } patient) // Exodus formatting
                 continue;
 
             if (Deleted(patient))
@@ -281,9 +282,11 @@ public sealed partial class HealthAnalyzerSystem : EntitySystem
             bleeding,
             unrevivable,
             uncloneable, // Frontier
-            // Shitmed Change
-            body,
+            body, // Shitmed Change; Exodus formatting
             part != null ? GetNetEntity(part) : null
-        ));
+        )
+        {
+            HasViruses = _virology.HasDetectableVirus(target), // Exodus: hidden incubation is not detectable here.
+        });
     }
 }

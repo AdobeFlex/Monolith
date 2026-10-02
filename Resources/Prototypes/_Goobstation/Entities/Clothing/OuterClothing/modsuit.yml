@@ -40,6 +40,11 @@
     - type: TemperatureProtection
       coolingCoefficient: 0.1
       heatingCoefficient: 0.4
+    # Exodus-begin: sealed modsuit protection against infection.
+    - type: VirusProtection
+      vectors: Contact, Proximity, Splash
+      blockChance: 0.9
+    # Exodus-end
   - type: FireProtection
     reduction: 0.5
 
@@ -59,8 +64,6 @@
       - state: equipped-OUTERCLOTHING-sealed
       outerClothing-vox:
       - state: equipped-OUTERCLOTHING-sealed-vox
-      outerClothing-resomi:
-      - state: equipped-OUTERCLOTHING-sealed-resomi
   - type: ClothingSpeedModifier
     walkModifier: 1
     sprintModifier: 1
@@ -96,8 +99,6 @@
       - state: equipped-OUTERCLOTHING-sealed
       outerClothing-vox:
       - state: equipped-OUTERCLOTHING-sealed-vox
-      outerClothing-resomi:
-      - state: equipped-OUTERCLOTHING-sealed-resomi
   - type: ClothingSpeedModifier
     walkModifier: 0.87
     sprintModifier: 0.87
@@ -122,6 +123,11 @@
     - type: TemperatureProtection
       coolingCoefficient: 0.1
       heatingCoefficient: 0.4
+    # Exodus-begin: sealed modsuit protection against infection.
+    - type: VirusProtection
+      vectors: Contact, Proximity, Splash
+      blockChance: 0.9
+    # Exodus-end
   - type: FireProtection
     reduction: 0.5
 
@@ -147,8 +153,6 @@
       - state: equipped-OUTERCLOTHING-sealed
       outerClothing-vox:
       - state: equipped-OUTERCLOTHING-sealed-vox
-      outerClothing-resomi:
-      - state: equipped-OUTERCLOTHING-sealed-resomi
   - type: ClothingSpeedModifier
     walkModifier: 0.90
     sprintModifier: 0.90
@@ -173,6 +177,11 @@
     - type: TemperatureProtection
       coolingCoefficient: 0.1
       heatingCoefficient: 0.4
+    # Exodus-begin: sealed modsuit protection against infection.
+    - type: VirusProtection
+      vectors: Contact, Proximity, Splash
+      blockChance: 0.9
+    # Exodus-end
   - type: FireProtection
     reduction: 0.5
 
@@ -197,9 +206,6 @@
       - state: equipped-OUTERCLOTHING-sealed
       outerClothing-vox:
       - state: equipped-OUTERCLOTHING-sealed-vox
-
-      outerClothing-resomi:
-      - state: equipped-OUTERCLOTHING-sealed-resomi
   - type: ClothingSpeedModifier
     walkModifier: 1.05
     sprintModifier: 1.05
@@ -239,8 +245,6 @@
       - state: equipped-OUTERCLOTHING-sealed
       outerClothing-vox:
       - state: equipped-OUTERCLOTHING-sealed-vox
-      outerClothing-resomi:
-      - state: equipped-OUTERCLOTHING-sealed-resomi
   - type: ClothingSpeedModifier
     walkModifier: 0.95 # Mono
     sprintModifier: 0.95 # Mono
@@ -255,7 +259,7 @@
         Heat: 0.7
         Shock: 0.4 # Mono
         Caustic: 0.4 # Mono
-        Radiation: 0.01 # Mono
+        Radiation: 0.1 # Mono
   - type: StaminaDamageResistance
     coefficient: 0.7 # Mono
 
@@ -280,8 +284,6 @@
       - state: equipped-OUTERCLOTHING-sealed
       outerClothing-vox:
       - state: equipped-OUTERCLOTHING-sealed-vox
-      outerClothing-resomi:
-      - state: equipped-OUTERCLOTHING-sealed-resomi
   - type: ClothingSpeedModifier
     walkModifier: 0.95
     sprintModifier: 0.95
@@ -321,8 +323,6 @@
       - state: equipped-OUTERCLOTHING-sealed
       outerClothing-vox:
       - state: equipped-OUTERCLOTHING-sealed-vox
-      outerClothing-resomi:
-      - state: equipped-OUTERCLOTHING-sealed-resomi
   - type: ClothingSpeedModifier
     walkModifier: 0.85
     sprintModifier: 0.85
@@ -362,9 +362,6 @@
       - state: equipped-OUTERCLOTHING-sealed
       outerClothing-vox:
       - state: equipped-OUTERCLOTHING-sealed-vox
-
-      outerClothing-resomi:
-      - state: equipped-OUTERCLOTHING-sealed-resomi
   - type: ClothingSpeedModifier
     walkModifier: 0.90
     sprintModifier: 0.90

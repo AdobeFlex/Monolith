@@ -29,12 +29,16 @@
   displayWeight: 60 # Top
   canBeAntag: false
   accessGroups:
-  - AllAccessMono #Mono
+  - AllAccess # Exodus: full station access, shared with the Colossus AI and its remote shells.
   access:
   - HeadOfPersonnel #Mono
   special:
+  - !type:AddComponentSpecial
+    components:
+    - type: ChatRank
+      rank: cc-overseer
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant ] # Mono - remove TSFMC implant
+    implants: [ MindShieldImplant, MedicalTrackingImplantRuby ] # Exodus medical service coverage; Mono - remove TSFMC implant
   - !type:AddComponentSpecial
     components:
     - type: CommandStaff
@@ -64,3 +68,4 @@
     - EncryptionKeyDiplomacy
     - ShipVoucherFrontierGuard
     - PhoneInstrumentHigh
+    - CCHandheldOverwatchConsole
