@@ -43,6 +43,8 @@
     - SyndicateBombCerberus
     - BulkAutoMiningConsoleCircuitboard
     - BulkMiningRefineryCircuitboard
+    - BulkMiningRefineryLargeCircuitboard
+    - DrakeRefineryFilter
     - BulkMiningExhaustCircuitboard
     - BulkMiningPipeStack10
     - GasPipeArmoredHalf

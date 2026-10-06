@@ -25,6 +25,23 @@
 
 - type: latheRecipe
   parent: BaseGoldCircuitboardRecipe
+  id: BulkMiningRefineryLargeCircuitboard
+  result: BulkMiningRefineryLargeCircuitboard
+  completetime: 60
+  materials:
+    Glass: 4000
+    Gold: 3000
+    Silver: 3000
+    Plasma: 2000
+    UraniumFissile: 1000
+
+- type: latheRecipe
+  parent: NebulaGasSiphonFilter
+  id: DrakeRefineryFilter
+  result: DrakeRefineryFilter
+
+- type: latheRecipe
+  parent: BaseGoldCircuitboardRecipe
   id: BulkMiningExhaustCircuitboard
   result: BulkMiningExhaustCircuitboard
   completetime: 30
@@ -83,11 +100,13 @@
   recipes:
   - BulkAutoMiningConsoleCircuitboard
   - BulkMiningRefineryCircuitboard
+  - BulkMiningRefineryLargeCircuitboard
   - BulkMiningExhaustCircuitboard
 
 - type: latheRecipePack
   id: CompanyDrakeMiningDynamic
   recipes:
+  - DrakeRefineryFilter
   - BulkMiningPipeStack10
   - GasPipeArmoredHalf
   - GasPipeArmoredStraight
