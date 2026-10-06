@@ -1,4 +1,14 @@
-# Boards are licensed through the Aquila Ink. concern disk and the legacy Drake Industries disk. Laser boards have no recipe.
+# Boards are licensed through the Aquila Ink. concern disk and the legacy Drake Industries disk. Mining laser boards have no recipe.
+- type: latheRecipe
+  parent: BaseGoldCircuitboardRecipe
+  id: BulkMiningLinkRelayCircuitboard
+  result: BulkMiningLinkRelayCircuitboard
+  completetime: 20
+  materials:
+    Glass: 1000
+    Gold: 500
+    Silver: 500
+
 - type: latheRecipe
   parent: BaseGoldCircuitboardRecipe
   id: BulkAutoMiningConsoleCircuitboard
@@ -98,10 +108,13 @@
 - type: latheRecipePack
   id: CompanyDrakeBoardsDynamic
   recipes:
+  - BulkMiningLinkRelayCircuitboard
   - BulkAutoMiningConsoleCircuitboard
   - BulkMiningRefineryCircuitboard
   - BulkMiningRefineryLargeCircuitboard
   - BulkMiningExhaustCircuitboard
+  - MiningSlurryTankCircuitboard
+  - MiningSlurryTankLargeCircuitboard
 
 - type: latheRecipePack
   id: CompanyDrakeMiningDynamic
