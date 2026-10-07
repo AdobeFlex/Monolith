@@ -31,8 +31,8 @@ public sealed partial class MiningRefinerySystem
 
     private void OnEfficiencyStartup(Entity<MiningRefineryComponent> ent, ref ComponentStartup args)
     {
-        // Older saves also applied the consortium bonus to refining speed. MapInit does not repeat on load.
-        if (ent.Comp.LinkBonusAffectsSpeed && _latheQuery.TryComp(ent, out var lathe))
+        // Only saved bonuses need migrating; untouched prototypes must keep their defaults before MapInit.
+        if (ent.Comp.LinkBonusAffectsSpeed && ent.Comp.LinkBonus != 0 && _latheQuery.TryComp(ent, out var lathe))
         {
             _lathe.MultiplyLatheMultipliers((ent.Owner, lathe), time: 1f + ent.Comp.LinkBonus);
             ent.Comp.LinkBonusAffectsSpeed = false;
@@ -74,7 +74,8 @@ public sealed partial class MiningRefinerySystem
     {
         ent.Comp.ActiveFilters = 0;
         ent.Comp.InstalledFilters = 0;
-        var oldStates = _appearance.TryGetData<MiningRefineryFilterAppearance>(ent, MiningRefineryVisuals.Filters, out var appearance)
+        var oldStates = TryComp<AppearanceComponent>(ent, out var appearanceComp) &&
+            _appearance.TryGetData<MiningRefineryFilterAppearance>(ent, MiningRefineryVisuals.Filters, out var appearance, appearanceComp)
             ? appearance.States
             : null;
         Dictionary<string, MiningRefineryFilterState>? newStates = null;
@@ -95,7 +96,8 @@ public sealed partial class MiningRefinerySystem
                 }
             }
 
-            if (oldStates == null || !oldStates.TryGetValue(slot, out var oldState) || oldState != state)
+            if (appearanceComp != null &&
+                (oldStates == null || !oldStates.TryGetValue(slot, out var oldState) || oldState != state))
             {
                 // Allocate a snapshot only when a cartridge is inserted, removed or depleted.
                 newStates ??= oldStates == null ? new() : new(oldStates);
@@ -104,7 +106,7 @@ public sealed partial class MiningRefinerySystem
         }
 
         if (newStates != null)
-            _appearance.SetData(ent, MiningRefineryVisuals.Filters, new MiningRefineryFilterAppearance(newStates));
+            _appearance.SetData(ent, MiningRefineryVisuals.Filters, new MiningRefineryFilterAppearance(newStates), appearanceComp);
 
         UpdateEfficiency(ent);
     }
