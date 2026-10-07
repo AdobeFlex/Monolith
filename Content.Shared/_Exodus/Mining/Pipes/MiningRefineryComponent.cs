@@ -138,7 +138,7 @@ public sealed partial class MiningRefineryComponent : Component
 
     /// <summary>
     /// Compatibility with older saves that also applied <see cref="LinkBonus"/> to refining speed.
-    /// Cleared on component startup after removing that legacy time multiplier.
+    /// Cleared after migrating a saved bonus, on map initialization, or when applying a new material-only bonus.
     /// </summary>
     [DataField]
     public bool LinkBonusAffectsSpeed = true;
