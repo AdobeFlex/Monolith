@@ -4,8 +4,8 @@ meta:
   engineVersion: 277.2.1
   forkId: ""
   forkVersion: ""
-  time: 10/05/2026 23:11:43
-  entityCount: 2162
+  time: 10/07/2026 04:15:34
+  entityCount: 2164
 maps: []
 grids:
 - 1
@@ -992,11 +992,11 @@ entities:
             1000: -5,-3
     - type: SpreaderGrid
       spreadQueues:
-        Smoke: []
-        MetalFoam: []
         ExodusBiohazardFoam: []
-        Kudzu: []
+        Smoke: []
         Puddle: []
+        Kudzu: []
+        MetalFoam: []
     - type: GridAtmosphere
       version: 2
       data:
@@ -10377,6 +10377,18 @@ entities:
     components:
     - type: Transform
       pos: -5.5,-3.5
+      parent: 1
+- proto: LockerWallMaterialsFuelAmeJarFilled
+  entities:
+  - uid: 2163
+    components:
+    - type: Transform
+      pos: 5.5,-13.5
+      parent: 1
+  - uid: 2164
+    components:
+    - type: Transform
+      pos: -6.5,-13.5
       parent: 1
 - proto: MachineFTLDrive50
   entities:

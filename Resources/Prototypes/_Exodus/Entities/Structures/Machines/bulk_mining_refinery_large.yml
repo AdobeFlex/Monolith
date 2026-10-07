@@ -26,6 +26,7 @@
       volume: 5000
       temperature: 293.15
     exhaustMolesPerBatch: 20
+    exhaustMolesPerSecond: 200
     corrosionThreshold: 5000
     explosionThreshold: 10000
     maxFullnessDiscount: 0.2

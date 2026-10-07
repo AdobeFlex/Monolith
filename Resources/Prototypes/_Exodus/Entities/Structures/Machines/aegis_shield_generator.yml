@@ -23,7 +23,7 @@
     noRot: false
   - type: Rotatable
   - type: Sprite
-    sprite: _Exodus/Structures/ShuttleComponents/aegis_shield_generator.rsi
+    sprite: _Exodus/Structures/ShuttleComponents/hex_shield_generator.rsi
     offset: 0,0
     layers:
     - state: control

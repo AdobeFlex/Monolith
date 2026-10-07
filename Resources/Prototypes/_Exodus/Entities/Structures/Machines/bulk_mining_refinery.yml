@@ -97,7 +97,7 @@
       volume: 1000
       temperature: 293.15
     exhaustMolesPerBatch: 10
-    exhaustMolesPerSecond: 5
+    exhaustMolesPerSecond: 50
     corrosionThreshold: 1000
     corrosionDelay: 30
     explosionThreshold: 2000

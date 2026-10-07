@@ -15,7 +15,7 @@
   - type: RadarBlip
     radarColor: "#4bbfaf"
   - type: StaticPrice
-    price: 50000
+    price: 958416.8 # Installed board and materials add 1,583.2; complete relay value is 960,000, half a mining laser.
 
 - type: entity
   parent: BaseMachineCircuitboard
