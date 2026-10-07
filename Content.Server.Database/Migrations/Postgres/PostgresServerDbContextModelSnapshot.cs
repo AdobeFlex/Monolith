@@ -1625,6 +1625,32 @@ namespace Content.Server.Database.Migrations.Postgres
                 });
 
             // SS220-end
+            // Exodus-begin: persistent economy settings
+            modelBuilder.Entity("Content.Server.Database._Exodus.Economy.MarketSettingsRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    b.Property<long>("Revision")
+                        .HasColumnType("bigint")
+                        .HasColumnName("revision");
+
+                    b.Property<string>("Settings")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("settings");
+
+                    b.HasKey("Id")
+                        .HasName("PK_economy_market_settings");
+
+                    b.ToTable("economy_market_settings", null, t =>
+                        {
+                            t.HasCheckConstraint("EconomyMarketSettingsSingleton", "id = 1");
+                        });
+                });
+            // Exodus-end
+
             modelBuilder.Entity("PlayerRound", b =>
                 {
                     b.Property<int>("PlayersId")

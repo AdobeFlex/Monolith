@@ -1,4 +1,5 @@
 // (c) Space Exodus Team - EXDS-RL with CLA
+using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._Exodus.Economy;
@@ -16,7 +17,7 @@ public sealed class CargoMarketListing
     public string ProductId = string.Empty;
 
     /// <summary>Entity prototype to spawn (catalog product entity or resale entity).</summary>
-    public string EntityProtoId = string.Empty;
+    public EntProtoId EntityProtoId;
 
     /// <summary>Display name for UI.</summary>
     public string DisplayName = string.Empty;
@@ -26,6 +27,9 @@ public sealed class CargoMarketListing
 
     /// <summary>Unit price (sector factor + console mod already applied for catalog).</summary>
     public int UnitPrice;
+
+    /// <summary>False when the server cannot safely quote this purchase.</summary>
+    public bool Available = true;
 
     public float Trend;
     public double ChangePercent;
@@ -39,15 +43,19 @@ public sealed class CargoMarketListing
     public const string ResaleIdPrefix = "resale:";
     public const string ResaleCategoryKey = "cargoproduct-category-name-resale";
 
-    public static string MakeResaleProductId(string entityProtoId) => ResaleIdPrefix + entityProtoId;
+    public static string MakeResaleProductId(EntProtoId entityProtoId) => ResaleIdPrefix + entityProtoId.Id;
 
-    public static bool TryParseResaleId(string productId, out string entityProtoId)
+    public static bool TryParseResaleId(string productId, out EntProtoId entityProtoId)
     {
-        entityProtoId = string.Empty;
+        entityProtoId = default;
         if (!productId.StartsWith(ResaleIdPrefix, StringComparison.Ordinal))
             return false;
 
-        entityProtoId = productId[ResaleIdPrefix.Length..];
-        return entityProtoId.Length > 0;
+        var id = productId[ResaleIdPrefix.Length..];
+        if (id.Length == 0)
+            return false;
+
+        entityProtoId = id;
+        return true;
     }
 }

@@ -6,8 +6,14 @@ namespace Content.Shared._Exodus.CCVar;
 public partial class EXCVars
 {
     /// <summary>
+    /// Minimum purchase margin above the global resale ceiling. Applies even when dynamic prices are disabled.
+    /// </summary>
+    public static readonly CVarDef<float> MarketPurchaseMargin =
+        CVarDef.Create("exds.economy.market_purchase_margin", 0.05f, CVar.SERVERONLY);
+
+    /// <summary>
     /// Master switch for the global dynamic supply/demand market.
-    /// When false, buy/sell use static prices (legacy behavior).
+    /// When false, buy/sell use static factors. The global purchase price floor still applies.
     /// </summary>
     public static readonly CVarDef<bool> DynamicMarketEnabled =
         CVarDef.Create("exds.economy.dynamic_market", true, CVar.SERVERONLY);
@@ -27,14 +33,15 @@ public partial class EXCVars
         CVarDef.Create("exds.economy.market_max_factor", 9.99f, CVar.SERVERONLY);
 
     /// <summary>
-    /// Sell impact strength: each reference-volume of units multiplies factor by exp(-this).
-    /// Higher = prices drop faster when dumping goods.
+    /// Sell impact strength. The larger of buy/sell impact is used in both directions so a closed
+    /// trade cannot pump the factor. Each reference-volume multiplies the factor by exp(-impact).
     /// </summary>
     public static readonly CVarDef<float> DynamicMarketSellImpact =
         CVarDef.Create("exds.economy.market_sell_impact", 0.08f, CVar.SERVERONLY);
 
     /// <summary>
-    /// Buy impact strength: each reference-volume of units multiplies factor by exp(+this).
+    /// Buy impact strength. The larger of buy/sell impact is used in both directions;
+    /// each reference-volume of units multiplies the factor by exp(+impact).
     /// </summary>
     public static readonly CVarDef<float> DynamicMarketBuyImpact =
         CVarDef.Create("exds.economy.market_buy_impact", 0.08f, CVar.SERVERONLY);
@@ -53,10 +60,10 @@ public partial class EXCVars
         CVarDef.Create("exds.economy.market_decay_interval", 30f, CVar.SERVERONLY);
 
     /// <summary>
-    /// Fraction of the gap to 1.0 closed each decay tick (default 0.02 = 2% of distance per tick).
+    /// Fraction of the gap to 1.0 closed each decay tick (default 0.0015 = 0.15% of distance per tick).
     /// </summary>
     public static readonly CVarDef<float> DynamicMarketDecayRate =
-        CVarDef.Create("exds.economy.market_decay_rate", 0.02f, CVar.SERVERONLY);
+        CVarDef.Create("exds.economy.market_decay_rate", 0.0015f, CVar.SERVERONLY);
 
     /// <summary>
     /// Persist global market factors to the server database across rounds.

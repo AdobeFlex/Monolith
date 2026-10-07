@@ -14,7 +14,7 @@ public sealed class CargoConsoleInterfaceState : BoundUserInterfaceState
 
     /// <summary>
     /// Exodus: live catalog prices + trends from the global sector market.
-    /// Null/empty falls back to static prototype costs on the client.
+    /// Null falls back to static prototype costs on the client; an empty list is an empty catalog.
     /// </summary>
     public List<CargoMarketListing>? MarketListings; // Exodus dynamic market
 

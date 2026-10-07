@@ -1,10 +1,11 @@
 // (c) Space Exodus Team - EXDS-RL with CLA
+using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._Exodus.Economy;
 
 /// <summary>
-/// One sellable entity line on a cargo pallet appraisal (market-adjusted total).
+/// One grouped line on a cargo pallet appraisal (market-adjusted total).
 /// </summary>
 [Serializable, NetSerializable]
 public sealed class CargoPalletAppraisalEntry
@@ -17,20 +18,20 @@ public sealed class CargoPalletAppraisalEntry
     /// <summary>
     /// Entity prototype id for client icon (optional).
     /// </summary>
-    public string? PrototypeId;
+    public EntProtoId? PrototypeId;
 
     /// <summary>
-    /// Stack count or 1 for non-stacks.
+    /// Total represented quantity. Matching non-stack entities are counted individually.
     /// </summary>
     public int Quantity = 1;
 
     /// <summary>
-    /// Market-adjusted payout for this entity (all lots inside it).
+    /// Market-adjusted payout for all entities represented by this line.
     /// </summary>
     public int Price;
 
     /// <summary>
     /// Approximate unit price (Price / Quantity), for display.
     /// </summary>
-    public int UnitPrice;
+    public double UnitPrice;
 }

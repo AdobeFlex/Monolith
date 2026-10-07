@@ -20,7 +20,7 @@ public sealed class GasMarketLine
     public float Moles;
 
     /// <summary>
-    /// Effective unit price after sector factor (and purity if used), before console mod.
+    /// Effective average unit price after sector factor, purity and console modifier.
     /// </summary>
     public double UnitPrice;
 

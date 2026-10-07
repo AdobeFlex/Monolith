@@ -78,9 +78,9 @@ public static class MarketTerminalTheme
     /// <summary>
     /// Apply rising / falling / flat label text and color.
     /// </summary>
-    public static void ApplyTrend(Label label, double changePercent, bool hideWhenFlat = false)
+    public static void ApplyTrend(Label label, float trend, double changePercent, bool hideWhenFlat = false)
     {
-        if (hideWhenFlat && Math.Abs(changePercent) < 0.05)
+        if (hideWhenFlat && Math.Abs(trend) < 0.00005f)
         {
             label.Visible = false;
             label.Text = string.Empty;
@@ -88,25 +88,26 @@ public static class MarketTerminalTheme
         }
 
         label.Visible = true;
+        var formattedPercent = changePercent.ToString("+0.0;-0.0;0.0");
 
-        if (changePercent > 0)
+        if (trend > 0.00005f)
         {
-            label.Text = Loc.GetString("economy-market-trend-up", ("percent", changePercent.ToString("0.0")));
+            label.Text = Loc.GetString("economy-market-trend-up", ("percent", formattedPercent));
             label.FontColorOverride = TrendUp;
         }
-        else if (changePercent < 0)
+        else if (trend < -0.00005f)
         {
-            label.Text = Loc.GetString("economy-market-trend-down", ("percent", changePercent.ToString("0.0")));
+            label.Text = Loc.GetString("economy-market-trend-down", ("percent", formattedPercent));
             label.FontColorOverride = TrendDown;
         }
         else
         {
-            label.Text = Loc.GetString("economy-market-trend-flat");
+            label.Text = Loc.GetString("economy-market-trend-flat", ("percent", formattedPercent));
             label.FontColorOverride = TrendFlat;
         }
     }
 
-    public static void ApplyTrendOptional(Label label, double? changePercent)
+    public static void ApplyTrendOptional(Label label, float trend, double? changePercent)
     {
         if (changePercent is not { } percent)
         {
@@ -115,7 +116,7 @@ public static class MarketTerminalTheme
             return;
         }
 
-        ApplyTrend(label, percent);
+        ApplyTrend(label, trend, percent);
     }
 
     /// <summary>

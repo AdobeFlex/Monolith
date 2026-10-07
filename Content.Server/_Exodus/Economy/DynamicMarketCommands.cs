@@ -1,17 +1,20 @@
 // (c) Space Exodus Team - EXDS-RL with CLA
+using System.Globalization;
+using Content.Server._Exodus.Economy.Admin;
 using Content.Server.Administration;
+using Content.Shared._Exodus.Economy.Admin;
 using Content.Shared.Administration;
 using Robust.Shared.Console;
 
 namespace Content.Server._Exodus.Economy;
 
-[AdminCommand(AdminFlags.Admin)]
-public sealed class MarketQuoteCommand : IConsoleCommand
+[AdminCommand(AdminFlags.EconomyDB)]
+public sealed partial class MarketQuoteCommand : IConsoleCommand
 {
-    [Dependency] private readonly IEntityManager _entities = default!;
+    [Dependency] private IEntityManager _entities = default!;
 
     public string Command => "marketquote";
-    public string Description => "Show global dynamic market factor for a key (stack:X / proto:Y / raw id).";
+    public string Description => "Show global dynamic market factor and commodity group for a key (stack:X / proto:Y / gas:Z).";
     public string Help => "Usage: marketquote <marketKey>";
 
     public void Execute(IConsoleShell shell, string argStr, string[] args)
@@ -23,17 +26,18 @@ public sealed class MarketQuoteCommand : IConsoleCommand
         }
 
         var market = _entities.System<DynamicMarketSystem>();
+        var groups = _entities.System<MarketCommodityGroupSystem>();
         var key = args[0];
         var factor = market.GetFactor(key);
         market.TryGetQuote(key, out var quote);
-        shell.WriteLine($"{key}: factor={factor:F4} trend={quote.Trend:F4} change%={quote.ChangePercent:F2}");
+        shell.WriteLine($"{key}: factor={factor:F4} trend={quote.Trend:F4} change%={quote.ChangePercent:F2} group={groups.GetGroup(key)}");
     }
 }
 
-[AdminCommand(AdminFlags.Admin)]
-public sealed class MarketSetCommand : IConsoleCommand
+[AdminCommand(AdminFlags.EconomyDB)]
+public sealed partial class MarketSetCommand : IConsoleCommand
 {
-    [Dependency] private readonly IEntityManager _entities = default!;
+    [Dependency] private IEntityManager _entities = default!;
 
     public string Command => "marketset";
     public string Description => "Set global dynamic market factor for a key.";
@@ -41,22 +45,29 @@ public sealed class MarketSetCommand : IConsoleCommand
 
     public void Execute(IConsoleShell shell, string argStr, string[] args)
     {
-        if (args.Length != 2 || !double.TryParse(args[1], out var factor))
+        if (args.Length != 2 ||
+            !double.TryParse(args[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var factor) ||
+            !double.IsFinite(factor))
         {
             shell.WriteError("Usage: marketset <marketKey> <factor>");
             return;
         }
 
-        var market = _entities.System<DynamicMarketSystem>();
-        market.SetFactor(args[0], factor);
-        shell.WriteLine($"Set {args[0]} factor → {market.GetFactor(args[0]):F4}");
+        if (shell.Player is not { } player)
+        {
+            shell.WriteError(Loc.GetString("economy-admin-reset-console"));
+            return;
+        }
+
+        if (!_entities.System<MarketAdminSystem>().TryOpen(player, new MarketAdminSetQuoteMessage(args[0], factor)))
+            shell.WriteError(Loc.GetString("economy-admin-error-permission"));
     }
 }
 
-[AdminCommand(AdminFlags.Admin)]
-public sealed class MarketResetCommand : IConsoleCommand
+[AdminCommand(AdminFlags.EconomyDB)]
+public sealed partial class MarketResetCommand : IConsoleCommand
 {
-    [Dependency] private readonly IEntityManager _entities = default!;
+    [Dependency] private IEntityManager _entities = default!;
 
     public string Command => "marketreset";
     public string Description => "Reset global market factors (all keys, or one key).";
@@ -64,23 +75,30 @@ public sealed class MarketResetCommand : IConsoleCommand
 
     public void Execute(IConsoleShell shell, string argStr, string[] args)
     {
-        var market = _entities.System<DynamicMarketSystem>();
-        if (args.Length == 0)
+        if (args.Length > 1)
         {
-            market.ResetAll();
-            shell.WriteLine("All market factors reset to base.");
+            shell.WriteError("Usage: marketreset [marketKey]");
             return;
         }
 
-        market.ResetKey(args[0]);
-        shell.WriteLine($"Reset {args[0]} to base.");
+        if (shell.Player is not { } player)
+        {
+            shell.WriteError(Loc.GetString("economy-admin-reset-console"));
+            return;
+        }
+
+        var admin = _entities.System<MarketAdminSystem>();
+        if (!admin.TryOpen(player, args.Length == 0
+                ? new MarketAdminBeginResetAllMessage()
+                : new MarketAdminResetQuoteMessage(args[0])))
+            shell.WriteError(Loc.GetString("economy-admin-error-permission"));
     }
 }
 
-[AdminCommand(AdminFlags.Admin)]
-public sealed class MarketListCommand : IConsoleCommand
+[AdminCommand(AdminFlags.EconomyDB)]
+public sealed partial class MarketListCommand : IConsoleCommand
 {
-    [Dependency] private readonly IEntityManager _entities = default!;
+    [Dependency] private IEntityManager _entities = default!;
 
     public string Command => "marketlist";
     public string Description => "List non-base global market factors.";

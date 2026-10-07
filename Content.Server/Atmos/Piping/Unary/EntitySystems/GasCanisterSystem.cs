@@ -1,7 +1,6 @@
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Atmos.Piping.Components;
 using Content.Server.Cargo.Systems;
-using Content.Server._Exodus.Economy; // Exodus gas market
 using Content.Server.NodeContainer.EntitySystems;
 using Content.Server.NodeContainer.NodeGroups;
 using Content.Server.NodeContainer.Nodes;
@@ -20,7 +19,6 @@ public sealed partial class GasCanisterSystem : SharedGasCanisterSystem
     [Dependency] private AtmosphereSystem _atmos = default!;
     [Dependency] private SharedAppearanceSystem _appearance = default!;
     [Dependency] private NodeContainerSystem _nodeContainer = default!;
-    [Dependency] private DynamicMarketSystem _dynamicMarket = default!; // Exodus
 
     public override void Initialize()
     {
@@ -149,13 +147,7 @@ public sealed partial class GasCanisterSystem : SharedGasCanisterSystem
 
     private void CalculateCanisterPrice(EntityUid uid, GasCanisterComponent component, ref PriceCalculationEvent args)
     {
-        // Exodus: gas value uses gas:* market factors (same as Edison gas sale), no impact commit here.
-        args.Price += _dynamicMarket.CalculateGasMixtureSellValue(
-            component.Air,
-            consoleMod: 1.0,
-            tx: null,
-            applyImpact: false,
-            usePurity: true);
+        args.Price += _atmos.GetPrice(component.Air); // Exodus: nominal appraisal; market baskets apply trade impact separately.
     }
 
     /// <summary>

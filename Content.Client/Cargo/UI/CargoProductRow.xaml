@@ -1,59 +1,29 @@
-﻿<!-- Exodus: sector market catalog card -->
+﻿<!-- Exodus: two-line catalog card; the price never competes with the product name. -->
 <PanelContainer xmlns="https://spacestation14.io"
                 xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
                 HorizontalExpand="True">
     <PanelContainer.PanelOverride>
         <gfx:StyleBoxFlat BackgroundColor="#1E1E24" BorderThickness="1" BorderColor="#3A3A44" />
     </PanelContainer.PanelOverride>
-    <Button Name="MainButton"
-            ToolTip=""
-            Access="Public"
-            HorizontalExpand="True"
-            VerticalExpand="True"
-            StyleClasses="ButtonSquare" />
-    <BoxContainer Orientation="Horizontal"
-                  HorizontalExpand="True"
-                  Margin="6 4"
-                  SeparationOverride="8"
-                  MouseFilter="Ignore">
-        <PanelContainer MinSize="40 40" MaxSize="40 40" HorizontalExpand="False">
+    <Button Name="MainButton" ToolTip="" Access="Public" HorizontalExpand="True"
+            VerticalExpand="True" StyleClasses="ButtonSquare" />
+    <BoxContainer HorizontalExpand="True" Margin="8" SeparationOverride="10" MouseFilter="Ignore">
+        <PanelContainer SetSize="44 44" VerticalAlignment="Center" MouseFilter="Ignore">
             <PanelContainer.PanelOverride>
                 <gfx:StyleBoxFlat BackgroundColor="#121216" BorderThickness="1" BorderColor="#3A3A44" />
             </PanelContainer.PanelOverride>
-            <TextureRect Name="Icon"
-                         Access="Public"
-                         MinSize="36 36"
-                         MaxSize="36 36"
-                         HorizontalAlignment="Center"
-                         VerticalAlignment="Center"
-                         Stretch="KeepAspectCentered"
-                         MouseFilter="Ignore" />
+            <TextureRect Name="Icon" Access="Public" SetSize="36 36" HorizontalAlignment="Center"
+                         VerticalAlignment="Center" Stretch="KeepAspectCentered" MouseFilter="Ignore" />
         </PanelContainer>
-        <Label Name="ProductName"
-               Access="Public"
-               HorizontalExpand="True"
-               ClipText="True"
-               VerticalAlignment="Center"
-               MouseFilter="Ignore" />
-        <BoxContainer Orientation="Vertical"
-                      HorizontalExpand="False"
-                      MinWidth="92"
-                      MaxWidth="110"
-                      Align="End"
-                      VerticalAlignment="Center"
-                      MouseFilter="Ignore">
-            <Label Name="PointCost"
-                   Access="Public"
-                   Align="Right"
-                   HorizontalExpand="True"
-                   StyleClasses="LabelKeyText"
-                   MouseFilter="Ignore" />
-            <Label Name="Trend"
-                   Access="Public"
-                   Align="Right"
-                   HorizontalExpand="True"
-                   StyleClasses="LabelSubText"
-                   MouseFilter="Ignore" />
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center"
+                      SeparationOverride="4" MouseFilter="Ignore">
+            <Label Name="ProductName" Access="Public" HorizontalExpand="True" ClipText="True" MouseFilter="Ignore" />
+            <BoxContainer SeparationOverride="8" MouseFilter="Ignore">
+                <Label Name="PointCost" Access="Public" HorizontalExpand="True" ClipText="True"
+                       StyleClasses="LabelKeyText" FontColorOverride="#8ED6BF" MouseFilter="Ignore" />
+                <Label Name="Trend" Access="Public" SetWidth="80" Align="Right" ClipText="True"
+                       StyleClasses="LabelSubText" MouseFilter="Ignore" />
+            </BoxContainer>
         </BoxContainer>
     </BoxContainer>
 </PanelContainer>

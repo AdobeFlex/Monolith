@@ -19,6 +19,14 @@ public class MarketData
     [ViewVariables]
     public double Price { get; set; }
 
+    public bool Available { get; set; } = true; // Exodus: false if no safe purchase quote exists.
+
+    /// <summary>
+    /// Exodus: server-quoted total for this cart line, including the console modifier and rounding.
+    /// </summary>
+    [ViewVariables]
+    public int? LineTotal { get; set; } // Exodus exact cart quote
+
     /// <summary>
     /// Exodus: recent sector price movement for UI arrows (positive = rising).
     /// </summary>

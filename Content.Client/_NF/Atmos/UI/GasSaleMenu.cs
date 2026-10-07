@@ -108,7 +108,7 @@ public sealed partial class GasSaleMenu : FancyWindow
         });
         row.AddChild(new Label
         {
-            Text = BankSystemExtensions.ToSpesoString((int)Math.Round(line.UnitPrice)),
+            Text = Loc.GetString("gas-sale-menu-unit-price", ("price", line.UnitPrice.ToString("N2"))),
             MinWidth = 72,
             Align = Label.AlignMode.Right,
             StyleClasses = { "LabelSubText" },
@@ -130,7 +130,7 @@ public sealed partial class GasSaleMenu : FancyWindow
             StyleClasses = { "LabelSubText" },
             VerticalAlignment = VAlignment.Center,
         };
-        MarketTerminalTheme.ApplyTrend(trend, line.ChangePercent);
+        MarketTerminalTheme.ApplyTrend(trend, line.Trend, line.ChangePercent); // Exodus: actual movement direction
         row.AddChild(trend);
 
         panel.PanelOverride = MarketTerminalTheme.MakeCardBox();

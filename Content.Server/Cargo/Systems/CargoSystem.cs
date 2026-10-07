@@ -22,6 +22,8 @@ using Content.Server._NF.SectorServices; // Frontier
 using Content.Shared.Whitelist;
 using Content.Server._NF.Bank; // Frontier
 using Content.Server._Exodus.Economy; // Exodus dynamic market
+using Content.Server._NF.Market.Systems; // Exodus: access resale inventory through its owning system.
+using Content.Server._Exodus.Cargo; // Exodus bulk cargo packaging
 
 namespace Content.Server.Cargo.Systems;
 
@@ -49,6 +51,8 @@ public sealed partial class CargoSystem : SharedCargoSystem
     [Dependency] private EntityWhitelistSystem _whitelist = default!; // Frontier
     [Dependency] private BankSystem _bank = default!;
     [Dependency] private DynamicMarketSystem _dynamicMarket = default!; // Exodus dynamic market
+    [Dependency] private MarketSystem _market = default!; // Exodus resale inventory
+    [Dependency] private CargoOrderPackagingSystem _packaging = default!; // Exodus bulk cargo packaging
 
     private EntityQuery<TransformComponent> _xformQuery;
     private EntityQuery<CargoSellBlacklistComponent> _blacklistQuery;
@@ -69,6 +73,7 @@ public sealed partial class CargoSystem : SharedCargoSystem
         _tradeQuery = GetEntityQuery<TradeStationComponent>();
 
         InitializeConsole();
+        SubscribeLocalEvent<MarketInventoryChangedEvent>(OnMarketInventoryChanged); // Exodus shared resale inventory
         InitializeShuttle();
         InitializeTelepad();
         InitializeBounty();

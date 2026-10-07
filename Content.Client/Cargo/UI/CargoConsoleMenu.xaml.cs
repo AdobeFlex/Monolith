@@ -25,8 +25,8 @@ namespace Content.Client.Cargo.UI
         private readonly EntityUid _owner;
 
         public event Action<ButtonEventArgs>? OnItemSelected;
-        public event Action<ButtonEventArgs>? OnOrderApproved;
-        public event Action<ButtonEventArgs>? OnOrderCanceled;
+        public event Action<CargoOrderData>? OnOrderApproved;
+        public event Action<CargoOrderData>? OnOrderCanceled;
 
         /// <summary>
         /// Category keys (prefer loc ids like cargoproduct-category-name-engineering).
@@ -38,31 +38,7 @@ namespace Content.Client.Cargo.UI
         private Dictionary<string, CargoMarketListing>? _marketListings;
 
         /// <summary>
-        /// Legacy bare English categories still found in some YAML → official loc ids.
-        /// </summary>
-        private static readonly Dictionary<string, string> CategoryAliases =
-            new(StringComparer.OrdinalIgnoreCase)
-            {
-                ["Engineering"] = "cargoproduct-category-name-engineering",
-                ["Security"] = "cargoproduct-category-name-security",
-                ["Service"] = "cargoproduct-category-name-service",
-                ["Medical"] = "cargoproduct-category-name-medical",
-                ["Science"] = "cargoproduct-category-name-science",
-                ["Food"] = "cargoproduct-category-name-food",
-                ["Fun"] = "cargoproduct-category-name-fun",
-                ["Hydroponics"] = "cargoproduct-category-name-hydroponics",
-                ["Livestock"] = "cargoproduct-category-name-livestock",
-                ["Materials"] = "cargoproduct-category-name-materials",
-                ["Cargo"] = "cargoproduct-category-name-cargo",
-                ["Atmospherics"] = "cargoproduct-category-name-atmospherics",
-                ["Emergency"] = "cargoproduct-category-name-emergency",
-                ["Shuttle"] = "cargoproduct-category-name-shuttle",
-                ["Armory"] = "cargoproduct-category-name-armory",
-                ["Circuitboards"] = "cargoproduct-category-name-circuitboards",
-            };
-
-        /// <summary>
-        /// Normalize prototype.Category to a stable key so Eng/Engineering/loc-id collapse to one tab.
+        /// Normalize prototype.Category to a stable key.
         /// </summary>
         private static string NormalizeCategoryKey(string raw)
         {
@@ -71,21 +47,19 @@ namespace Content.Client.Cargo.UI
 
             raw = raw.Trim();
 
-            if (CategoryAliases.TryGetValue(raw, out var aliased))
-                return aliased;
-
-            // Already a proper fluent id, or unknown custom id — keep as-is.
             return raw;
         }
 
         private static string CategoryDisplayName(string key)
         {
-            var localized = Loc.GetString(key);
-            // Loc returns the key when missing — strip prefix for a cleaner fallback label.
-            if (localized == key && key.StartsWith("cargoproduct-category-name-", StringComparison.Ordinal))
+            if (Loc.TryGetString(key, out var localized))
+                return localized;
+
+            // Preserve custom category labels without logging missing localization errors.
+            if (key.StartsWith("cargoproduct-category-name-", StringComparison.Ordinal))
                 return key["cargoproduct-category-name-".Length..];
 
-            return localized;
+            return key;
         }
 
         public CargoConsoleMenu(EntityUid owner, IEntityManager entMan, IPrototypeManager protoManager, SpriteSystem spriteSystem)
@@ -102,18 +76,21 @@ namespace Content.Client.Cargo.UI
             ClearSearchButton.OnPressed += _ =>
             {
                 SearchBar.Text = string.Empty;
+                ProductScroll.VScroll = 0;
                 PopulateProducts();
             };
         }
 
         private void OnSearchBarTextChanged(LineEdit.LineEditEventArgs args)
         {
+            ProductScroll.VScroll = 0;
             PopulateProducts();
         }
 
         private void SelectCategory(string? category)
         {
             _category = category;
+            ProductScroll.VScroll = 0;
 
             foreach (var (key, button) in _categoryButtons)
             {
@@ -148,7 +125,7 @@ namespace Content.Client.Cargo.UI
         /// </summary>
         public void SetMarketListings(List<CargoMarketListing>? listings)
         {
-            if (listings == null || listings.Count == 0)
+            if (listings == null)
             {
                 _marketListings = null;
                 return;
@@ -163,7 +140,7 @@ namespace Content.Client.Cargo.UI
                 map[productId] = listing;
             }
 
-            _marketListings = map.Count > 0 ? map : null;
+            _marketListings = map;
         }
 
         public void PopulateProducts()
@@ -173,7 +150,7 @@ namespace Content.Client.Cargo.UI
             var shown = 0;
 
             // Prefer server listings (catalog + resale stock). Fallback to prototypes only.
-            if (_marketListings is { Count: > 0 })
+            if (_marketListings != null)
             {
                 var rows = _marketListings.Values.ToList();
                 rows.Sort((a, b) =>
@@ -182,7 +159,7 @@ namespace Content.Client.Cargo.UI
                     var cmp = a.IsResale.CompareTo(b.IsResale);
                     if (cmp != 0)
                         return cmp;
-                    return string.Compare(a.DisplayName, b.DisplayName, StringComparison.CurrentCultureIgnoreCase);
+                    return string.Compare(ListingDisplayName(a), ListingDisplayName(b), StringComparison.CurrentCultureIgnoreCase);
                 });
 
                 foreach (var listing in rows)
@@ -217,12 +194,14 @@ namespace Content.Client.Cargo.UI
                     var button = new CargoProductRow
                     {
                         Product = prototype,
+                        Description = prototype.Description,
                         ListingProductId = prototype.ID,
                         ProductName = { Text = prototype.Name },
                         MainButton = { ToolTip = prototype.Description },
                         PointCost = { Text = BankSystemExtensions.ToSpesoString(prototype.Cost) },
                         Icon = { Texture = _spriteSystem.Frame0(prototype.Icon) },
                     };
+                    SetProductTooltip(button);
                     button.MainButton.OnPressed += args => OnItemSelected?.Invoke(args);
                     Products.AddChild(button);
                     shown++;
@@ -230,21 +209,24 @@ namespace Content.Client.Cargo.UI
             }
 
             ProductCountLabel.Text = Loc.GetString("cargo-console-menu-product-count", ("count", shown));
+            ProductsEmptyLabel.Visible = shown == 0;
             CatalogTitleLabel.Text = _category == null
                 ? Loc.GetString("cargo-console-menu-catalog-heading")
                 : Loc.GetString("cargo-console-menu-catalog-heading-category",
                     ("category", CategoryDisplayName(_category)));
+            CatalogTitleLabel.ToolTip = CatalogTitleLabel.Text;
         }
 
         private void AddListingRow(CargoMarketListing listing)
         {
-            var name = listing.DisplayName;
+            var displayName = ListingDisplayName(listing);
+            var name = displayName;
             if (listing.IsResale && listing.StockQuantity is { } qty)
-                name = Loc.GetString("cargo-console-menu-resale-name", ("name", listing.DisplayName), ("qty", qty));
+                name = Loc.GetString("cargo-console-menu-resale-name", ("name", displayName), ("qty", qty));
 
             var tooltip = listing.IsResale
                 ? Loc.GetString("cargo-console-menu-resale-tooltip", ("qty", listing.StockQuantity ?? 0))
-                : listing.DisplayName;
+                : displayName;
 
             CargoProductPrototype? cargoProduct = null;
 
@@ -257,12 +239,18 @@ namespace Content.Client.Cargo.UI
             var button = new CargoProductRow
             {
                 Product = cargoProduct,
+                Description = tooltip,
                 ListingProductId = listing.ProductId,
                 IsResale = listing.IsResale,
                 StockQuantity = listing.StockQuantity,
                 ProductName = { Text = name },
-                MainButton = { ToolTip = tooltip },
-                PointCost = { Text = BankSystemExtensions.ToSpesoString(listing.UnitPrice) },
+                MainButton = { ToolTip = tooltip, Disabled = !listing.Available || listing.StockQuantity is <= 0 },
+                PointCost =
+                {
+                    Text = listing.Available
+                        ? BankSystemExtensions.ToSpesoString(listing.UnitPrice)
+                        : Loc.GetString("market-purchase-unavailable")
+                },
             };
 
             if (!listing.IsResale && cargoProduct != null)
@@ -270,16 +258,31 @@ namespace Content.Client.Cargo.UI
             else if (_protoManager.TryIndex<EntityPrototype>(listing.EntityProtoId, out var ep))
                 button.Icon.Texture = _spriteSystem.Frame0(ep);
 
-            MarketTerminalTheme.ApplyTrendOptional(button.Trend, listing.ChangePercent);
+            MarketTerminalTheme.ApplyTrendOptional(button.Trend, listing.Trend, listing.ChangePercent);
+            SetProductTooltip(button);
             button.MainButton.OnPressed += args => OnItemSelected?.Invoke(args);
             Products.AddChild(button);
+        }
+
+        private static void SetProductTooltip(CargoProductRow row)
+        {
+            row.MainButton.ToolTip = Loc.GetString("cargo-console-menu-product-tooltip",
+                ("name", row.ProductName.Text ?? string.Empty),
+                ("price", row.PointCost.Text ?? string.Empty),
+                ("trend", row.Trend.Visible ? row.Trend.Text ?? string.Empty : string.Empty),
+                ("description", row.Description));
         }
 
         private bool PassesListingFilters(CargoMarketListing listing, string search)
         {
             if (search.Length != 0)
             {
-                return listing.DisplayName.Contains(search, StringComparison.CurrentCultureIgnoreCase);
+                if (ListingDisplayName(listing).Contains(search, StringComparison.CurrentCultureIgnoreCase))
+                    return true;
+
+                return !listing.IsResale &&
+                    _protoManager.TryIndex<CargoProductPrototype>(listing.ProductId, out var product) &&
+                    product.Description.Contains(search, StringComparison.CurrentCultureIgnoreCase);
             }
 
             if (_category == null)
@@ -291,27 +294,38 @@ namespace Content.Client.Cargo.UI
             return NormalizeCategoryKey(listing.Category) == _category;
         }
 
+        public string ListingDisplayName(CargoMarketListing listing)
+        {
+            if (!listing.IsResale && _protoManager.TryIndex<CargoProductPrototype>(listing.ProductId, out var product))
+                return product.Name;
+
+            return _protoManager.TryIndex(listing.EntityProtoId, out var entityPrototype)
+                ? entityPrototype.Name
+                : listing.DisplayName;
+        }
+
         public void PopulateCategories()
         {
             // Rebuild category set without wiping the player's current filter.
             var next = new List<string>();
-            foreach (var prototype in ProductPrototypes)
+            if (_marketListings == null)
             {
-                var key = NormalizeCategoryKey(prototype.Category);
-                if (!next.Contains(key))
-                    next.Add(key);
+                foreach (var prototype in ProductPrototypes)
+                {
+                    var key = NormalizeCategoryKey(prototype.Category);
+                    if (!next.Contains(key))
+                        next.Add(key);
+                }
             }
-
-            // Resale stock category when station has non-catalog sold goods.
-            if (_marketListings != null)
+            else
             {
                 foreach (var listing in _marketListings.Values)
                 {
-                    if (!listing.IsResale)
-                        continue;
-                    if (!next.Contains(CargoMarketListing.ResaleCategoryKey))
-                        next.Add(CargoMarketListing.ResaleCategoryKey);
-                    break;
+                    var key = listing.IsResale
+                        ? CargoMarketListing.ResaleCategoryKey
+                        : NormalizeCategoryKey(listing.Category);
+                    if (!next.Contains(key))
+                        next.Add(key);
                 }
             }
 
@@ -354,7 +368,7 @@ namespace Content.Client.Cargo.UI
             foreach (var key in _categoryKeys)
             {
                 var full = CategoryDisplayName(key);
-                AddCategoryButton(key, MarketTerminalTheme.ShortenCategoryLabel(full), full);
+                AddCategoryButton(key, full, full);
             }
 
             if (previous != null && _categoryButtons.ContainsKey(previous))
@@ -384,6 +398,7 @@ namespace Content.Client.Cargo.UI
                 ToggleMode = true,
                 Pressed = false,
                 HorizontalExpand = true,
+                MinHeight = 32,
                 ClipText = true,
                 ToolTip = tooltip ?? label,
                 StyleClasses = { "ButtonSquare" },
@@ -409,6 +424,10 @@ namespace Content.Client.Cargo.UI
             {
                 var product = _protoManager.Index<EntityPrototype>(order.ProductId);
                 var productName = product.Name;
+                var legacyTotal = Math.Ceiling(order.Price * order.OrderQuantity);
+                var totalPrice = order.TotalPrice ?? (double.IsFinite(legacyTotal)
+                    ? (int) Math.Clamp(legacyTotal, 0, int.MaxValue)
+                    : 0);
 
                 var row = new CargoOrderRow
                 {
@@ -417,30 +436,55 @@ namespace Content.Client.Cargo.UI
                     ProductName =
                     {
                         Text = Loc.GetString(
-                            "cargo-console-menu-populate-orders-cargo-order-row-product-name-text",
+                            "cargo-console-menu-order-product",
                             ("productName", productName),
-                            ("orderAmount", order.OrderQuantity),
-                            ("orderRequester", order.Requester))
+                            ("orderAmount", order.OrderQuantity))
+                    },
+                    Requester =
+                    {
+                        Text = Loc.GetString("cargo-console-menu-order-requester", ("requester", order.Requester))
                     },
                     Description =
                     {
                         Text = Loc.GetString("cargo-console-menu-order-reason-description",
                             ("reason", order.Reason))
+                    },
+                    TotalPriceTitle =
+                    {
+                        Text = Loc.GetString(order.Approved ? "cargo-console-menu-paid-label" : "cargo-console-menu-total-label")
+                    },
+                    TotalPrice =
+                    {
+                        Text = !order.Approved && order.TotalPrice == null
+                            ? Loc.GetString("market-purchase-unavailable")
+                            : BankSystemExtensions.ToSpesoString(totalPrice)
                     }
                 };
-                row.Cancel.OnPressed += args => OnOrderCanceled?.Invoke(args);
+                row.ProductName.ToolTip = row.ProductName.Text;
+                row.Requester.ToolTip = row.Requester.Text;
+                row.Description.ToolTip = row.Description.Text;
+                row.Description.Visible = !string.IsNullOrWhiteSpace(order.Reason);
+                row.TotalPrice.ToolTip = row.TotalPrice.Text;
+                row.Cancel.OnPressed += _ => OnOrderCanceled?.Invoke(order);
                 if (order.Approved)
                 {
+                    row.Actions.Visible = false;
                     row.Approve.Visible = false;
                     row.Cancel.Visible = false;
                     Orders.AddChild(row);
                 }
                 else
                 {
-                    row.Approve.OnPressed += args => OnOrderApproved?.Invoke(args);
+                    row.Approve.Disabled = order.TotalPrice == null; // Exodus: only approve an authoritative quote.
+                    row.Approve.OnPressed += _ => OnOrderApproved?.Invoke(order);
                     Requests.AddChild(row);
                 }
             }
+
+            RequestsEmptyLabel.Visible = Requests.ChildCount == 0;
+            OrdersEmptyLabel.Visible = Orders.ChildCount == 0;
+            OrderTabs.SetTabTitle(0, Loc.GetString("cargo-console-menu-requests-tab", ("count", Requests.ChildCount)));
+            OrderTabs.SetTabTitle(1, Loc.GetString("cargo-console-menu-orders-tab", ("count", Orders.ChildCount)));
         }
 
         public void UpdateCargoCapacity(int count, int capacity)
@@ -451,7 +495,9 @@ namespace Content.Client.Cargo.UI
         public void UpdateBankData(string name, int bankBalance)
         {
             AccountNameLabel.Text = name;
+            AccountNameLabel.ToolTip = name;
             PointsLabel.Text = BankSystemExtensions.ToSpesoString(bankBalance);
+            PointsLabel.ToolTip = PointsLabel.Text;
         }
     }
 }

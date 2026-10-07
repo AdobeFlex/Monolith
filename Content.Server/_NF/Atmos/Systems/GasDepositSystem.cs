@@ -264,6 +264,9 @@ public sealed partial class GasDepositSystem : SharedGasDepositSystem
 
     private void OnConsoleSell(Entity<GasSaleConsoleComponent> ent, ref GasSaleSellMessage args)
     {
+        if (!_dynamicMarket.Ready) // Exodus: do not consume gas before persisted settings load.
+            return;
+
         var xform = Transform(ent);
         if (xform.GridUid is not { } gridUid)
         {
@@ -294,7 +297,7 @@ public sealed partial class GasDepositSystem : SharedGasDepositSystem
             usePurity: false); // Mono: Edison has no purity penalty
 
         var stackPrototype = _prototype.Index(ent.Comp.CashType);
-        _stack.Spawn((int)amount, stackPrototype, xform.Coordinates);
+        _stack.Spawn(DynamicMarketSystem.RoundSellPayout(amount), stackPrototype, xform.Coordinates); // Exodus: saturate oversized payout
         _audio.PlayPvs(ent.Comp.ApproveSound, ent);
         UI.SetUiState(ent.Owner,
             GasSaleConsoleUiKey.Key,
@@ -311,7 +314,7 @@ public sealed partial class GasDepositSystem : SharedGasDepositSystem
             return;
         }
 
-        GetNearbyMixtures(ent, gridUid, out var mixture, out _);
+        GetNearbyMixture(ent, gridUid, out var mixture); // Exodus: dynamic pricing happens below
 
         var consoleMod = 1.0;
         if (TryComp<MarketModifierComponent>(ent, out var priceMod))
@@ -329,10 +332,10 @@ public sealed partial class GasDepositSystem : SharedGasDepositSystem
 
         UI.SetUiState(ent.Owner,
             GasSaleConsoleUiKey.Key,
-            new GasSaleConsoleBoundUserInterfaceState((int)amount, mixture, mixture.TotalMoles > 0, lines)); // Exodus lines
+            new GasSaleConsoleBoundUserInterfaceState(DynamicMarketSystem.RoundSellPayout(amount), mixture, mixture.TotalMoles > 0, lines)); // Exodus lines
     }
 
-    private void GetNearbyMixtures(EntityUid consoleUid, EntityUid gridUid, out GasMixture mixture, out double value)
+    private void GetNearbyMixture(EntityUid consoleUid, EntityUid gridUid, out GasMixture mixture) // Exodus: pricing moved to DynamicMarketSystem
     {
         mixture = new GasMixture();
 
@@ -340,9 +343,6 @@ public sealed partial class GasDepositSystem : SharedGasDepositSystem
         {
             _atmosphere.Merge(mixture, salePoint.Comp.GasStorage);
         }
-
-        // Legacy out value kept for callers; UI path recomputes with dynamic market.
-        value = _atmosphere.GetPriceNoPurity(mixture); // Mono - No purity penalty
     }
 
     private List<Entity<GasSalePointComponent>> GetNearbySalePoints(EntityUid consoleUid, EntityUid gridUid)
