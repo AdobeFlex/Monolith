@@ -125,6 +125,7 @@ public sealed partial class MiningRefinerySystem : EntitySystem
 
     private void OnMapInit(Entity<MiningRefineryComponent> ent, ref MapInitEvent args)
     {
+        ent.Comp.LinkBonusAffectsSpeed = false;
         ent.Comp.NextUpdate = _timing.CurTime + UpdateInterval;
         RefreshFilters(ent);
     }
@@ -191,6 +192,7 @@ public sealed partial class MiningRefinerySystem : EntitySystem
             var ratio = (1f + ent.Comp.LinkBonus) / (1f + bonus);
             _lathe.MultiplyLatheMultipliers(ent.Owner, materialUse: ratio);
             ent.Comp.LinkBonus = bonus;
+            ent.Comp.LinkBonusAffectsSpeed = false;
             _lathe.UpdateUserInterfaceState(ent, lathe);
         }
 
