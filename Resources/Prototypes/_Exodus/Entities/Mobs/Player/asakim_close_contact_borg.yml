@@ -102,13 +102,14 @@
       borg_module:
       - BorgModuleAsakimMonomolecularBlade
       - BorgModuleTool
+      - BorgModuleRedactedRCD
       - BorgModuleGPS
       - BorgModuleJetpackADM
   - type: ItemSlots
     slots:
       cell_slot:
         name: power-cell-slot-component-slot-name-default
-        startingItem: PowerCellAntiqueProtoEmpProof
+        startingItem: PowerCellAntiqueProto
 
 - type: entity
   id: PlayerBorgAsakimCloseContactGhostRole
